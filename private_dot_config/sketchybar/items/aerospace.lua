@@ -20,7 +20,7 @@ local function updateWindows(workspace_index)
 		local icon_line = ""
 		local no_app = true
 
-		for i, open_window in ipairs(open_windows) do
+		for _, open_window in ipairs(open_windows) do
 			no_app = false
 			local app = open_window["app-name"]
 			local lookup = app_icons[app]
@@ -66,11 +66,11 @@ local function updateWindows(workspace_index)
 	end)
 end
 
-for workspace_index = 1, max_workspaces do
+local function addSpaceToBar(workspace_name)
 	local workspace = sbar.add("item", {
 		icon = {
 			font = { family = settings.font.numbers },
-			string = workspace_index,
+			string = workspace_name,
 			padding_left = 15,
 			padding_right = 8,
 			color = colors.white,
@@ -92,11 +92,11 @@ for workspace_index = 1, max_workspaces do
 		},
 	})
 
-	workspaces[workspace_index] = workspace
+	workspaces[workspace_name] = workspace
 
 	workspace:subscribe("aerospace_workspace_change", function(env)
-		focused_workspace_index = tonumber(env.FOCUSED_WORKSPACE)
-		local is_focused = focused_workspace_index == workspace_index
+		focused_workspace_index = env.FOCUSED_WORKSPACE
+		local is_focused = focused_workspace_index == workspace_name
 
 		sbar.animate("tanh", 10, function()
 			workspace:set({
@@ -110,13 +110,13 @@ for workspace_index = 1, max_workspaces do
 	end)
 
 	workspace:subscribe("aerospace_focus_change", function()
-		updateWindows(workspace_index)
+		updateWindows(workspace_name)
 	end)
 
 	-- Set initial workspace state
-	updateWindows(workspace_index)
+	updateWindows(workspace_name)
 	sbar.exec("aerospace list-workspaces --focused", function(focused_workspace)
-		workspaces[tonumber(focused_workspace)]:set({
+		workspaces[focused_workspace]:set({
 			icon = { highlight = true },
 			label = { highlight = true },
 			background = {
@@ -124,4 +124,17 @@ for workspace_index = 1, max_workspaces do
 			},
 		})
 	end)
+end
+
+-- Special workspaces for:
+-- S = Slack
+-- Z = Zoom
+local specials = "SZ"
+for i = 1, #specials do
+	local c = specials:sub(i, i)
+	addSpaceToBar(c)
+end
+
+for workspace_index = 1, max_workspaces do
+	addSpaceToBar(tostring(workspace_index))
 end

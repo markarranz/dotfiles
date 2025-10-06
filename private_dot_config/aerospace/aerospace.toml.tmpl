@@ -66,9 +66,29 @@ outer.right = [{ monitor."X38 P" = 10 }, 5]
 
 [mode.main.binding]
 # Application launch commands
+cmd-e = '''exec-and-forget osascript -e '
+tell application "Finder"
+    make new Finder window to POSIX file (system attribute "PWD")
+    activate
+end tell'
+'''
+
+{{ if eq .chezmoi.hostname "WORKMACHINE" -}}
+
+cmd-enter = "exec-and-forget kitty --single-instance -d ~/work"
+cmd-b = '''exec-and-forget osascript -e '
+tell application "Arc"
+  make new window
+  activate
+end tell'
+'''
+
+{{ else -}}
+
 cmd-enter = "exec-and-forget kitty --single-instance -d ~"
 cmd-b = "exec-and-forget open -na Firefox"
-cmd-e = "exec-and-forget open $HOME"
+
+{{- end}}
 
 # Disable "Hide Application" shortcuts
 cmd-h = []     # Disable "hide application"
@@ -100,6 +120,9 @@ alt-equal = 'resize smart +50'
 
 # Switch workspace
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
+alt-s = 'workspace S'
+alt-z = 'workspace Z'
+
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
@@ -116,6 +139,9 @@ alt-tab = 'workspace-back-and-forth'
 
 # Move window to workspace
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
+alt-shift-s = 'move-node-to-workspace S'
+alt-shift-z = 'move-node-to-workspace Z'
+
 alt-shift-1 = 'move-node-to-workspace 1'
 alt-shift-2 = 'move-node-to-workspace 2'
 alt-shift-3 = 'move-node-to-workspace 3'
@@ -151,3 +177,27 @@ alt-shift-l = ['join-with right', 'mode main']
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.bitwarden.desktop'
+run = ['layout floating']
+
+{{ if eq .chezmoi.hostname "WORKMACHINE" -}}
+
+[[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.tinyspeck.slackmacgap'
+run = 'move-node-to-workspace S' # mnemonics S - Slack
+
+[[on-window-detected]]
+if.app-id = 'us.zoom.xos'
+run = 'move-node-to-workspace Z' # mnemonics Z - Zoom
+
+{{- end }}
