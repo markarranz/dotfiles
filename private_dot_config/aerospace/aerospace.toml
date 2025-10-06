@@ -57,12 +57,12 @@ preset = 'qwerty'
 #                 See:
 #                 https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
-inner.horizontal = 8
-inner.vertical = 8
-outer.top = 10
-outer.bottom = 5
-outer.left = 5
-outer.right = 5
+outer.top = [{ monitor."X38 P" = 45 }, 10]
+inner.horizontal = [{ monitor."X38 P" = 10 }, 5]
+inner.vertical = [{ monitor."X38 P" = 10 }, 5]
+outer.bottom = [{ monitor."X38 P" = 10 }, 5]
+outer.left = [{ monitor."X38 P" = 10 }, 5]
+outer.right = [{ monitor."X38 P" = 10 }, 5]
 
 [mode.main.binding]
 # Application launch commands
