@@ -17,11 +17,5 @@ return {
 				},
 			},
 		},
-		-- Can be removed once v2.0.0 is released:
-		-- https://github.com/fredrikaverpil/neotest-golang/pull/387
-		{
-			"fredrikaverpil/neotest-golang",
-			branch = "feat/treesitter-main",
-		},
 	},
 }
