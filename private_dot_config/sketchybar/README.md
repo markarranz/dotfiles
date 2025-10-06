@@ -11,3 +11,9 @@ Adapted from [FelixKratz/dotfiles](https://github.com/FelixKratz/dotfiles)
 ```bash
 (git clone https://github.com/FelixKratz/SbarLua.git /tmp/SbarLua && cd /tmp/SbarLua/ && make install && rm -rf /tmp/SbarLua/)
 ```
+
+SketchyBar App Font
+
+```bash
+brew install font-sketchybar-app-font
+```
