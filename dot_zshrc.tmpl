@@ -20,18 +20,14 @@ zstyle ':omz:update' mode disabled
 
 plugins=(
   aliases
-  aws
   {{ if eq .chezmoi.os "darwin" -}}
   brew
   {{ end -}}
   direnv
   docker
   docker-compose
-  dotnet
   git
   golang
-  rust
-  terraform
   zsh-syntax-highlighting
 )
 
@@ -49,12 +45,6 @@ autoload -U compinit && compinit
 # powerlevel10k:
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# rustup:
-. "$HOME/.cargo/env"
-
-# Add .NET Core SDK tools
-export PATH="$PATH:$HOME/.dotnet/tools"
 
 # uv & uvx:
 eval "$(uv generate-shell-completion zsh)"
