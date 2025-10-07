@@ -49,20 +49,13 @@ automatically-unhide-macos-hidden-apps = true
 preset = 'qwerty'
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
-# Possible values:
-# - Constant:     gaps.outer.top = 8
-# - Per monitor:  gaps.outer.top = [{ monitor.main = 16 }, { monitor."some-pattern" = 32 }, 24]
-#                 In this example, 24 is a default value when there is no match.
-#                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
-#                 See:
-#                 https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
-outer.top = [{ monitor."X38 P" = 45 }, 10]
-inner.horizontal = [{ monitor."X38 P" = 10 }, 5]
-inner.vertical = [{ monitor."X38 P" = 10 }, 5]
-outer.bottom = [{ monitor."X38 P" = 10 }, 5]
-outer.left = [{ monitor."X38 P" = 10 }, 5]
-outer.right = [{ monitor."X38 P" = 10 }, 5]
+outer.top =         [{ monitor.'X38 P' = 45 }, 10]
+inner.horizontal =  [{ monitor.'X38 P' = 10 }, 5]
+inner.vertical =    [{ monitor.'X38 P' = 10 }, 5]
+outer.bottom =      [{ monitor.'X38 P' = 10 }, 5]
+outer.left =        [{ monitor.'X38 P' = 10 }, 5]
+outer.right =       [{ monitor.'X38 P' = 10 }, 5]
 
 [mode.main.binding]
 # Application launch commands
@@ -73,20 +66,15 @@ tell application "Finder"
 end tell'
 '''
 
-{{ if eq .chezmoi.hostname "WORKMACHINE" -}}
+{{ if .forWork -}}
 
-cmd-enter = "exec-and-forget kitty --single-instance -d ~/work"
-cmd-b = '''exec-and-forget osascript -e '
-tell application "Arc"
-  make new window
-  activate
-end tell'
-'''
+cmd-enter = 'exec-and-forget kitty --single-instance -d ~/work'
+cmd-b = 'exec-and-forget open -na "Google Chrome"'
 
 {{ else -}}
 
-cmd-enter = "exec-and-forget kitty --single-instance -d ~"
-cmd-b = "exec-and-forget open -na Firefox"
+cmd-enter = 'exec-and-forget kitty --single-instance -d ~'
+cmd-b = 'exec-and-forget open -na Firefox'
 
 {{- end}}
 
@@ -186,7 +174,7 @@ run = ['layout floating']
 if.app-id = 'com.bitwarden.desktop'
 run = ['layout floating']
 
-{{ if eq .chezmoi.hostname "WORKMACHINE" -}}
+{{ if .forWork -}}
 
 [[on-window-detected]]
 if.app-id = 'com.1password.1password'
