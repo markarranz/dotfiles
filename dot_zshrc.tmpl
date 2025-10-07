@@ -22,8 +22,10 @@ plugins=(
   aliases
   {{ if eq .chezmoi.os "darwin" -}}
   brew
-  {{ end -}}
+  {{- end -}}
+  {{- if not .forWork -}}
   direnv
+  {{- end }}
   docker
   docker-compose
   git
@@ -45,6 +47,10 @@ autoload -U compinit && compinit
 # powerlevel10k:
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+{{ if .forWork -}}
+{{- onepasswordRead "op://Employee/zshrc/env_vars" -}}
+{{- else }}
 
 # uv & uvx:
 eval "$(uv generate-shell-completion zsh)"
@@ -73,7 +79,7 @@ export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
 # texlive:
 export PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH"
 
-{{ else if eq .chezmoi.os "darwin" -}}
+{{- else if eq .chezmoi.os "darwin" -}}
 
 # Use python installed from website:
 export PATH="/Library/Frameworks/Python.framework/Versions/3.13/bin:${PATH}"
@@ -93,7 +99,7 @@ export LDFLAGS="-L/opt/homebrew/opt/postgresql@17/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/postgresql@17/include"
 
 {{- end }}
-
+{{- end }}
 
 #########
 # ALIASES
@@ -119,7 +125,7 @@ alias kdiff="git difftool --no-symlinks --dir-diff"
 # Edit hyprland conf file
 alias hyprconf="nvim ~/.config/hypr/hyprland.conf"
 
-{{- end }}
+{{- end -}}
 
 
 # #####
