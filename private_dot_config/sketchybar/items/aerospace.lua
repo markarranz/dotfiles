@@ -1,16 +1,14 @@
-local icons = require("icons")
 local colors = require("colors")
 local settings = require("settings")
 local app_icons = require("helpers.app_icons")
 
 local max_workspaces = 9
 local focused_workspace_index = nil
-local is_show_windows = true
 
 local workspaces = {}
 
 -- Update workspace UI to reflect current window state
--- Shows window icons when apps are open and hides them when emtpy,
+-- Shows window icons when apps are open and hides them when empty,
 -- except for the focused workspace which shows a placeholder.
 local function updateWindows(workspace_index)
 	local get_windows =
@@ -103,7 +101,7 @@ local function addSpaceToBar(workspace_name)
 				icon = { highlight = is_focused },
 				label = { highlight = is_focused },
 				background = {
-					border_color = is_focused and colors.black or colors.bg2,
+					border_color = is_focused and colors.bg1 or colors.bg2,
 				},
 			})
 		end)
@@ -120,7 +118,7 @@ local function addSpaceToBar(workspace_name)
 			icon = { highlight = true },
 			label = { highlight = true },
 			background = {
-				border_color = colors.black,
+				border_color = colors.bg1,
 			},
 		})
 	end)
