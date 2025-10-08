@@ -120,6 +120,9 @@ alias s="kitten ssh"
 # Use kitty for git diff
 alias kdiff="git difftool --no-symlinks --dir-diff"
 
+# Git pull all subdirectories
+alias glr="find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'cd \"{}\" && pwd && git pull' \;"
+
 {{ if eq .chezmoi.os "linux" -}}
 
 # Edit hyprland conf file
