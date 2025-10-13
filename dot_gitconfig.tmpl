@@ -1,8 +1,11 @@
+# vim: ft=gitconfig
+
 [user]
   name = "Mark Arranz"
   email = "4390451+MarkArranz@users.noreply.github.com"
 [core]
     editor = nvim
+    excludesfile = ~/.gitignore_global
 [init]
     defaultBranch = main
 
@@ -19,17 +22,17 @@
 {{ if .forWork -}}
 
 [includeIf "gitdir:~/Code/work"]
-    path = ~/.gitconfig-work
+    path = ~/.gitconfig_work
 
 {{- else -}}
 
 [includeIf "gitdir:~/Code/public"]
-    path = ~/.gitconfig-public
+    path = ~/.gitconfig_public
 
 [includeIf "gitdir:~/Code/learning"]
-    path = ~/.gitconfig-learning
+    path = ~/.gitconfig_learning
 
 [includeIf "gitdir:~/Code/private"]
-    path = ~/.gitconfig-private
+    path = ~/.gitconfig_private
 
 {{- end }}
