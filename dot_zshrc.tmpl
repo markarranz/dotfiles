@@ -22,10 +22,8 @@ plugins=(
   aliases
   {{ if eq .chezmoi.os "darwin" -}}
   brew
-  {{- end -}}
-  {{- if not .forWork -}}
-  direnv
   {{- end }}
+  direnv
   docker
   docker-compose
   git
