@@ -1,3 +1,6 @@
+[user]
+  name = "Mark Arranz"
+  email = "4390451+MarkArranz@users.noreply.github.com"
 [core]
     editor = nvim
 [init]
@@ -13,6 +16,13 @@
     cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED \
           -c '$wincmd w' -c 'wincmd J'
 
+{{ if .forWork -}}
+
+[includeIf "gitdir:~/Code/work"]
+    path = ~/.gitconfig-work
+
+{{- else -}}
+
 [includeIf "gitdir:~/Code/public"]
     path = ~/.gitconfig-public
 
@@ -21,3 +31,5 @@
 
 [includeIf "gitdir:~/Code/private"]
     path = ~/.gitconfig-private
+
+{{- end }}
