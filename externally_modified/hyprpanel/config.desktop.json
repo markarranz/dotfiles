@@ -10,23 +10,21 @@
     "2": {
       "left": [
         "dashboard",
-        "windowtitle",
+        "workspaces",
         "cpu",
         "ram",
         "storage",
         "netstat"
       ],
       "middle": [
-        "workspaces"
+        "windowtitle"
       ],
       "right": [
         "media",
         "microphone",
         "volume",
-        "bluetooth",
         "network",
         "hypridle",
-        "hyprsunset",
         "systray",
         "updates",
         "clock",
@@ -36,13 +34,14 @@
     "*": {
       "left": [
         "dashboard",
+        "workspaces",
         "cpu",
         "ram",
         "storage",
         "netstat"
       ],
       "middle": [
-        "workspaces"
+        "windowtitle"
       ],
       "right": [
         "microphone",
