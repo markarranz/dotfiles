@@ -84,7 +84,7 @@ local function addSpaceToBar(workspace_name)
 		padding_right = 1,
 		padding_left = 1,
 		background = {
-			color = colors.bg1,
+			color = colors.bg2,
 			border_width = 3,
 			border_color = colors.transparent,
 		},
@@ -111,6 +111,10 @@ local function addSpaceToBar(workspace_name)
 		updateWindows(workspace_name)
 	end)
 
+	workspace:subscribe("mouse.clicked", function()
+		sbar.exec("aerospace workspace " .. workspace_name)
+	end)
+
 	-- Set initial workspace state
 	updateWindows(workspace_name)
 	sbar.exec("aerospace list-workspaces --focused", function(focused_workspace)
@@ -123,6 +127,9 @@ local function addSpaceToBar(workspace_name)
 		})
 	end)
 end
+
+sbar.add("event", "aerospace_workspace_change")
+sbar.add("event", "aerospace_focus_change")
 
 -- Special workspaces for:
 -- S = Slack
