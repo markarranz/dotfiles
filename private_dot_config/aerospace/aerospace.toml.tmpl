@@ -108,9 +108,6 @@ alt-equal = 'resize smart +50'
 
 # Switch workspace
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-alt-s = 'workspace S'
-alt-z = 'workspace Z'
-
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
@@ -121,15 +118,18 @@ alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 alt-9 = 'workspace 9'
 
+alt-c = 'workspace C'
+alt-s = 'workspace S'
+
+cmd-alt-shift-h = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace prev'
+cmd-alt-shift-l = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace next'
+
 # Toggle workspace
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
 
 # Move window to workspace
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-alt-shift-s = 'move-node-to-workspace S'
-alt-shift-z = 'move-node-to-workspace Z'
-
 alt-shift-1 = 'move-node-to-workspace 1'
 alt-shift-2 = 'move-node-to-workspace 2'
 alt-shift-3 = 'move-node-to-workspace 3'
@@ -139,6 +139,10 @@ alt-shift-6 = 'move-node-to-workspace 6'
 alt-shift-7 = 'move-node-to-workspace 7'
 alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
+
+alt-shift-c = 'move-node-to-workspace C'
+alt-shift-s = 'move-node-to-workspace S'
+
 
 # Move workspace to monitor
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
@@ -186,6 +190,10 @@ run = 'move-node-to-workspace S' # mnemonics S - Slack
 
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
-run = 'move-node-to-workspace Z' # mnemonics Z - Zoom
+run = 'move-node-to-workspace S' # mnemonics S - schedule
+
+[[on-window-detected]]
+if.app-id = 'net.kovidgoyal.kitty'
+run = 'move-node-to-workspace C' # mnemonics C - code
 
 {{- end }}

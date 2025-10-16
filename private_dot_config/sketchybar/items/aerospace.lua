@@ -132,9 +132,9 @@ sbar.add("event", "aerospace_workspace_change")
 sbar.add("event", "aerospace_focus_change")
 
 -- Special workspaces for:
--- S = Slack
--- Z = Zoom
-local specials = "SZ"
+-- S = Slack, schedule
+-- C = code
+local specials = "SC"
 for i = 1, #specials do
 	local c = specials:sub(i, i)
 	addSpaceToBar(c)
