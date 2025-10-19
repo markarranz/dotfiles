@@ -1,15 +1,18 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Using Mocha flavor in accordance with the style guide:
 # https://github.com/catppuccin/catppuccin/blob/main/docs/style-guide.md
+pink=0xfff5c2e7
+sky=0xff89dceb
 lavender=0xffb4befe
 overlay0=0xff6c7086
 
 options=(
   style=round
-  width=5.0
+  width=8
   hidpi=on
-  active_color="$lavender"
+  # active_color="glow(${lavender})"
+  active_color="gradient(top_left=${pink},bottom_right=${sky})"
   inactive_color="$overlay0"
 )
 
