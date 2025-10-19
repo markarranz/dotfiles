@@ -178,6 +178,10 @@ run = ['layout floating']
 if.app-id = 'com.bitwarden.desktop'
 run = ['layout floating']
 
+[[on-window-detected]]
+if.app-id = 'net.kovidgoyal.kitty'
+run = 'move-node-to-workspace C' # mnemonics C - code
+
 {{ if .forWork -}}
 
 [[on-window-detected]]
@@ -191,9 +195,5 @@ run = 'move-node-to-workspace S' # mnemonics S - Slack
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
 run = 'move-node-to-workspace S' # mnemonics S - schedule
-
-[[on-window-detected]]
-if.app-id = 'net.kovidgoyal.kitty'
-run = 'move-node-to-workspace C' # mnemonics C - code
 
 {{- end }}
