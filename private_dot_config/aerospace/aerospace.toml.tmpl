@@ -20,6 +20,7 @@ exec-on-workspace-change = [
 
 on-focus-changed = [
   'exec-and-forget sketchybar --trigger aerospace_focus_change',
+  'move-mouse window-lazy-center',
 ]
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
@@ -83,7 +84,9 @@ cmd-h = []     # Disable "hide application"
 cmd-alt-h = [] # Disable "hide others"
 
 # Toggle fullscreen window
-alt-f = 'fullscreen'
+alt-shift-f = 'fullscreen'
+# Toggle floating window
+alt-f = 'layout tiling floating'
 
 # Toggle layouts
 # See: https://nikitabobko.github.io/AeroSpace/commands#layout
@@ -127,29 +130,24 @@ alt-s = 'workspace S'
 cmd-alt-shift-h = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace prev'
 cmd-alt-shift-l = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace next'
 
-# Toggle workspace
-# See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-alt-tab = 'workspace-back-and-forth'
+# Toggle window/workspace focus
+alt-tab = 'focus-back-and-forth'
+alt-shift-tab = 'workspace-back-and-forth'
 
 # Move window to workspace
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-alt-shift-1 = 'move-node-to-workspace 1'
-alt-shift-2 = 'move-node-to-workspace 2'
-alt-shift-3 = 'move-node-to-workspace 3'
-alt-shift-4 = 'move-node-to-workspace 4'
-alt-shift-5 = 'move-node-to-workspace 5'
-alt-shift-6 = 'move-node-to-workspace 6'
-alt-shift-7 = 'move-node-to-workspace 7'
-alt-shift-8 = 'move-node-to-workspace 8'
-alt-shift-9 = 'move-node-to-workspace 9'
+alt-shift-1 = 'move-node-to-workspace --focus-follows-window 1'
+alt-shift-2 = 'move-node-to-workspace --focus-follows-window 2'
+alt-shift-3 = 'move-node-to-workspace --focus-follows-window 3'
+alt-shift-4 = 'move-node-to-workspace --focus-follows-window 4'
+alt-shift-5 = 'move-node-to-workspace --focus-follows-window 5'
+alt-shift-6 = 'move-node-to-workspace --focus-follows-window 6'
+alt-shift-7 = 'move-node-to-workspace --focus-follows-window 7'
+alt-shift-8 = 'move-node-to-workspace --focus-follows-window 8'
+alt-shift-9 = 'move-node-to-workspace --focus-follows-window 9'
 
-alt-shift-c = 'move-node-to-workspace C'
-alt-shift-s = 'move-node-to-workspace S'
-
-
-# Move workspace to monitor
-# See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+alt-shift-c = 'move-node-to-workspace --focus-follows-window C'
+alt-shift-s = 'move-node-to-workspace --focus-follows-window S'
 
 # Switch to service mode
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
@@ -164,9 +162,9 @@ f = ['layout floating tiling', 'mode main']
 backspace = ['close-all-windows-but-current', 'mode main']
 
 # Join windows
-alt-shift-h = ['join-with left', 'mode main']
-alt-shift-j = ['join-with down', 'mode main']
-alt-shift-k = ['join-with up', 'mode main']
+alt-shift-h = ['join-with left',  'mode main']
+alt-shift-j = ['join-with down',  'mode main']
+alt-shift-k = ['join-with up',    'mode main']
 alt-shift-l = ['join-with right', 'mode main']
 
 [[on-window-detected]]
@@ -183,7 +181,7 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'net.kovidgoyal.kitty'
-run = 'move-node-to-workspace C' # mnemonics C - code
+run = 'move-node-to-workspace C' # mnemonic C - code
 
 {{ if .forWork -}}
 
@@ -193,7 +191,7 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = 'move-node-to-workspace S' # mnemonics S - Slack
+run = ['move-node-to-workspace S'] # mnemonic S - Slack
 
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
