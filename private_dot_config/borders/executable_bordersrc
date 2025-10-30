@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-# rosewater='0xfff5e0dc'
-overlay0='0xff6c7086'
-pink='0xfff5c2e7'
-sky='0xff89dceb'
+# ROSEWATER='0xfff5e0dc'
+PINK='0xfff5c2e7'
+SKY='0xff89dceb'
+OVERLAY0='0xff6c7086'
 
-options=(
+OPTIONS=(
   style='round'
-  width=6.0
+  # active_color="glow($ROSEWATER)"
+  active_color="gradient(top_left=$PINK,bottom_right=$SKY)"
+  inactive_color="$OVERLAY0"
+  width='6.0'
   hidpi='on'
-  # active_color="glow(${rosewater})"
-  active_color="gradient(top_left=${pink},bottom_right=${sky})"
-  inactive_color="$overlay0"
 )
 
-borders "${options[@]}"
+borders "${OPTIONS[@]}"
