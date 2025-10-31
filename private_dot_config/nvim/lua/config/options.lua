@@ -2,11 +2,17 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
-vim.opt.colorcolumn = "+1"
-vim.opt.formatoptions = "jcro/qlnt"
+vim.o.colorcolumn = "+1"
+vim.o.formatoptions = "j/ncroql"
 
 vim.o.list = true
-vim.o.listchars = "tab:-->,lead:•,trail:•,space:•,eol:"
+vim.opt.listchars = {
+	tab = "  »",
+	lead = "•",
+	trail = "•",
+	space = "•",
+	eol = "",
+}
 
 -- Python Extras:
 vim.g.lazyvim_python_lsp = "basedpyright"
