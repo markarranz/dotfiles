@@ -21,18 +21,18 @@
 
 {{ if .forWork -}}
 
-[includeIf "gitdir:~/Code/work"]
+[includeIf "gitdir:~/Code/work/"]
     path = ~/.gitconfig_work
 
 {{- else -}}
 
-[includeIf "gitdir:~/Code/public"]
+[includeIf "gitdir:~/Code/public/"]
     path = ~/.gitconfig_public
 
-[includeIf "gitdir:~/Code/learning"]
+[includeIf "gitdir:~/Code/learning/"]
     path = ~/.gitconfig_learning
 
-[includeIf "gitdir:~/Code/private"]
+[includeIf "gitdir:~/Code/private/"]
     path = ~/.gitconfig_private
 
 {{- end }}
