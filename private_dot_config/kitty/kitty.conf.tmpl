@@ -147,3 +147,10 @@ map kitty_mod+h kitty_scrollback_nvim
 map kitty_mod+g kitty_scrollback_nvim --config ksb_builtin_last_cmd_output
 # Show clicked command output in nvim
 mouse_map ctrl+shift+right press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output
+
+{{ if .forWork -}}
+
+# Open default session:
+map kitty_mod+s>d goto_session "$HOME/Code/work/default.kitty-session"
+
+{{- end}}
