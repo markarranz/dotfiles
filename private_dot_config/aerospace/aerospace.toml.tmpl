@@ -13,11 +13,13 @@ after-startup-command = []
 
 # Notify Sketchybar about workspace change
 exec-on-workspace-change = [
-  'exec-and-forget $HOME/.config/aerospace/workspace-change.sh',
+  '/bin/bash',
+  '-c',
+  '~/.config/aerospace/workspace-change.sh',
 ]
 
 on-focus-changed = [
-  'exec-and-forget $HOME/.config/aerospace/focus-change.sh',
+  'exec-and-forget sketchybar --trigger aerospace_focus_change',
 ]
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
