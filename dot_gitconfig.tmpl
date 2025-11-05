@@ -9,15 +9,11 @@
 [init]
     defaultBranch = main
 
-# Configure Vim Diff as Merge Tool
+# Configure neovim as the difftool and mergetool: 
 [diff]
-    tool = vimdiff
+    tool = "nvimdiff1"
 [merge]
-    tool = vimdiff
-    conflictstyle = zdiff3
-[mergetool "vimdiff"]
-    cmd = nvim -d $LOCAL $BASE $REMOTE $MERGED \
-          -c '$wincmd w' -c 'wincmd J'
+    tool = "nvimdiff2"
 
 {{ if .forWork -}}
 
