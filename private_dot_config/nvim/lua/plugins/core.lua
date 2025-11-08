@@ -6,7 +6,7 @@ return {
 		},
 	},
 	{
-		"askinsho/bufferline.nvim",
+		"akinsho/bufferline.nvim",
 		opts = {
 			options = {
 				indicator = { style = "underline" },
