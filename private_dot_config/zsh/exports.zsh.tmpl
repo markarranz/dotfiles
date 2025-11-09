@@ -1,0 +1,49 @@
+{{ if eq .chezmoi.os "linux" -}}
+
+# bun - hyprpanel dependency:
+if [[ -s "/home/mark/.bun/_bun" ]]; then
+  source "/home/mark/.bun/_bun"
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
+# node-version-manager:
+[[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
+
+# uv
+[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="/home/mark/.local/share/../bin:$PATH"
+
+# go install:
+[[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
+
+# texlive:
+[[ -d "/usr/local/texlive" ]] && export PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH"
+
+{{- else if eq .chezmoi.os "darwin" -}}
+
+# uv & uvx:
+export PATH="$HOME/.local/bin:$PATH"
+
+# node-version-manager:
+if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
+  source "/opt/homebrew/opt/nvm/nvm.sh"
+  export NVM_DIR="$HOME/.nvm"
+  # load nvm bash_completion:
+  [[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+fi
+
+{{- end }}
+
+{{ if .forWork -}}
+{{- onepasswordRead "op://Employee/zshrc/env_vars" -}}
+{{- end }}
+
+# fzf:
+[[ -x $(which fzf) ]] && source <(fzf --zsh)
+
+# rustup
+[[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# zoxide:
+[[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
+

@@ -1,0 +1,26 @@
+# Use eza instead of ls:
+alias ls=eza
+
+# Use zoxide instead of cd:
+alias cd=z
+
+# Find where aliases are declared:
+alias which-alias="PS4='+%x:%I>' zsh -i -x -c '' |& grep "
+
+# Use kitten ssh:
+alias s="kitten ssh"
+
+# Use kitty for git diff
+alias kdiff="git difftool --no-symlinks --dir-diff"
+
+# Git fetch prune all subdirectories
+alias gfpr="find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'cd \"{}\" && pwd && git fetch --all --tags --prune --jobs=10' \;"
+# Git pull all subdirectories
+alias glr="find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'cd \"{}\" && pwd && git pull' \;"
+
+{{ if eq .chezmoi.os "linux" -}}
+
+# Edit hyprland conf file
+alias hyprconf="nvim ~/.config/hypr/hyprland.conf"
+
+{{- end -}}

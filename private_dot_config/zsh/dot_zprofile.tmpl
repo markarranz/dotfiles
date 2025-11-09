@@ -8,6 +8,6 @@ fi
 {{ else if eq .chezmoi.os "darwin" -}}
 
 # Enable homebrew completions:
-eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(brew shellenv)"
 
 {{- end }}
