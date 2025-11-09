@@ -1,1 +1,1 @@
-plug "zap-zsh/zap-prompt"
+eval "$(starship init zsh)"
