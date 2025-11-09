@@ -38,11 +38,14 @@ fi
 {{- onepasswordRead "op://Employee/zshrc/env_vars" -}}
 {{- end }}
 
+# rustup
+[[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
 # fzf:
 [[ -x $(which fzf) ]] && source <(fzf --zsh)
 
-# rustup
-[[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+# starship:
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 
 # zoxide:
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"

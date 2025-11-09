@@ -8,6 +8,5 @@ plug "$HOME/.config/zsh/plugins.zsh"
 plug "$HOME/.config/zsh/aliases.zsh"
 plug "$HOME/.config/zsh/prompt.zsh"
 
-# Load and initialise completion system
 autoload -Uz compinit
-compinit
+compinit -d "${ZDOTDIR:-$HOME}/.zcompdump"

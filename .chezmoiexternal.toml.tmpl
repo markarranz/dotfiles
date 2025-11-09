@@ -16,3 +16,16 @@ refreshPeriod = "672h"
 type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/btop/refs/heads/main/themes/catppuccin_mocha.theme"
 refreshPeriod = "672h"
+
+[".config/zsh-plugins"]
+type = "archive"
+url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
+exact = false
+stripComponents = 1
+refreshPeriod = "168h"
+include = [
+  "*/plugins/aliases/**",
+  "*/plugins/brew/**",
+  "*/plugins/direnv/**",
+  "*/plugins/git/**",
+]
