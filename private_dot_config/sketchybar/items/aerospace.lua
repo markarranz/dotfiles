@@ -7,23 +7,25 @@ local focused_workspace_index = nil
 
 local workspaces = {}
 
--- Update workspace UI to reflect current window state
+-- Update workspace UI to reflect current window(s) state.
 -- Shows window icons when apps are open and hides them when empty,
 -- except for the focused workspace which shows a placeholder.
-local function updateWindows(workspace_index)
+local function updateAppIconsForWorkspace(workspace_index)
 	local get_windows =
 		string.format("aerospace list-windows --workspace %s --format '%%{app-name}' --json", workspace_index)
 
 	sbar.exec(get_windows, function(open_windows)
-		local icon_line = ""
+		-- Create string of app icons.
 		local no_app = true
-
+		local icon_line = ""
 		for _, open_window in ipairs(open_windows) do
 			no_app = false
+
 			local app = open_window["app-name"]
 			local lookup = app_icons[app]
 			-- Fallback to default icon if app-specific icon isn't found
 			local icon = ((lookup == nil) and app_icons["default"] or lookup)
+
 			icon_line = icon_line .. " " .. icon
 		end
 
@@ -64,7 +66,7 @@ local function updateWindows(workspace_index)
 	end)
 end
 
-local function addSpaceToBar(workspace_name)
+local function addWorkspaceSectionToBar(workspace_name)
 	local workspace = sbar.add("item", {
 		icon = {
 			font = { family = settings.font.numbers },
@@ -108,7 +110,7 @@ local function addSpaceToBar(workspace_name)
 	end)
 
 	workspace:subscribe("aerospace_focus_change", function()
-		updateWindows(workspace_name)
+		updateAppIconsForWorkspace(workspace_name)
 	end)
 
 	workspace:subscribe("mouse.clicked", function()
@@ -116,7 +118,8 @@ local function addSpaceToBar(workspace_name)
 	end)
 
 	-- Set initial workspace state
-	updateWindows(workspace_name)
+	updateAppIconsForWorkspace(workspace_name)
+
 	sbar.exec("aerospace list-workspaces --focused", function(focused_workspace)
 		workspaces[focused_workspace]:set({
 			icon = { highlight = true },
@@ -131,15 +134,16 @@ end
 sbar.add("event", "aerospace_workspace_change")
 sbar.add("event", "aerospace_focus_change")
 
--- Special workspaces for:
--- S = Slack, schedule
--- C = code
-local specials = "SC"
-for i = 1, #specials do
-	local c = specials:sub(i, i)
-	addSpaceToBar(c)
+for workspace_index = 1, max_workspaces do
+	addWorkspaceSectionToBar(tostring(workspace_index))
 end
 
-for workspace_index = 1, max_workspaces do
-	addSpaceToBar(tostring(workspace_index))
+-- Special workspaces for:
+-- C = kitty
+-- N = Notion, Slab
+-- S = Slack, Zoom
+local specials = "CNS"
+for i = 1, #specials do
+	local c = specials:sub(i, i)
+	addWorkspaceSectionToBar(c)
 end
