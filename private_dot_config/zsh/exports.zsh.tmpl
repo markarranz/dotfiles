@@ -39,7 +39,7 @@ fi
 
 {{- end }}
 
-{{- if .forWork }}
+{{ if .forWork }}
 {{- onepasswordRead "op://Employee/zshrc/env_vars" }}
 {{- end }}
 
