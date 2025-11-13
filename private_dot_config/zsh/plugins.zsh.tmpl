@@ -6,7 +6,9 @@ plug "zap-zsh/exa"
 
 OMZ_PLUGINS=(
   aliases
+  {{- if eq .chezmoi.os "darwin" }}
   brew
+  {{- end }}
   direnv
   git
 )

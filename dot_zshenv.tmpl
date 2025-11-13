@@ -3,6 +3,9 @@
 export EDITOR="$(which nvim)"
 export MANPAGER='nvim +Man!'
 
+export XDG_CONFIG_HOME="$HOME/.config"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+
 {{ if eq .chezmoi.os "linux" -}}
 
 # Make electron apps wayland aware:
