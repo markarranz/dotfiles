@@ -41,6 +41,10 @@ fi
 
 {{ if .forWork }}
 {{- onepasswordRead "op://Employee/zshrc/env_vars" }}
+
+# Use GPG key for git commit signing:
+export GPG_TTY=$(tty)
+
 {{- end }}
 
 # rustup
