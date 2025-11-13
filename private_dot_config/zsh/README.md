@@ -1,10 +1,11 @@
 # zsh
 
-Add the following to the `/etc/zshenv` file:
+## Setup
+
+### Install zap-zsh
 
 ```sh
-export XDG_CONFIG_HOME="$HOME/.config"
-export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) --branch release-v1
 ```
 
 ## OMZ Plugin Support

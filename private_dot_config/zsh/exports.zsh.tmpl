@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 {{ if eq .chezmoi.os "linux" -}}
 
 # bun - hyprpanel dependency:
@@ -45,7 +47,7 @@ fi
 [[ -x $(which fzf) ]] && source <(fzf --zsh)
 
 # starship:
-export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
+[[ -x $(which starship) ]] && export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 
 # zoxide:
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
