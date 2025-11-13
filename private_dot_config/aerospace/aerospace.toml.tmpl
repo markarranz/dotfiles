@@ -66,12 +66,12 @@ tell application "Finder"
 end tell'
 '''
 
-{{ $startingDir := "$HOME" }}
+{{- $startingDir := "$HOME" }}
 {{- $browser := "Firefox" }}
 {{- if .forWork }}
 {{- $startingDir = "$HOME/Code/work" }}
 {{- $browser = "Google Chrome" }}
-{{- end -}}
+{{- end }}
 
 cmd-enter = 'exec-and-forget open -a kitty "{{ $startingDir }}" --args -1=yes'
 cmd-shift-enter = 'exec-and-forget open -a kitty -n "{{ $startingDir }}" --args -1=yes'

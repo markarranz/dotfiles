@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-{{ if eq .chezmoi.os "linux" -}}
+{{- if eq .chezmoi.os "linux" }}
 
 # bun - hyprpanel dependency:
 if [[ -s "/home/mark/.bun/_bun" ]]; then
@@ -21,7 +21,10 @@ fi
 # texlive:
 [[ -d "/usr/local/texlive" ]] && export PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH"
 
-{{- else if eq .chezmoi.os "darwin" -}}
+{{- else if eq .chezmoi.os "darwin" }}
+
+# Enable homebrew completions:
+eval "$(brew shellenv)"
 
 # uv & uvx:
 export PATH="$HOME/.local/bin:$PATH"
@@ -36,8 +39,8 @@ fi
 
 {{- end }}
 
-{{ if .forWork -}}
-{{- onepasswordRead "op://Employee/zshrc/env_vars" -}}
+{{- if .forWork }}
+{{- onepasswordRead "op://Employee/zshrc/env_vars" }}
 {{- end }}
 
 # rustup

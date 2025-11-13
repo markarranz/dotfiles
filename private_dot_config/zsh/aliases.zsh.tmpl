@@ -18,9 +18,9 @@ alias gfpr="find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'cd \"{}\" && pwd
 # Git pull all subdirectories
 alias glr="find . -maxdepth 1 -mindepth 1 -type d -exec sh -c 'cd \"{}\" && pwd && git pull' \;"
 
-{{ if eq .chezmoi.os "linux" -}}
+{{- if eq .chezmoi.os "linux" }}
 
 # Edit hyprland conf file
 alias hyprconf="nvim ~/.config/hypr/hyprland.conf"
 
-{{- end -}}
+{{- end }}
