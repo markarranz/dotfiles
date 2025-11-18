@@ -16,3 +16,13 @@ OMZ_PLUGINS=(
 for p in "${OMZ_PLUGINS[@]}"; do
   plug "$ZDOTDIR/omz/plugins/$p"
 done
+
+# Sketchybar interactivity overloads
+function brew() {
+  command brew "$@" 
+
+  if [[ $* =~ "upgrade" ]] || [[ $* =~ "update" ]] || [[ $* =~ "outdated" ]]; then
+    sketchybar --trigger brew_update
+  fi
+}
+
