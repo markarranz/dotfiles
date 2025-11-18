@@ -24,7 +24,7 @@ fi
 {{- else if eq .chezmoi.os "darwin" }}
 
 # Enable homebrew completions:
-eval "$(brew shellenv)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # uv & uvx:
 export PATH="$HOME/.local/bin:$PATH"
