@@ -2,9 +2,13 @@
 # APPLICATION COMMANDS #
 # #################### #
 
-cmd - return : kitty --single-instance -d ~
-cmd - b      : open -na Firefox
-cmd - e      : open -na Finder $HOME
+cmd - return          : open -a kitty --args -1=yes
+cmd + shift - return  : open -na kitty --args -1=yes -d=$HOME
+
+cmd - b         : open -a Firefox
+cmd + shift - b : open -na Firefox
+
+cmd - e : open -na Finder $HOME
 
 cmd + alt + ctrl - r : yabai --restart-service
 
@@ -16,6 +20,7 @@ cmd + alt + ctrl - r : yabai --restart-service
 cmd + alt - tab : yabai -m space --focus recent
 cmd + alt - h   : yabai -m space --focus prev
 cmd + alt - l   : yabai -m space --focus next
+
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270
 
@@ -41,12 +46,16 @@ cmd + shift + alt - l : yabai -m space --move next --focus mouse
 
 # Toggle fullscreen:
 cmd + shift - f : yabai -m window --toggle native-fullscreen
+
 # Toggle float:
 cmd + alt - f : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
 # Toggle split (horizontal/vertical):
 alt - t : yabai -m window --toggle split
+
 # Toggle sticky:
 alt - p : yabai -m window --toggle sticky
+
 # Toggle PiP:
 shift + alt - p : yabai -m window --toggle pip
 
