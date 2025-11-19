@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#! /usr/bin/env sh
 
 yabai -m query --spaces --display |
   jq -re 'map(select(."is-native-fullscreen" == false)) | length > 1' &&

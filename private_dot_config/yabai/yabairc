@@ -1,4 +1,6 @@
-#!/usr/bin/env zsh
+# vim: ft=sh
+
+XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
 
 # ################## #
 # SCRIPTING ADDITION #
@@ -11,7 +13,7 @@ sudo yabai --load-sa
 # SIGNALS #
 # ####### #
 
-yabai -m signal --add event=space_changed action="zsh -c ~/.config/yabai/scripts/clean_empty_spaces.sh"
+yabai -m signal --add event=space_changed action="/usr/bin/env sh -c $XDG_CONFIG_HOME/yabai/clean_empty_spaces.sh"
 
 # ##### #
 # RULES #
