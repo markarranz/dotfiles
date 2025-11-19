@@ -5,8 +5,12 @@
 cmd - return          : open -a kitty --args -1=yes
 cmd + shift - return  : open -na kitty --args -1=yes -d=$HOME
 
-cmd - b         : open -a Firefox
-cmd + shift - b : open -na Firefox
+{{- $browser := "Firefox" }}
+{{- if .forWork }}
+{{- $browser = "Google Chrome" }}
+{{- end }}
+cmd - b         : open -a "{{ $browser }}"
+cmd + shift - b : open -na "{{ $browser }}"
 
 cmd - e : open -na Finder $HOME
 
