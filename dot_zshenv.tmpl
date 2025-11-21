@@ -1,10 +1,19 @@
-# vim: ft=sh
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
 
-export EDITOR="$(which nvim)"
-export MANPAGER='nvim +Man!'
+NVIM_PATH="$(which nvim)"
 
-export XDG_CONFIG_HOME="$HOME/.config"
-export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export EDITOR="${NVIM_PATH}"
+export VISUAL="${NVIM_PATH}"
+
+export MANPAGER="${NVIM_PATH} +Man!"
+
+export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
+
+export HISTFILE="${ZDOTDIR}/.zhistory"  # History filepath
+export HISTSIZE=10000                   # Maximum events for internal history
+export SAVEHIST=10000                   # Maximum events in history file
 
 {{- if eq .chezmoi.os "linux" }}
 
@@ -12,4 +21,3 @@ export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export ELECTRON_OZONE_PLATFORM_HINT=wayland
 
 {{- end }}
-
