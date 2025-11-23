@@ -1,8 +1,11 @@
+#########
+# LINUX #
+#########
 {{- if eq .chezmoi.os "linux" }}
 
 # bun - hyprpanel dependency:
-if [[ -s "/home/mark/.bun/_bun" ]]; then
-  source "/home/mark/.bun/_bun"
+if [[ -s "$HOME/.bun/_bun" ]]; then
+  source "$HOME/.bun/_bun"
   export BUN_INSTALL="$HOME/.bun"
   export PATH="$BUN_INSTALL/bin:$PATH"
 fi
@@ -10,22 +13,13 @@ fi
 # node-version-manager:
 [[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
 
-# uv
-[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="/home/mark/.local/share/../bin:$PATH"
-
-# go install:
-[[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
-
 # texlive:
 [[ -d "/usr/local/texlive" ]] && export PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH"
 
+##########
+# DARWIN #
+##########
 {{- else if eq .chezmoi.os "darwin" }}
-
-# Enable homebrew completions:
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-# uv & uvx:
-export PATH="$HOME/.local/bin:$PATH"
 
 # node-version-manager:
 if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
@@ -37,6 +31,9 @@ fi
 
 {{- end }}
 
+########
+# WORK #
+########
 {{ if .forWork }}
 {{- onepasswordRead "op://Employee/zshrc/env_vars" }}
 
@@ -44,6 +41,16 @@ fi
 export GPG_TTY=$(tty)
 
 {{- end }}
+
+#######
+# ALL #
+#######
+
+# uv & uvx
+[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="$HOME/.local/share/../bin:$PATH"
+
+# go install:
+[[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
 
 # rustup
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
