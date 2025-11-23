@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 window_state() {
-  source "$CONFIG_DIR/colors.sh"
-  source "$CONFIG_DIR/icons.sh"
+  source "$CONFIG_DIR/colors.zsh"
+  source "$CONFIG_DIR/icons.zsh"
 
   WINDOW=$(yabai -m query --windows --window)
   STACK_INDEX=$(echo "$WINDOW" | jq '.["stack-index"]')

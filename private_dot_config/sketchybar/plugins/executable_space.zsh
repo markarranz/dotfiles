@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 update() {
-  source "$CONFIG_DIR/colors.sh"
+  source "$CONFIG_DIR/colors.zsh"
   COLOR=$BACKGROUND_2
   if [ "$SELECTED" = "true" ]; then
     COLOR=$GREY

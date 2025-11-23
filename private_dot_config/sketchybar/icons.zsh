@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # General Icons
 LOADING=􀖇
@@ -49,9 +49,3 @@ VOLUME_0=􀊣
 WIFI_CONNECTED=􀙇
 WIFI_DISCONNECTED=􀙈
 
-# svim
-MODE_NORMAL=􀂯
-MODE_INSERT=􀂥
-MODE_VISUAL=􀂿
-MODE_CMD=􀂙
-MODE_PENDING=􀈏

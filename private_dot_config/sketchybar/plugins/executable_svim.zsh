@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
-source "$CONFIG_DIR/icons.sh"
-source "$CONFIG_DIR/colors.sh"
+source "$CONFIG_DIR/icons.zsh"
+source "$CONFIG_DIR/colors.zsh"
 
 if [ "$SENDER" = "svim_update" ]; then
   DRAWING=on
@@ -22,9 +22,9 @@ if [ "$SENDER" = "svim_update" ]; then
     ;;
   esac
 
-  sketchybar --set $NAME drawing="$DRAWING" \
-                         label.drawing="$DRAW_CMD" \
-                         icon="$ICON" \
-                         icon.color="$COLOR" \
+  sketchybar --set $NAME drawing="$DRAWING"         \
+                         label.drawing="$DRAW_CMD"  \
+                         icon="$ICON"               \
+                         icon.color="$COLOR"        \
                          label="$CMDLINE"
 fi

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
 
@@ -11,7 +11,7 @@ github_bell=(
   label=$LOADING
   label.highlight_color=$BLUE
   popup.align=right
-  script="$PLUGIN_DIR/github.sh"
+  script="$PLUGIN_DIR/github.zsh"
   click_script="$POPUP_CLICK_SCRIPT"
 )
 

@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 front_app=(
   label.font="$FONT:Black:12.0"
   icon.background.drawing=on
   display=active
-  script="$PLUGIN_DIR/front_app.sh"
+  script="$PLUGIN_DIR/front_app.zsh"
   click_script="open -a 'Mission Control'"
 )
 

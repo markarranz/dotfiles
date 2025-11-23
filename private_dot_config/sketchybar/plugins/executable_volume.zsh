@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 WIDTH=100
 
 volume_change() {
-  source "$CONFIG_DIR/icons.sh"
+  source "$CONFIG_DIR/icons.zsh"
   case $INFO in
     [6-9][0-9]|100) ICON=$VOLUME_100
     ;;

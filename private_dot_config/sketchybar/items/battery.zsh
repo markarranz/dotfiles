@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 battery=(
-  script="$PLUGIN_DIR/battery.sh"
+  script="$PLUGIN_DIR/battery.zsh"
   icon.font="$FONT:Regular:19.0"
   padding_right=5
   padding_left=0
