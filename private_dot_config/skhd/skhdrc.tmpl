@@ -2,13 +2,14 @@
 # APPLICATION COMMANDS #
 # #################### #
 
-cmd - return          : open -a kitty --args -1=yes
-cmd + shift - return  : open -na kitty --args -1=yes
+# semicolon - keycode 0x29
+cmd - 0x29         : open -a kitty --args -1=yes
+cmd + shift - 0x29 : open -na kitty --args -1=yes
 
-{{- $browser := "Firefox" }}
+{{ $browser := "Firefox" -}}
 {{- if .forWork }}
 {{- $browser = "Google Chrome" }}
-{{- end }}
+{{- end -}}
 cmd - b         : open -a "{{ $browser }}"
 cmd + shift - b : open -na "{{ $browser }}"
 
