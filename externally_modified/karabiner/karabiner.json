@@ -2,7 +2,7 @@
     "profiles": [
         {
             "complex_modifications": {
-                "parameters": { "basic.to_if_held_down_threshold_milliseconds": 100 },
+                "parameters": { "basic.to_if_held_down_threshold_milliseconds": 125 },
                 "rules": [
                     {
                         "description": "HRM: Home Row Mods hold a or ; for ⌃, s or l for ⌥, d or k for ⌘, f or j for ⇧",
@@ -49422,6 +49422,16 @@
                     }
                 ]
             },
+            "devices": [
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 10203,
+                        "vendor_id": 5824
+                    },
+                    "ignore": true
+                }
+            ],
             "name": "Home Row Mods",
             "selected": true,
             "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
@@ -49450,6 +49460,16 @@
                     }
                 ]
             },
+            "devices": [
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "product_id": 10203,
+                        "vendor_id": 5824
+                    },
+                    "ignore": true
+                }
+            ],
             "name": "Caps to Escape",
             "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" }
         },
