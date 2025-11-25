@@ -27,3 +27,6 @@ vim.filetype.add({
 		[".*/hypr/.*%.conf"] = "hyprlang",
 	},
 })
+
+-- bacon-ls
+vim.g.lazyvim_rust_diagnostics = "bacon-ls"
