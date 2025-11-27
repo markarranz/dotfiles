@@ -27,8 +27,9 @@ cmd + alt - h   : yabai -m space --focus prev
 cmd + alt - l   : yabai -m space --focus next
 
 # Rotate window tree:
-cmd + alt - r : yabai -m space --rotate 270
-
+cmd + alt - r : yabai -m space --rotate 270 # clockwise
+cmd + alt - u : yabai -m space --rotate 90  # counter-clockwise
+ 
 # Focus space with CMD + [0-9]:
 cmd - 1 : yabai -m space --focus 1
 cmd - 2 : yabai -m space --focus 2  || (yabai -m space --create; yabai -m space --focus last)
