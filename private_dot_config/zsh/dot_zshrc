@@ -1,5 +1,9 @@
 # vim: ft=zsh
 
+function mkcd() {
+	mkdir -p "$@"  && cd $_
+}
+
 # Zap - a minimal zsh plugin manager
 [[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ]] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
 
@@ -8,8 +12,9 @@ plug "$HOME/.config/zsh/exports.zsh"
 plug "$HOME/.config/zsh/plugins.zsh"
 
 # Load and initialise completion system
-# autoload -Uz compinit
-# compinit
+autoload -Uz compinit
+compinit
+
 plug "zap-zsh/supercharge"
 plug "zap-zsh/exa" # must be loaded after supercharge
 
