@@ -18,8 +18,9 @@ compinit
 plug "zap-zsh/supercharge"
 plug "zap-zsh/exa" # must be loaded after supercharge
 
-# fzf-tab must be loaded after compinit
+# fzf-tab must be loaded after compinit...
 plug "Aloxaf/fzf-tab"
+plug "Freed-Wu/fzf-tab-source"
 
 # ...but before plugins which will wrap widgets
 plug "zsh-users/zsh-autosuggestions"
