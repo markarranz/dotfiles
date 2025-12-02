@@ -20,7 +20,33 @@ yabai -m signal --add event=space_changed action="/usr/bin/env sh -c $XDG_CONFIG
 # ##### #
 
 # Exclude problematic apps from being managed:
-yabai -m rule --add app="^(1Password|Bitwarden|Logi Options|Calculator|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor)$" manage=off
+unmanaged_apps=(
+  "1Password"
+  "Bitwarden"
+  "Logi Options"
+  "Calculator"
+  "Software Update"
+  "Dictionary"
+  "VLC"
+  "System Preferences"
+  "System Settings"
+  "zoom.us"
+  "Photo Booth"
+  "Archive Utility"
+  "Python"
+  "App Store"
+  "Steam"
+  "Activity Monitor"
+)
+
+# Save the current IFS value
+OLD_IFS="$IFS"
+IFS="|"
+joined_string="${unmanaged_apps[*]}"
+IFS="$OLD_IFS"
+
+yabai -m rule --add app="^(${joined_string})$" manage=off
+
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
