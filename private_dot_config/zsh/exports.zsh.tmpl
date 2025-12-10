@@ -19,7 +19,7 @@ fi
 ##########
 # DARWIN #
 ##########
-{{- else if eq .chezmoi.os "darwin" }}
+{{- else if and (eq .chezmoi.os "darwin") (not .forWork) }}
 
 # node-version-manager:
 if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
@@ -28,17 +28,6 @@ if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
   # load nvm bash_completion:
   [[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 fi
-
-{{- end }}
-
-########
-# WORK #
-########
-{{ if .forWork }}
-{{- onepasswordRead "op://Employee/zshrc/env_vars" }}
-
-# Use GPG key for git commit signing:
-export GPG_TTY=$(tty)
 
 {{- end }}
 

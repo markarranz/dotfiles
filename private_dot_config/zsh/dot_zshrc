@@ -9,13 +9,14 @@ function mkcd() {
 
 plug "$HOME/.config/zsh/prompt.zsh"
 plug "$HOME/.config/zsh/exports.zsh"
-plug "$HOME/.config/zsh/plugins.zsh"
 
 # Load and initialise completion system
 autoload -Uz compinit
 compinit
 
-plug "zap-zsh/supercharge"
+plug "$HOME/.config/zsh/plugins.zsh"
+
+plug "zap-zsh/supercharge" # contains a `compinit`
 plug "zap-zsh/exa" # must be loaded after supercharge
 
 # fzf-tab must be loaded after compinit...

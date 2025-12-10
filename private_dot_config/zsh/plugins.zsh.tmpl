@@ -9,8 +9,8 @@ OMZ_PLUGINS=(
   rust
 )
 
-for p in "${OMZ_PLUGINS[@]}"; do
-  plug "$ZDOTDIR/omz/plugins/$p"
+for plugin_name in "${OMZ_PLUGINS[@]}"; do
+  plug "${ZDOTDIR}/omz/plugins/${plugin_name}/${plugin_name}.plugin.zsh"
 done
 
 # Wrapper function to trigger SketchyBar after specific brew commands
