@@ -1,3 +1,1 @@
-#!/usr/bin/env zsh
-
-eval "$(starship init zsh)"
+eval "$(/opt/homebrew/bin/starship init zsh)"
