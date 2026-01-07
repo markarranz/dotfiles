@@ -93,3 +93,8 @@ yabai -m config \
   right_padding 8 \
   window_gap 10 \
   auto_balance off
+
+# ########### #
+# AUTO UPDATE #
+# ########### #
+YABAI_CERT=yabai-cert sh -c "$(curl -fsSL "https://git.io/update-yabai")" &
