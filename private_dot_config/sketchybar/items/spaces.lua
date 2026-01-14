@@ -37,7 +37,15 @@ for i = 1, 9 do
 
   -- Handle space selection highlighting
   space:subscribe("space_change", function(env)
-    local selected = env.SELECTED == "true"
+    local selected = false
+    if env.INFO then
+      for _, space_id in pairs(env.INFO) do
+        if space_id == i then
+          selected = true
+          break
+        end
+      end
+    end
     local border_color = selected and colors.grey or colors.bg2
     space:set({
       icon = { highlight = selected },
