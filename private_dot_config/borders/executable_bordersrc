@@ -9,7 +9,7 @@ OPTIONS=(
   active_color="gradient(top_left=$PINK,bottom_right=$SKY)"
   inactive_color="$OVERLAY0"
   width='6.0'
-  hidpi='on'
+  hidpi='off'
 )
 
 borders "${OPTIONS[@]}"
