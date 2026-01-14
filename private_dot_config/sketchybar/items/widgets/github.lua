@@ -50,9 +50,14 @@ local function update_github()
     -- Remove old notification items
     sbar.exec("sketchybar --remove '/github.notification\\..*/' 2>/dev/null")
 
-    -- Check if result is valid JSON array
+    -- Handle result (may be string or table depending on SBarLua version)
+    if type(result) == "table" then
+      result = result[1] or ""
+    end
     result = result or ""
-    if result == "" or (string.len(result) > 0 and string.sub(result, 1, 1) ~= "[") then
+
+    -- Check if result is valid JSON array
+    if result == "" or (result ~= "" and string.sub(result, 1, 1) ~= "[") then
       github_bell:set({
         icon = { string = icons.bell },
         label = { string = "!" },
