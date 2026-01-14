@@ -1,5 +1,5 @@
-local colors = require("colors")
-local icons = require("icons")
+local colors = require("config.colors")
+local icons = require("config.icons")
 
 sbar.add("event", "brew_update")
 

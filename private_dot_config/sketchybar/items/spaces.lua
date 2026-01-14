@@ -1,7 +1,7 @@
-local colors = require("colors")
-local icons = require("icons")
-local settings = require("settings")
-local app_icons = require("helpers.app_icons")
+local colors = require("config.colors")
+local icons = require("config.icons")
+local settings = require("config.settings")
+local app_icons = require("lib.app_icons")
 
 local spaces = {}
 

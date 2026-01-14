@@ -5,7 +5,7 @@ package.cpath = package.cpath .. ";/Users/" .. os.getenv("USER") .. "/.local/sha
 sbar = require("sketchybar")
 
 -- Load colors for helper
-local colors = require("colors")
+local colors = require("config.colors")
 
 -- Start the CPU helper with color environment variables
 local config_dir = os.getenv("HOME") .. "/.config/sketchybar"
@@ -21,8 +21,8 @@ os.execute("killall helper 2>/dev/null; " .. helper_cmd)
 
 -- Bundle configuration into a single message
 sbar.begin_config()
-require("bar")
-require("default")
+require("config.bar")
+require("config.default")
 require("items")
 sbar.end_config()
 

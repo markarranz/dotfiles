@@ -1,5 +1,5 @@
-local colors = require("colors")
-local settings = require("settings")
+local colors = require("config.colors")
+local settings = require("config.settings")
 
 -- Default item configuration
 sbar.default({

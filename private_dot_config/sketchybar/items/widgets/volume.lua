@@ -1,6 +1,6 @@
-local colors = require("colors")
-local icons = require("icons")
-local settings = require("settings")
+local colors = require("config.colors")
+local icons = require("config.icons")
+local settings = require("config.settings")
 
 local SLIDER_WIDTH = 100
 

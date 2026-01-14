@@ -1,4 +1,4 @@
-local colors = require("colors")
+local colors = require("config.colors")
 
 -- Bar configuration
 sbar.bar({

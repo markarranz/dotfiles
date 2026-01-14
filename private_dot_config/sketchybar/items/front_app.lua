@@ -1,5 +1,5 @@
-local colors = require("colors")
-local settings = require("settings")
+local colors = require("config.colors")
+local settings = require("config.settings")
 
 local front_app = sbar.add("item", "front_app", {
 	display = "active",
