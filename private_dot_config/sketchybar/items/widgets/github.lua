@@ -46,18 +46,16 @@ local github_template = sbar.add("item", "github.template", {
 local notification_count = 0
 
 local function update_github()
-  sbar.exec("gh api notifications 2>/dev/null", function(result)
+  sbar.exec("gh api notifications 2>/dev/null", function(result, exit_code)
     -- Remove old notification items
     sbar.exec("sketchybar --remove '/github.notification\\..*/' 2>/dev/null")
 
-    -- Handle result (may be string or table depending on SBarLua version)
+    -- Handle result - sbar.exec parses JSON automatically into Lua tables
+    local notifications = {}
     if type(result) == "table" then
-      result = result[1] or ""
-    end
-    result = result or ""
-
-    -- Check if result is valid JSON array
-    if result == "" or (result ~= "" and string.sub(result, 1, 1) ~= "[") then
+      notifications = result
+    elseif type(result) == "string" and result ~= "" then
+      -- Fallback: if result is a string, it's an error or unexpected format
       github_bell:set({
         icon = { string = icons.bell },
         label = { string = "!" },
@@ -65,11 +63,7 @@ local function update_github()
       return
     end
 
-    -- Count notifications by parsing JSON
-    local count = 0
-    for _ in result:gmatch('"id"') do
-      count = count + 1
-    end
+    local count = #notifications
 
     local prev_count = notification_count
     notification_count = count
@@ -99,55 +93,50 @@ local function update_github()
       label = { string = tostring(count) },
     })
 
-    -- Parse and create notification items
-    -- Using jq to parse the JSON properly
-    sbar.exec([[gh api notifications 2>/dev/null | jq -r '.[] | [.repository.name, .subject.latest_comment_url, .subject.type, .subject.title] | @tsv']], function(notifications)
-      local counter = 0
-      for line in notifications:gmatch("[^\n]+") do
-        counter = counter + 1
-        local repo, url, ntype, title = line:match("([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)")
+    -- Create notification items from parsed data
+    for i, notification in ipairs(notifications) do
+      local repo = notification.repository and notification.repository.name or "unknown"
+      local ntype = notification.subject and notification.subject.type or ""
+      local title = notification.subject and notification.subject.title or "No title"
 
-        if repo and title then
-          local color = colors.blue
-          local item_icon = icons.git.indicator
+      local color = colors.blue
+      local item_icon = icons.git.indicator
 
-          if ntype == "Issue" then
-            color = colors.green
-            item_icon = icons.git.issue
-          elseif ntype == "PullRequest" then
-            color = colors.magenta
-            item_icon = icons.git.pull_request
-          elseif ntype == "Discussion" then
-            color = colors.white
-            item_icon = icons.git.discussion
-          elseif ntype == "Commit" then
-            color = colors.white
-            item_icon = icons.git.commit
-          end
-
-          -- Check for important keywords
-          if title:lower():match("deprecat") or title:lower():match("break") or title:lower():match("broke") then
-            color = colors.red
-            item_icon = "􀁞"
-            github_bell:set({ icon = { color = colors.red } })
-          end
-
-          sbar.add("item", "github.notification." .. counter, {
-            position = "popup." .. github_bell.name,
-            icon = {
-              string = item_icon .. " " .. repo .. ":",
-              color = color,
-              background = { color = color },
-            },
-            label = {
-              string = title,
-            },
-            drawing = true,
-            click_script = "open 'https://github.com/notifications'; sketchybar --set " .. github_bell.name .. " popup.drawing=off; sleep 5; sketchybar --trigger github.update",
-          })
-        end
+      if ntype == "Issue" then
+        color = colors.green
+        item_icon = icons.git.issue
+      elseif ntype == "PullRequest" then
+        color = colors.magenta
+        item_icon = icons.git.pull_request
+      elseif ntype == "Discussion" then
+        color = colors.white
+        item_icon = icons.git.discussion
+      elseif ntype == "Commit" then
+        color = colors.white
+        item_icon = icons.git.commit
       end
-    end)
+
+      -- Check for important keywords
+      if title:lower():match("deprecat") or title:lower():match("break") or title:lower():match("broke") then
+        color = colors.red
+        item_icon = "􀁞"
+        github_bell:set({ icon = { color = colors.red } })
+      end
+
+      sbar.add("item", "github.notification." .. i, {
+        position = "popup." .. github_bell.name,
+        icon = {
+          string = item_icon .. " " .. repo .. ":",
+          color = color,
+          background = { color = color },
+        },
+        label = {
+          string = title,
+        },
+        drawing = true,
+        click_script = "open 'https://github.com/notifications'; sketchybar --set " .. github_bell.name .. " popup.drawing=off; sleep 5; sketchybar --trigger github.update",
+      })
+    end
 
     -- Animate if new notifications
     if count > prev_count then
