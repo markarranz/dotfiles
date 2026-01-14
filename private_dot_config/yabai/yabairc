@@ -22,21 +22,22 @@ yabai -m signal --add event=space_changed action="/usr/bin/env sh -c $XDG_CONFIG
 # Exclude problematic apps from being managed:
 unmanaged_apps=(
   "1Password"
+  "Activity Monitor"
+  "App Store"
+  "Archive Utility"
   "Bitwarden"
-  "Logi Options"
   "Calculator"
-  "Software Update"
   "Dictionary"
-  "VLC"
+  "Logi Options"
+  "Photo Booth"
+  "Python"
+  "Raycast"
+  "Software Update"
+  "Steam"
   "System Preferences"
   "System Settings"
+  "VLC"
   "zoom.us"
-  "Photo Booth"
-  "Archive Utility"
-  "Python"
-  "App Store"
-  "Steam"
-  "Activity Monitor"
 )
 
 # Save the current IFS value
@@ -57,7 +58,7 @@ yabai -m rule --add label="About This Mac" app="System Information" title="About
 
 yabai -m config \
   debug_output off \
-  external_bar all:45:0 \
+  external_bar all:42:0 \
   menubar_opacity 1.0 \
   mouse_follows_focus off \
   focus_follows_mouse off \
@@ -88,13 +89,8 @@ yabai -m config \
   layout bsp \
   split_type auto \
   top_padding 0 \
-  bottom_padding 8 \
-  left_padding 8 \
-  right_padding 8 \
-  window_gap 10 \
+  bottom_padding 3 \
+  left_padding 3 \
+  right_padding 3 \
+  window_gap 6 \
   auto_balance off
-
-# ########### #
-# AUTO UPDATE #
-# ########### #
-YABAI_CERT=yabai-cert sh -c "$(curl -fsSL "https://git.io/update-yabai")" &
