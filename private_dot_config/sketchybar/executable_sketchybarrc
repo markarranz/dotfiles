@@ -2,10 +2,8 @@
 
 CONFIG_DIR="$HOME/.config/sketchybar"
 
-# Build and start the C helper for CPU monitoring
-killall helper 2>/dev/null
+# Build the C helper (started from init.lua with colors)
 (cd "$CONFIG_DIR/helper" && make) >/dev/null 2>&1
-"$CONFIG_DIR/helper/helper" git.felix.helper >/dev/null 2>&1 &
 
 # Unload macOS volume overlay
 launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist >/dev/null 2>&1 &
