@@ -18,8 +18,7 @@ A customized SketchyBar configuration using SBarLua, adapted from [FelixKratz/do
 
 ```
 sketchybar/
-├── init.lua              # Entry point, starts helper and loads config
-├── executable_sketchybarrc  # Shell wrapper (builds helper, runs Lua)
+├── sketchybarrc          # Entry point (Lua script)
 ├── config/               # Configuration modules
 │   ├── bar.lua           # Bar appearance (height, position, colors)
 │   ├── colors.lua        # Color palette (Catppuccin)
@@ -40,6 +39,8 @@ sketchybar/
 │       └── wifi.lua
 ├── lib/                  # Utility modules
 │   └── app_icons.lua     # App name to icon mapping
+├── plugins/              # External scripts for periodic updates
+│   └── calendar.sh       # Calendar time update script
 └── helper/               # C helper for CPU monitoring
     ├── helper.c
     ├── cpu.h
@@ -116,7 +117,7 @@ return {
 }
 ```
 
-The C helper receives colors from `init.lua`, so theme changes apply everywhere automatically.
+The C helper receives colors from `sketchybarrc`, so theme changes apply everywhere automatically.
 
 ## C Helper
 

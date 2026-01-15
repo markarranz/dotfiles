@@ -16,7 +16,7 @@ local cal = sbar.add("item", "calendar", {
 		align = "right",
 	},
 	padding_left = 15,
-	update_freq = 30,
+	update_freq = 15,
 })
 
 -- Set script via CLI since SBarLua doesn't support script property directly

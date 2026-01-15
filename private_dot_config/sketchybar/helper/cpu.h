@@ -7,7 +7,7 @@
 
 #define MAX_TOPPROC_LEN 28
 
-static const char TOPPROC[] = { "/bin/ps -Aceo pid,pcpu,comm -r" }; 
+static const char TOPPROC[] = { "/bin/ps -Aceo pid,pcpu,comm -r 2>/dev/null" }; 
 static const char FILTER_PATTERN[] = { "com.apple." };
 
 struct cpu {
