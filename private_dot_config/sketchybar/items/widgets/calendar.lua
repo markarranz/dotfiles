@@ -19,6 +19,9 @@ local cal = sbar.add("item", "calendar", {
 	update_freq = 30,
 })
 
+-- Set script via CLI since SBarLua doesn't support script property directly
+sbar.exec("sketchybar --set calendar script='~/.config/sketchybar/plugins/calendar.sh'")
+
 -- Zen mode toggle function
 local zen_mode_on = false
 
@@ -38,11 +41,8 @@ local function toggle_zen()
                --set github.bell drawing=]] .. drawing)
 end
 
-cal:subscribe({ "forced", "routine", "system_woke" }, function(env)
-	cal:set({
-		icon = { string = os.date("%a, %d %b") },
-		label = { string = os.date("%I:%M %p") },
-	})
+cal:subscribe("system_woke", function(env)
+	sbar.exec("sketchybar --set calendar icon=\"$(date '+%a, %d %b')\" label=\"$(date '+%I:%M %p')\"")
 end)
 
 cal:subscribe("mouse.clicked", function(env)
