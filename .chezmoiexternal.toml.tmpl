@@ -17,22 +17,36 @@ type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/btop/refs/heads/main/themes/catppuccin_mocha.theme"
 refreshPeriod = "672h"
 
+[".config/omz/ohmyzsh"]
+type = "archive"
+url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/omz/custom/plugins/zsh-autosuggestions"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/omz/custom/plugins/zsh-completions"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
+[".config/omz/custom/plugins/zsh-syntax-highlighting"]
+type = "archive"
+url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"
+
 [".config/yazi/theme.toml"]
 type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/mocha/catppuccin-mocha-blue.toml"
 refreshPeriod = "672h"
 
-[".config/zsh/omz"]
-type = "archive"
-url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
-exact = false
-stripComponents = 1
-refreshPeriod = "168h"
-include = [
-  "*/plugins/aliases/**",
-  "*/plugins/brew/**",
-  "*/plugins/direnv/**",
-  "*/plugins/docker/**",
-  "*/plugins/git/**",
-  "*/plugins/rust/**",
-]

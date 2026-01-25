@@ -1,0 +1,18 @@
+# Find where aliases are declared:
+alias which-alias="PS4='+%x:%I>' zsh -i -x -c '' |& grep "
+
+# Chezmoi alias:
+alias cz="chezmoi"
+
+# Use kitten ssh:
+alias s="kitten ssh"
+
+# Use kitty for git diff
+alias kdiff="git difftool --no-symlinks --dir-diff"
+
+{{- if eq .chezmoi.os "linux" }}
+
+# Edit hyprland conf file
+alias hyprconf="nvim ~/.config/hypr/hyprland.conf"
+
+{{- end }}
