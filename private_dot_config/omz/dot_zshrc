@@ -72,6 +72,7 @@ plugins=(
   eza
   fzf
   git
+  starship
   zoxide
   zsh-autosuggestions
   zsh-syntax-highlighting
