@@ -1,0 +1,48 @@
+#########
+# LINUX #
+#########
+{{- if eq .chezmoi.os "linux" }}
+
+# bun - hyprpanel dependency:
+if [[ -s "$HOME/.bun/_bun" ]]; then
+  source "$HOME/.bun/_bun"
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
+# node-version-manager:
+[[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
+
+# texlive:
+[[ -d "/usr/local/texlive" ]] && export PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH"
+
+##########
+# DARWIN #
+##########
+{{- else if and (eq .chezmoi.os "darwin") (not .forWork) }}
+
+# node-version-manager:
+if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
+  source "/opt/homebrew/opt/nvm/nvm.sh"
+  export NVM_DIR="$HOME/.nvm"
+  # load nvm bash_completion:
+  [[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+fi
+
+{{- end }}
+
+#######
+# ALL #
+#######
+
+# uv & uvx
+[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="$HOME/.local/share/../bin:$PATH"
+
+# go install:
+[[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
+
+# rustup
+[[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# zsh-vi-mode:
+ZVM_SYSTEM_CLIPBOARD_ENABLED=true
