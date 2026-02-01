@@ -15,13 +15,7 @@ monitor = eDP-1, 2880x1800@59.99000, 0x0, 1.5
 
 {{- else if eq .chassisType "desktop" -}}
 
-$mainMonitor = DP-2
-$monitor2 = DP-1
-$monitor3 = HDMI-A-1
-
-monitor = $mainMonitor, highrr,   0x1080, 1
-monitor = $monitor2,    highres,  0x0,    1
-monitor = $monitor3,    highres,  1920x0, 1
+monitor = DP-3, 3840x1600@174.97, 0x0, 1, bitdepth, 10, cm, auto
 
 {{- else -}}
 
@@ -117,16 +111,35 @@ decoration {
 }
 
 animations {
-    enabled = true
+    enabled = yes, please :)
 
-    bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+    # Default curves, see https://wiki.hypr.land/Configuring/Animations/#curves
+    #        NAME,           X0,   Y0,   X1,   Y1
+    bezier = easeOutQuint,   0.23, 1,    0.32, 1
+    bezier = easeInOutCubic, 0.65, 0.05, 0.36, 1
+    bezier = linear,         0,    0,    1,    1
+    bezier = almostLinear,   0.5,  0.5,  0.75, 1
+    bezier = quick,          0.15, 0,    0.1,  1
 
-    animation = windows,      1, 7,   myBezier
-    animation = windowsOut,   1, 7,   default, popin 80%
-    animation = border,       1, 10,  default
-    animation = borderangle,  1, 8,   default
-    animation = fade,         1, 7,   default
-    animation = workspaces,   1, 6,   default
+    # Default animations, see https://wiki.hypr.land/Configuring/Animations/
+    #           NAME,          ONOFF, SPEED, CURVE,        [STYLE]
+    animation = global,        1,     10,    default
+    animation = border,        1,     5.39,  easeOutQuint
+    animation = windows,       1,     4.79,  easeOutQuint
+    animation = windowsIn,     1,     4.1,   easeOutQuint, popin 87%
+    animation = windowsOut,    1,     1.49,  linear,       popin 87%
+    animation = fadeIn,        1,     1.73,  almostLinear
+    animation = fadeOut,       1,     1.46,  almostLinear
+    animation = fade,          1,     3.03,  quick
+    animation = layers,        1,     3.81,  easeOutQuint
+    animation = layersIn,      1,     4,     easeOutQuint, fade
+    animation = layersOut,     1,     1.5,   linear,       fade
+    animation = fadeLayersIn,  1,     1.79,  almostLinear
+    animation = fadeLayersOut, 1,     1.39,  almostLinear
+    animation = workspaces,    1,     1.94,  almostLinear, fade
+    animation = workspacesIn,  1,     1.21,  almostLinear, fade
+    animation = workspacesOut, 1,     1.94,  almostLinear, fade
+    animation = zoomFactor,    1,     7,     quick
 }
 
 dwindle {
@@ -179,14 +192,6 @@ input {
 {{ if eq .chassisType "laptop" -}}
 
 gesture = 4, horizontal, workspace
-
-{{- end }}
-
-{{ if eq .chassisType "desktop" -}}
-
-cursor {
-    default_monitor = $mainMonitor
-}
 
 {{- end }}
 
@@ -353,40 +358,64 @@ bind = CTRL,  Print, exec, grimblast edit area
 ### WINDOW AND WORKSPACE RULES ###
 ##################################
 
-windowrule = suppressevent maximize, class:.* # You'll probably like this.
+windowrule {
+    # Ignore maximize requests from all apps. You'll probably like this.
+    name = suppress-maximize-events
+    match:class = .*
+
+    suppress_event = maximize
+} 
+
+windowrule {
+    # Fix some dragging issues with XWayland
+    name = fix-xwayland-drags
+    match:class = ^$
+    match:title = ^$
+    match:xwayland = true
+    match:float = true
+    match:fullscreen = false
+    match:pin = false
+
+    no_focus = true
+}
 
 # Clipse:
-windowrule = float,        class:(clipse) # ensure you have a floating window class set if you want this behavior
-windowrule = size 622 652, class:(clipse)
+windowrule {
+  name = float-clipse
+  match:class = clipse
+
+  float = on
+  size = 622 652
+}
 
 # Bitwarden:
-windowrule = float,        class:(Bitwarden)
-windowrule = size 900 600, class:(Bitwarden)
+windowrule {
+  name = float-bitwarden
+  match:class = Bitwarden
+
+  float = on
+  size = 900 600
+}
 
 {{ if eq .chassisType "desktop" -}}
 
-# Bind default workspaces to monitors:
-workspace = 1, monitor:$mainMonitor, default:true
-workspace = 2, monitor:$monitor2,    default:true
-workspace = 3, monitor:$monitor3,    default:true
-
 # Steam Tinker Launch:
-windowrule = float, class:(yad) title:(SteamTinkerLaunch)(.*)
+windowrule {
+  name = float-stl
+  match:class = yad
 
-# Steam:
-windowrule = monitor $mainMonitor,  class:(steam)
-windowrule = focusonactivate off,   class:(steam) title:(notificationtoasts)(.*)(desktop)
-
-# Rocket League:
-windowrule = monitor $mainMonitor, title:(Rocket League)(.*)
+  float = on
+}
 
 # BakkesMod:
-windowrule = noinitialfocus,    initialTitle:BakkesModInjectorCpp
-windowrule = monitor $monitor2, initialTitle:BakkesModInjectorCpp
-windowrule = center 1,          initialTitle:BakkesModInjectorCpp
+windowrule {
+  name = ignore-bakkesmod
+  match:initial_title = BakkesModInjectorCpp
 
-# Discord/WebCord:
-windowrule = monitor $monitor2, class:(WebCord)
-windowrule = monitor $monitor2, class:(com.discordapp.Discord)
+  workspace = special silent
+  no_initial_focus = on
+  suppress_event = activatefocus
+}
+
 
 {{- end }}

@@ -7,7 +7,7 @@
   "bar.customModules.updates.pollingInterval": 1440000,
   "bar.launcher.autoDetectIcon": false,
   "bar.layouts": {
-    "2": {
+    "*": {
       "left": [
         "dashboard",
         "workspaces",
@@ -27,26 +27,6 @@
         "hypridle",
         "systray",
         "updates",
-        "clock",
-        "notifications"
-      ]
-    },
-    "*": {
-      "left": [
-        "dashboard",
-        "workspaces",
-        "cpu",
-        "ram",
-        "storage",
-        "netstat"
-      ],
-      "middle": [
-        "windowtitle"
-      ],
-      "right": [
-        "microphone",
-        "volume",
-        "systray",
         "clock",
         "notifications"
       ]
