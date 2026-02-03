@@ -15,6 +15,14 @@ return {
 		},
 	},
 	{
+		"stevearc/conform.nvim",
+		opts = {
+			formatters_by_ft = {
+				["html"] = { "prettier" },
+			},
+		},
+	},
+	{
 		"nvim-lualine/lualine.nvim",
 		opts = function(_, opts)
 			-- Show relative filepath

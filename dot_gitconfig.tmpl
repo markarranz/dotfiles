@@ -3,17 +3,35 @@
 [user]
   name = "Mark Arranz"
   email = "4390451+MarkArranz@users.noreply.github.com"
+
 [core]
     editor = nvim
     excludesfile = ~/.gitignore_global
+    pager = delta
+
 [init]
     defaultBranch = main
 
 # Configure neovim as the difftool and mergetool: 
-[diff]
-    tool = "nvimdiff1"
+; [diff]
+;     tool = "nvimdiff1"
+; [merge]
+;     tool = "nvimdiff2"
+
+# Configure git-delta
+[interactive]
+    diffFilter = delta --color-only
+
+[include]
+  path = ~/.config/delta/themes/catppuccin.gitconfig
+
+[delta]
+    features = catppuccin-mocha
+    dark = true
+    navigate = true
+
 [merge]
-    tool = "nvimdiff2"
+    conflictStyle = zdiff3
 
 {{ if .forWork -}}
 
