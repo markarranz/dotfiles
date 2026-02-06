@@ -37,7 +37,6 @@ unmanaged_apps=(
   "System Preferences"
   "System Settings"
   "VLC"
-  "zoom.us"
 )
 
 # Save the current IFS value
