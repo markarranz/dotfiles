@@ -41,9 +41,9 @@ cmd - 7 : yabai -m space --focus 7  || (yabai -m space --create; yabai -m space 
 cmd - 8 : yabai -m space --focus 8  || (yabai -m space --create; yabai -m space --focus last)
 cmd - 9 : yabai -m space --focus 9  || (yabai -m space --create; yabai -m space --focus last)
 
-# Move space with CMD + SHIFT + ALT + [hl]:
-cmd + shift + alt - h : yabai -m space --move prev --focus mouse
-cmd + shift + alt - l : yabai -m space --move next --focus mouse
+# Move window to prev/next space with CMD + SHIFT + ALT + [hl]:
+cmd + shift + alt - h : yabai -m window --space prev --focus
+cmd + shift + alt - l : yabai -m window --space next --focus
 
 
 # ############### #
