@@ -4,6 +4,7 @@ local settings = require("config.settings")
 local cal = sbar.add("item", "calendar", {
 	position = "right",
 	icon = {
+		string = os.date("%a, %d %b"),
 		font = {
 			family = settings.font.text,
 			style = settings.font.style_map["Black"],
@@ -12,6 +13,7 @@ local cal = sbar.add("item", "calendar", {
 		padding_right = 0,
 	},
 	label = {
+		string = os.date("%I:%M %p"),
 		width = 70,
 		align = "right",
 	},
@@ -19,8 +21,16 @@ local cal = sbar.add("item", "calendar", {
 	update_freq = 15,
 })
 
--- Set script via CLI since SBarLua doesn't support script property directly
-sbar.exec("sketchybar --set calendar script='~/.config/sketchybar/plugins/calendar.sh'")
+-- Update via Lua callback instead of external script to avoid race condition
+-- where the sketchybar CLI can't find the item during config batching
+cal:subscribe({ "routine", "system_woke" }, function(env)
+	sbar.exec("date '+%a, %d %b|%I:%M %p'", function(output)
+		local icon, label = output:match("(.-)|(.-)\n?$")
+		if icon and label then
+			cal:set({ icon = icon, label = label })
+		end
+	end)
+end)
 
 -- Zen mode toggle function
 local zen_mode_on = false
@@ -40,10 +50,6 @@ local function toggle_zen()
                --set volume drawing=]] .. drawing .. [[ \
                --set github.bell drawing=]] .. drawing)
 end
-
-cal:subscribe("system_woke", function(env)
-	sbar.exec("sketchybar --set calendar icon=\"$(date '+%a, %d %b')\" label=\"$(date '+%I:%M %p')\"")
-end)
 
 cal:subscribe("mouse.clicked", function(env)
 	toggle_zen()

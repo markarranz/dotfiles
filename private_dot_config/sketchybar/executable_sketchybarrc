@@ -9,23 +9,24 @@ package.cpath = package.cpath .. ";/Users/" .. os.getenv("USER") .. "/.local/sha
 -- Build the C helper (must complete before use, so use os.execute)
 os.execute("(cd " .. config_dir .. "/helper && make) >/dev/null 2>&1")
 
--- Load sketchybar module
-sbar = require("sketchybar")
-
--- Unload macOS volume overlay (async)
-sbar.exec("launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist >/dev/null 2>&1")
-
--- Load colors and start the CPU helper with color environment variables (async)
+-- Launch the CPU helper early using os.execute (not sbar.exec) so it starts
+-- immediately as a real child process. This gives it time to register its Mach
+-- service before sbar.end_config() tries to connect via the mach_helper property.
 local colors = require("config.colors")
-local helper_cmd = string.format(
-	"killall helper 2>/dev/null; RED=0x%x ORANGE=0x%x YELLOW=0x%x LABEL_COLOR=0x%x %s/helper/helper git.felix.helper",
+os.execute(string.format(
+	"killall helper 2>/dev/null; RED=0x%x ORANGE=0x%x YELLOW=0x%x LABEL_COLOR=0x%x %s/helper/helper git.felix.helper &",
 	colors.red,
 	colors.orange,
 	colors.yellow,
 	colors.white,
 	config_dir
-)
-sbar.exec(helper_cmd)
+))
+
+-- Load sketchybar module
+sbar = require("sketchybar")
+
+-- Unload macOS volume overlay (async)
+sbar.exec("launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist >/dev/null 2>&1")
 
 -- Bundle configuration into a single message
 sbar.begin_config()
