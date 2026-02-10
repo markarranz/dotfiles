@@ -5,6 +5,8 @@
 vim.o.colorcolumn = "+1"
 vim.o.formatoptions = "j/ncroql"
 
+vim.o.sidescroll = 1
+
 vim.o.list = true
 vim.opt.listchars = {
 	tab = "  »",
