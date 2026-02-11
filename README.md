@@ -48,7 +48,7 @@ These tools are configured for both macOS and Linux.
 | Tool | Description |
 |------|-------------|
 | [**Neovim**](https://neovim.io/) | A modern, extensible terminal-based text editor forked from Vim. Configured here with the [LazyVim](https://www.lazyvim.org/) distribution, which provides a batteries-included IDE experience with LSP support, syntax highlighting via Tree-sitter, fuzzy finding, and more. |
-| [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. Configured here with the [Oh My Zsh](https://ohmyz.sh/) framework for aliases, autosuggestions, syntax highlighting, vi-mode keybindings, and fuzzy tab completion via [fzf-tab](https://github.com/Aloxaf/fzf-tab). |
+| [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. Two configs are included that you can switch between by changing `ZDOTDIR`: one based on [Oh My Zsh](https://ohmyz.sh/) (`omz/`) and one based on [Zap](https://github.com/zap-zsh/zap) (`zsh/`). Both provide aliases, autosuggestions, syntax highlighting, and vi-mode keybindings. |
 | [**Git**](https://git-scm.com/) | Distributed version control system. Configured with [delta](https://github.com/dandavella/delta) as the pager for improved diffs, conditional includes for separating work and personal identities, and `zdiff3` merge conflict style. |
 | [**tmux**](https://github.com/tmux/tmux) | A terminal multiplexer that lets you run multiple terminal sessions inside a single window, detach and reattach to sessions, and split panes. Configured here with `Ctrl+Space` as the prefix key, vim-style pane navigation, and the [TPM](https://github.com/tmux-plugins/tpm) plugin manager. |
 | [**Starship**](https://starship.rs/) | A fast, minimal, and highly customizable shell prompt written in Rust. It displays contextual information such as the current git branch, active language runtimes, and exit codes -- all rendered with Nerd Font icons. |
@@ -117,7 +117,8 @@ These tools are specific to a macOS desktop environment.
 │   ├── tmux/                   # tmux terminal multiplexer
 │   ├── yabai/                  # [macOS] yabai window manager
 │   ├── yazi/                   # Yazi file manager
-│   └── zsh/                    # Zsh shell configuration
+│   ├── omz/                    # Zsh config (Oh My Zsh)
+│   └── zsh/                    # Zsh config (Zap)
 └── externally_modified/        # Configs tracked in git but not managed by chezmoi
     ├── karabiner/              # [macOS] Karabiner-Elements
     ├── lazyvim/                # LazyVim distribution
