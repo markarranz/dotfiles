@@ -63,6 +63,7 @@ info "Detected platform: $PLATFORM"
 
 # Cross-platform tools (installed on both macOS and Linux)
 COMMON_TOOLS=(
+    git
     chezmoi
     neovim
     zsh
@@ -77,11 +78,13 @@ COMMON_TOOLS=(
     git-delta
     btop
     jq
+    direnv
 )
 
 # --- macOS (Homebrew) ---
 BREW_FORMULAE=(
     "${COMMON_TOOLS[@]}"
+    nvm
     switchaudio-osx
 )
 
@@ -113,6 +116,8 @@ PACMAN_PACKAGES=(
     kitty
     ttf-jetbrains-mono-nerd
     noto-fonts-emoji
+    nvm
+    firefox
     # Hyprland ecosystem
     hyprland
     hyprlock
