@@ -11,6 +11,27 @@ A [Catppuccin Mocha](https://github.com/catppuccin/catppuccin) color scheme is a
 
 ## Getting Started
 
+### Automated Install
+
+An install script is included that installs all tools and their prerequisites for the current platform (macOS with Homebrew or Arch Linux with pacman/yay):
+
+```sh
+git clone https://github.com/MarkArranz/dotfiles.git
+cd dotfiles
+./install.sh
+```
+
+The script will prompt before making changes and handles:
+- Installing all packages (Homebrew formulae/casks or pacman/AUR packages)
+- Setting up plugin managers (Zap for Zsh, TPM for tmux)
+- Optionally installing Claude Code CLI
+- Applying the dotfiles via chezmoi
+- Setting Zsh as the default shell
+
+### Manual Install
+
+If you prefer to install tools yourself:
+
 ```sh
 # One-liner: install chezmoi and apply these dotfiles
 chezmoi init --apply <your-github-username>
@@ -70,6 +91,7 @@ These tools are specific to a macOS desktop environment.
 
 ```
 .
+├── install.sh                  # Automated installer for all tools and prerequisites
 ├── .chezmoi.toml.tmpl          # Chezmoi config: detects OS, chassis type, hostname
 ├── .chezmoiexternal.toml.tmpl  # External dependencies (themes, plugins, archives)
 ├── .chezmoiignore.tmpl         # Platform-specific ignore rules
