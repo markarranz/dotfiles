@@ -113,4 +113,4 @@ Before applying, you may want to:
 
 ## License
 
-Feel free to use, modify, and distribute these dotfiles however you like.
+This project is licensed under the [MIT License](LICENSE).
