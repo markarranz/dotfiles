@@ -3,10 +3,21 @@
 
 # --- Parse input ---
 input=$(cat)
-model=$(echo "$input" | jq -r '.model.display_name')
-cwd=$(echo "$input" | jq -r '.workspace.current_dir')
+
+if ! command -v jq > /dev/null 2>&1; then
+    printf 'status-line: jq required'
+    exit 0
+fi
+
+model=$(echo "$input" | jq -r '.model.display_name // empty')
+cwd=$(echo "$input" | jq -r '.workspace.current_dir // empty')
 output_style=$(echo "$input" | jq -r '.output_style.name // empty')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+
+if [ -z "$cwd" ] || [ ! -d "$cwd" ]; then
+    printf '%s' "${model:-claude}"
+    exit 0
+fi
 
 # --- Catppuccin Mocha palette ---
 M='\e[38;2;203;166;247m'   # Mauve
@@ -43,7 +54,7 @@ if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
             stale=1
 
             if [ -f "$cf" ]; then
-                mt=$(stat -f %m "$cf" 2>/dev/null || echo 0)
+                mt=$(stat -f %m "$cf" 2>/dev/null || stat -c %Y "$cf" 2>/dev/null || echo 0)
                 age=$((now - mt))
                 if [ "$age" -lt 60 ]; then
                     cb=$(head -c 200 "$cf" | cut -d' ' -f1)
@@ -53,17 +64,31 @@ if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
 
             if [ "$stale" -eq 1 ]; then
                 (cd "$cwd" \
-                    && pr_json=$(gh pr view --json number,url 2>/dev/null) \
-                    && pr_num=$(echo "$pr_json" | jq -r '.number') \
-                    && pr_url=$(echo "$pr_json" | jq -r '.url') \
-                    && echo "${branch} ${pr_num} ${pr_url}" > "$cf" \
-                    || echo "${branch} none" > "$cf") &
+                    && if pr_json=$(gh pr view --json number,url 2>/dev/null); then
+                        pr_num=$(echo "$pr_json" | jq -r '.number')
+                        pr_url=$(echo "$pr_json" | jq -r '.url')
+                        tmpf=$(mktemp "${cf}.XXXXXX")
+                        echo "${branch} ${pr_num} ${pr_url}" > "$tmpf"
+                        mv "$tmpf" "$cf"
+                    else
+                        rc=$?
+                        if [ "$rc" -eq 1 ]; then
+                            tmpf=$(mktemp "${cf}.XXXXXX")
+                            echo "${branch} none" > "$tmpf"
+                            mv "$tmpf" "$cf"
+                        fi
+                    fi) &
             fi
             if [ "$stale" -eq 0 ]; then
-                pr_num=$(head -c 200 "$cf" | cut -d' ' -f2)
-                pr_url=$(head -c 200 "$cf" | cut -d' ' -f3)
+                cache_line=$(head -c 200 "$cf")
+                pr_num=$(echo "$cache_line" | cut -d' ' -f2)
+                pr_url=$(echo "$cache_line" | cut -d' ' -f3)
                 if [ "$pr_num" != "none" ] && [ -n "$pr_num" ] && [ -n "$pr_url" ]; then
-                    pr_info=" ${L}\e]8;;${pr_url}\a#${pr_num}\e]8;;\a${X}"
+                    if [ -n "$NVIM" ]; then
+                        pr_info=" ${L}#${pr_num}${X}"
+                    else
+                        pr_info=" ${L}\e]8;;${pr_url}\a#${pr_num}\e]8;;\a${X}"
+                    fi
                 fi
             fi
         fi
@@ -76,8 +101,10 @@ fi
 cc="$S"
 if [ -n "$used_pct" ]; then
     pi=${used_pct%.*}
-    if [ "$pi" -ge 80 ]; then cc="$R"
-    elif [ "$pi" -ge 60 ]; then cc="$Y"
+    if [[ "$pi" =~ ^[0-9]+$ ]]; then
+        if [ "$pi" -ge 80 ]; then cc="$R"
+        elif [ "$pi" -ge 60 ]; then cc="$Y"
+        fi
     fi
 fi
 
