@@ -1,6 +1,6 @@
 # SketchyBar
 
-A customized SketchyBar configuration using SBarLua, adapted from [FelixKratz/dotfiles](https://github.com/FelixKratz/dotfiles).
+[SketchyBar](https://github.com/FelixKratz/SketchyBar) is a highly customizable status bar replacement for the macOS menu bar. It can display workspaces, system stats, notifications, and interactive widgets. This configuration uses [SBarLua](https://github.com/FelixKratz/SbarLua) for Lua-based scripting, adapted from [FelixKratz/dotfiles](https://github.com/FelixKratz/dotfiles).
 
 ## Features
 
