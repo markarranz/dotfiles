@@ -45,55 +45,7 @@ if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
             gc="$Y"
         fi
 
-        # --- PR link (cached, background-refreshed) ---
-        pr_info=""
-        if command -v gh > /dev/null 2>&1; then
-            ch=$(echo "$cwd" | cksum | cut -d' ' -f1)
-            cf="/tmp/claude-pr-${ch}"
-            now=$(date +%s)
-            stale=1
-
-            if [ -f "$cf" ]; then
-                mt=$(stat -f %m "$cf" 2>/dev/null || stat -c %Y "$cf" 2>/dev/null || echo 0)
-                age=$((now - mt))
-                if [ "$age" -lt 60 ]; then
-                    cb=$(head -c 200 "$cf" | cut -d' ' -f1)
-                    if [ "$cb" = "$branch" ]; then stale=0; fi
-                fi
-            fi
-
-            if [ "$stale" -eq 1 ]; then
-                (cd "$cwd" \
-                    && if pr_json=$(gh pr view --json number,url 2>/dev/null); then
-                        pr_num=$(echo "$pr_json" | jq -r '.number')
-                        pr_url=$(echo "$pr_json" | jq -r '.url')
-                        tmpf=$(mktemp "${cf}.XXXXXX")
-                        echo "${branch} ${pr_num} ${pr_url}" > "$tmpf"
-                        mv "$tmpf" "$cf"
-                    else
-                        rc=$?
-                        if [ "$rc" -eq 1 ]; then
-                            tmpf=$(mktemp "${cf}.XXXXXX")
-                            echo "${branch} none" > "$tmpf"
-                            mv "$tmpf" "$cf"
-                        fi
-                    fi) &
-            fi
-            if [ "$stale" -eq 0 ]; then
-                cache_line=$(head -c 200 "$cf")
-                pr_num=$(echo "$cache_line" | cut -d' ' -f2)
-                pr_url=$(echo "$cache_line" | cut -d' ' -f3)
-                if [ "$pr_num" != "none" ] && [ -n "$pr_num" ] && [ -n "$pr_url" ]; then
-                    if [ -n "$NVIM" ]; then
-                        pr_info=" ${L}#${pr_num}${X}"
-                    else
-                        pr_info=" ${L}\e]8;;${pr_url}\a#${pr_num}\e]8;;\a${X}"
-                    fi
-                fi
-            fi
-        fi
-
-        git_info=" (${branch}${dirty}${pr_info})"
+        git_info=" (${branch}${dirty})"
     fi
 fi
 
