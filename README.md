@@ -23,7 +23,7 @@ cd dotfiles
 
 The script will prompt before making changes and handles:
 - Installing all packages (Homebrew formulae/casks or pacman/AUR packages)
-- Setting up plugin managers (Zap for Zsh, TPM for tmux)
+- Setting up plugin managers (TPM for tmux)
 - Optionally installing Claude Code CLI
 - Applying the dotfiles via chezmoi
 - Setting Zsh as the default shell
@@ -48,7 +48,7 @@ These tools are configured for both macOS and Linux.
 | Tool | Description |
 |------|-------------|
 | [**Neovim**](https://neovim.io/) | A modern, extensible terminal-based text editor forked from Vim. Configured here with the [LazyVim](https://www.lazyvim.org/) distribution, which provides a batteries-included IDE experience with LSP support, syntax highlighting via Tree-sitter, fuzzy finding, and more. |
-| [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. Configured here with the [Zap](https://github.com/zap-zsh/zap) plugin manager and plugins from [Oh My Zsh](https://ohmyz.sh/) for aliases, autosuggestions, syntax highlighting, vi-mode keybindings, and fuzzy tab completion via [fzf-tab](https://github.com/Aloxaf/fzf-tab). |
+| [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. Configured here with the [Oh My Zsh](https://ohmyz.sh/) framework for aliases, autosuggestions, syntax highlighting, vi-mode keybindings, and fuzzy tab completion via [fzf-tab](https://github.com/Aloxaf/fzf-tab). |
 | [**Git**](https://git-scm.com/) | Distributed version control system. Configured with [delta](https://github.com/dandavella/delta) as the pager for improved diffs, conditional includes for separating work and personal identities, and `zdiff3` merge conflict style. |
 | [**tmux**](https://github.com/tmux/tmux) | A terminal multiplexer that lets you run multiple terminal sessions inside a single window, detach and reattach to sessions, and split panes. Configured here with `Ctrl+Space` as the prefix key, vim-style pane navigation, and the [TPM](https://github.com/tmux-plugins/tpm) plugin manager. |
 | [**Starship**](https://starship.rs/) | A fast, minimal, and highly customizable shell prompt written in Rust. It displays contextual information such as the current git branch, active language runtimes, and exit codes -- all rendered with Nerd Font icons. |

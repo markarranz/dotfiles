@@ -245,15 +245,8 @@ install_linux() {
 setup_common() {
     info "Running post-install setup..."
 
-    # Zap (Zsh plugin manager)
-    if [[ ! -d "${XDG_DATA_HOME:-$HOME/.local/share}/zap" ]]; then
-        info "Installing Zap (Zsh plugin manager)..."
-        zsh <(curl -s https://raw.githubusercontent.com/zap-zsh/zap/master/install.zsh) \
-            --branch release-v1 --keep 2>/dev/null || true
-        success "Zap installed"
-    else
-        success "Zap already installed"
-    fi
+    # Oh My Zsh is managed by chezmoi (downloaded via .chezmoiexternal.toml),
+    # so no separate install step is needed — it arrives with `chezmoi apply`.
 
     # TPM (Tmux Plugin Manager)
     local tpm_dir="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins/tpm"
