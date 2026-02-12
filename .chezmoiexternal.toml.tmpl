@@ -1,4 +1,4 @@
-{{ if eq .chezmoi.os "linux" -}}
+{{ if and (eq .chezmoi.os "linux") (not .forDevcontainer) -}}
 
 [".config/rofi/themes/spotlight-dark.rasi"]
 type = "file"
@@ -17,10 +17,13 @@ type = "file"
 url = "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme"
 refreshPeriod = "672h"  # every 28 days
 
+{{ if not .forDevcontainer -}}
 [".config/btop/themes/catppuccin_mocha.theme"]
 type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/btop/refs/heads/main/themes/catppuccin_mocha.theme"
 refreshPeriod = "672h"  # every 28 days
+
+{{- end }}
 
 [".config/delta/themes/catppuccin.gitconfig"]
 type = "file"
@@ -55,8 +58,11 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"  # every 7 days
 
+{{ if not .forDevcontainer -}}
 [".config/yazi/theme.toml"]
 type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/mocha/catppuccin-mocha-blue.toml"
 refreshPeriod = "672h"  # every 28 days
+
+{{- end }}
 
