@@ -73,9 +73,10 @@ static inline void cpu_update(struct cpu* cpu) {
     char* start = strstr(line, FILTER_PATTERN);
     char topproc[MAX_TOPPROC_LEN + 4];
     uint32_t caret = 0;
-    for (int i = 0; i < sizeof(line); i++) {
+    for (int i = 0; i < sizeof(line) && caret < MAX_TOPPROC_LEN + 3; i++) {
       if (start && i == start - line) {
         i+=9;
+        if (i >= sizeof(line) || line[i] == '\0') break;
         continue;
       }
 

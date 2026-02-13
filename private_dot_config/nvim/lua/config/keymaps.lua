@@ -3,19 +3,23 @@
 -- Add any additional keymaps here
 
 -- SMART-SPLITS.NVIM
+local function ss(method)
+  return function() require("smart-splits")[method]() end
+end
+
 -- resizing splits
-vim.keymap.set("n", "<A-h>", require("smart-splits").resize_left)
-vim.keymap.set("n", "<A-j>", require("smart-splits").resize_down)
-vim.keymap.set("n", "<A-k>", require("smart-splits").resize_up)
-vim.keymap.set("n", "<A-l>", require("smart-splits").resize_right)
+vim.keymap.set("n", "<A-h>", ss("resize_left"))
+vim.keymap.set("n", "<A-j>", ss("resize_down"))
+vim.keymap.set("n", "<A-k>", ss("resize_up"))
+vim.keymap.set("n", "<A-l>", ss("resize_right"))
 -- moving between splits
-vim.keymap.set("n", "<C-h>", require("smart-splits").move_cursor_left)
-vim.keymap.set("n", "<C-j>", require("smart-splits").move_cursor_down)
-vim.keymap.set("n", "<C-k>", require("smart-splits").move_cursor_up)
-vim.keymap.set("n", "<C-l>", require("smart-splits").move_cursor_right)
-vim.keymap.set("n", "<C-\\>", require("smart-splits").move_cursor_previous)
+vim.keymap.set("n", "<C-h>", ss("move_cursor_left"))
+vim.keymap.set("n", "<C-j>", ss("move_cursor_down"))
+vim.keymap.set("n", "<C-k>", ss("move_cursor_up"))
+vim.keymap.set("n", "<C-l>", ss("move_cursor_right"))
+vim.keymap.set("n", "<C-\\>", ss("move_cursor_previous"))
 -- swapping buffers between windows
-vim.keymap.set("n", "<C-A-h>", require("smart-splits").swap_buf_left)
-vim.keymap.set("n", "<C-A-j>", require("smart-splits").swap_buf_down)
-vim.keymap.set("n", "<C-A-k>", require("smart-splits").swap_buf_up)
-vim.keymap.set("n", "<C-A-l>", require("smart-splits").swap_buf_right)
+vim.keymap.set("n", "<C-A-h>", ss("swap_buf_left"))
+vim.keymap.set("n", "<C-A-j>", ss("swap_buf_down"))
+vim.keymap.set("n", "<C-A-k>", ss("swap_buf_up"))
+vim.keymap.set("n", "<C-A-l>", ss("swap_buf_right"))

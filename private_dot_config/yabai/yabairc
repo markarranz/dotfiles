@@ -13,7 +13,7 @@ sudo yabai --load-sa
 # SIGNALS #
 # ####### #
 
-yabai -m signal --add event=space_changed action="/usr/bin/env sh -c $XDG_CONFIG_HOME/yabai/clean_empty_spaces.sh"
+yabai -m signal --add event=space_changed action='/usr/bin/env sh -c "${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"'
 
 # ##### #
 # RULES #

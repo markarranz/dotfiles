@@ -52,7 +52,7 @@ return {
   {
     "erichlf/devcontainer-cli.nvim",
     dependencies = { "akinsho/toggleterm.nvim" },
-    init = function()
+    config = function()
       require("devcontainer-cli").setup({
         interactive = false,
         toplevel = true,

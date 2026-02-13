@@ -144,9 +144,9 @@ local function toggle_devices()
 								string = device,
 								color = color,
 							},
-							click_script = 'SwitchAudioSource -s "'
-								.. device
-								.. '" && sketchybar --set /volume.device\\..*/ label.color='
+							click_script = "SwitchAudioSource -s '"
+								.. device:gsub("'", "'\\''")
+								.. "' && sketchybar --set /volume.device\\..*/ label.color="
 								.. colors.grey
 								.. " --set $NAME label.color="
 								.. colors.white
