@@ -8,7 +8,7 @@
 - [lazy.nvim](https://github.com/folke/lazy.nvim) (installed automatically by LazyVim on first launch)
 - A [Nerd Font](https://www.nerdfonts.com/) for icons
 - [ripgrep](https://github.com/BurntSushi/ripgrep) for live grep / search
-- Language servers, formatters, and linters are managed by [mason.nvim](https://github.com/williambailey/mason.nvim) (bundled with LazyVim)
+- Language servers, formatters, and linters are managed by [mason.nvim](https://github.com/williamboman/mason.nvim) (bundled with LazyVim)
 
 ## Overview
 

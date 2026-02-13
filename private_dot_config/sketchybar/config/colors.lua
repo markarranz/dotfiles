@@ -1,31 +1,31 @@
--- Catppuccin color palette
+-- Catppuccin Mocha color palette
 return {
-	black = 0xff181926,
-	white = 0xffcad3f5,
-	red = 0xffed8796,
-	green = 0xffa6da95,
-	blue = 0xff8aadf4,
-	yellow = 0xffeed49f,
-	orange = 0xfff5a97f,
-	magenta = 0xffc6a0f6,
-	grey = 0xff939ab7,
+	black = 0xff11111b,   -- Crust
+	white = 0xffcdd6f4,   -- Text
+	red = 0xfff38ba8,     -- Red
+	green = 0xffa6e3a1,   -- Green
+	blue = 0xff89b4fa,    -- Blue
+	yellow = 0xfff9e2af,  -- Yellow
+	orange = 0xfffab387,  -- Peach
+	magenta = 0xffcba6f7, -- Mauve
+	grey = 0xff9399b2,    -- Overlay2
 	transparent = 0x00000000,
 
 	-- Background colors
-	bg0 = 0xff1e1e2e,
-	bg1 = 0x603c3e4f,
-	bg2 = 0x60494d64,
+	bg0 = 0xff1e1e2e,     -- Base
+	bg1 = 0x60585b70,     -- Surface2 (with alpha)
+	bg2 = 0x6045475a,     -- Surface1 (with alpha)
 
 	-- Bar colors
 	bar = {
-		bg = 0xff1e1e2e,
-		border = 0x60494d64,
+		bg = 0xff1e1e2e,   -- Base
+		border = 0x6045475a, -- Surface1 (with alpha)
 	},
 
 	-- Popup colors
 	popup = {
-		bg = 0xff1e1e2e,
-		border = 0xffcad3f5,
+		bg = 0xff1e1e2e,   -- Base
+		border = 0xffcdd6f4, -- Text
 	},
 
 	-- Utility function to adjust alpha

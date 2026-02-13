@@ -34,7 +34,7 @@ All bindings use `Alt` as the primary modifier.
 | `Alt+/` | Cycle layouts: tiles / horizontal / vertical |
 | `Alt+,` | Cycle accordion layouts |
 | `Alt+-` / `Alt+=` | Shrink / grow window |
-| `Alt+Tab` | Toggle between recent workspaces |
+| `Alt+Tab` | Toggle between recent windows |
 | `Cmd+Enter` | Open Kitty terminal |
 | `Cmd+b` | Open browser |
 | `Cmd+e` | Open Finder |

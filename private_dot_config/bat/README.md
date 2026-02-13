@@ -8,4 +8,4 @@
 
 ## Overview
 
-Configuration is minimal -- the only customization is setting the theme to **Catppuccin Mocha**. The theme file itself is downloaded automatically by chezmoi (see `.chezmoiexternal.toml`).
+Configuration is minimal -- the only customization is setting the theme to **Catppuccin Mocha**. The theme file itself is downloaded automatically by chezmoi (see `.chezmoiexternal.toml`), and the theme cache is rebuilt on each `chezmoi apply` via a `run_after_bat-cache.sh` script at the repo root.

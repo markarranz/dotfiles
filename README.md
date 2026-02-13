@@ -2,7 +2,7 @@
 
 Personal development environment configurations managed with [chezmoi](https://www.chezmoi.io/). These dotfiles target **macOS** and **Linux** (Arch-based), with chezmoi templates handling platform-specific differences automatically.
 
-A [Catppuccin Mocha](https://github.com/catppuccin/catppuccin) color scheme is applied consistently across all tools.
+A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied across all tools (Mocha variant in most tools, Macchiato in tmux, Frappe in qt6ct).
 
 ## Prerequisites
 
@@ -49,7 +49,7 @@ These tools are configured for both macOS and Linux.
 |------|-------------|
 | [**Neovim**](https://neovim.io/) | A modern, extensible terminal-based text editor forked from Vim. Configured here with the [LazyVim](https://www.lazyvim.org/) distribution, which provides a batteries-included IDE experience with LSP support, syntax highlighting via Tree-sitter, fuzzy finding, and more. |
 | [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. Two configs are included that you can switch between by changing `ZDOTDIR`: one based on [Oh My Zsh](https://ohmyz.sh/) (`omz/`) and one based on [Zap](https://github.com/zap-zsh/zap) (`zsh/`). Both provide aliases, autosuggestions, syntax highlighting, and vi-mode keybindings. |
-| [**Git**](https://git-scm.com/) | Distributed version control system. Configured with [delta](https://github.com/dandavella/delta) as the pager for improved diffs, conditional includes for separating work and personal identities, and `zdiff3` merge conflict style. |
+| [**Git**](https://git-scm.com/) | Distributed version control system. Configured with [delta](https://github.com/dandavison/delta) as the pager for improved diffs, conditional includes for separating work and personal identities, and `zdiff3` merge conflict style. |
 | [**tmux**](https://github.com/tmux/tmux) | A terminal multiplexer that lets you run multiple terminal sessions inside a single window, detach and reattach to sessions, and split panes. Configured here with `Ctrl+Space` as the prefix key, vim-style pane navigation, and the [TPM](https://github.com/tmux-plugins/tpm) plugin manager. |
 | [**Starship**](https://starship.rs/) | A fast, minimal, and highly customizable shell prompt written in Rust. It displays contextual information such as the current git branch, active language runtimes, and exit codes -- all rendered with Nerd Font icons. |
 | [**fzf**](https://github.com/junegunn/fzf) | A general-purpose command-line fuzzy finder. It lets you interactively search and select from lists of files, command history, processes, and more. Used here as the backend for shell history search and tab completion. |
@@ -59,7 +59,7 @@ These tools are configured for both macOS and Linux.
 | [**Kitty**](https://sw.kovidgoyal.net/kitty/) | A GPU-accelerated terminal emulator that supports ligatures, image rendering, and tiling layouts natively. Configured here with a JetBrains Mono Nerd Font, powerline-style tabs, and integration with Neovim for scrollback browsing via [kitty-scrollback.nvim](https://github.com/mikesmithgh/kitty-scrollback.nvim). |
 | [**Zathura**](https://pwmt.org/projects/zathura/) | A lightweight, keyboard-driven PDF and document viewer with vim-like navigation. |
 | [**btop**](https://github.com/aristocratos/btop) | A resource monitor that shows CPU, memory, disk, network, and process usage with a colorful TUI. A modern alternative to `top` and `htop`. |
-| [**delta**](https://github.com/dandavella/delta) | A syntax-highlighting pager for `git diff`, `git log`, and `git show` output. It makes diffs significantly more readable with side-by-side views, line numbers, and language-aware highlighting. Used as the configured git pager. |
+| [**delta**](https://github.com/dandavison/delta) | A syntax-highlighting pager for `git diff`, `git log`, and `git show` output. It makes diffs significantly more readable with side-by-side views, line numbers, and language-aware highlighting. Used as the configured git pager. |
 
 ### Linux Only
 
@@ -71,7 +71,7 @@ These tools are specific to a Linux (Wayland/Hyprland) desktop environment.
 | [**Ashell**](https://github.com/MalpenZibo/ashell) | A status bar and notification panel for Hyprland. Displays workspaces, the focused window title, system info, a tray, clock, and more along the top of the screen. |
 | [**Rofi**](https://github.com/davatorium/rofi) | An application launcher and window switcher. Press a keybinding and a search bar appears where you can type to find and launch applications, switch windows, browse files, or run shell commands. |
 | [**Kanata**](https://github.com/jtroo/kanata) | A software keyboard remapper that runs as a background service. Used here to implement home-row mods -- holding `a`, `s`, `d`, `f` (and their right-hand counterparts) produces Ctrl, Alt, Meta, and Shift, while tapping them types the normal letter. |
-| [**Qt6ct**](https://github.com/trialuser02/qt6ct) | A configuration tool for Qt 6 application appearance on non-KDE desktops. Used here to apply the Catppuccin Mocha theme to Qt-based applications so they match the rest of the desktop. |
+| [**Qt6ct**](https://github.com/trialuser02/qt6ct) | A configuration tool for Qt 6 application appearance on non-KDE desktops. Used here to apply the Catppuccin Frappe theme to Qt-based applications so they match the rest of the desktop. |
 | Chromium & Electron flags | Configuration files (`chromium-flags.conf`, `electron-flags.conf`) that enable native Wayland support for Chromium-based browsers and Electron apps, preventing them from falling back to XWayland. |
 
 ### macOS Only
@@ -104,8 +104,11 @@ These tools are specific to a macOS desktop environment.
 │   ├── ashell/                 # [Linux] Ashell status bar
 │   ├── bat/                    # bat syntax highlighter
 │   ├── borders/                # [macOS] JankyBorders
+│   ├── delta/                  # delta diff pager theme
 │   ├── hypr/                   # [Linux] Hyprland compositor + utilities
+│   ├── hyprpanel/              # [Linux] HyprPanel status bar
 │   ├── kanata/                 # [Linux] Kanata keyboard remapper
+│   ├── karabiner/              # [macOS] Karabiner-Elements (symlink)
 │   ├── kitty/                  # Kitty terminal emulator
 │   ├── nvim/                   # Neovim (LazyVim)
 │   ├── qt6ct/                  # [Linux] Qt6 theming
@@ -115,8 +118,10 @@ These tools are specific to a macOS desktop environment.
 │   ├── starship/               # Starship shell prompt
 │   ├── systemd/                # [Linux] Systemd user services
 │   ├── tmux/                   # tmux terminal multiplexer
+│   ├── uwsm/                   # [Linux] UWSM session environment
 │   ├── yabai/                  # [macOS] yabai window manager
 │   ├── yazi/                   # Yazi file manager
+│   ├── zathura/                # Zathura PDF viewer
 │   ├── omz/                    # Zsh config (Oh My Zsh)
 │   └── zsh/                    # Zsh config (Zap)
 └── externally_modified/        # Configs tracked in git but not managed by chezmoi

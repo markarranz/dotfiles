@@ -39,8 +39,6 @@ sketchybar/
 │       └── wifi.lua
 ├── lib/                  # Utility modules
 │   └── app_icons.lua     # App name to icon mapping
-├── plugins/              # External scripts for periodic updates
-│   └── calendar.sh       # Calendar time update script
 └── helper/               # C helper for CPU monitoring
     ├── helper.c
     ├── cpu.h
@@ -104,15 +102,15 @@ brew install font-sketchybar-app-font
 
 ## Theming
 
-Colors are defined in `config/colors.lua` using the Catppuccin palette. To change themes, modify this file:
+Colors are defined in `config/colors.lua` using the Catppuccin Mocha palette. To change themes, modify this file:
 
 ```lua
 return {
-  black = 0xff181926,
-  white = 0xffcad3f5,
-  red = 0xffed8796,
-  green = 0xffa6da95,
-  blue = 0xff8aadf4,
+  black = 0xff11111b,   -- Crust
+  white = 0xffcdd6f4,   -- Text
+  red = 0xfff38ba8,     -- Red
+  green = 0xffa6e3a1,   -- Green
+  blue = 0xff89b4fa,    -- Blue
   -- ...
 }
 ```

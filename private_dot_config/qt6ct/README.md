@@ -9,4 +9,4 @@
 
 ## Overview
 
-Used here to apply the **Catppuccin Mocha Flamingo** color scheme to all Qt 6 applications so they match the rest of the desktop. The theme file is downloaded automatically by chezmoi (see `.chezmoiexternal.toml`).
+Used here to apply the **Catppuccin Frappe Flamingo** color scheme to all Qt 6 applications so they match the rest of the desktop. The theme file is downloaded automatically by chezmoi (see `.chezmoiexternal.toml`).
