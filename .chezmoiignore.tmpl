@@ -6,7 +6,30 @@ externally_modified/
 
 **/__pycache__
 
-{{ if ne .chezmoi.os "linux" -}}
+{{ if .forDevcontainer -}}
+
+# Devcontainer: exclude all GUI/desktop configs and heavy tools
+.config/aerospace/
+.config/ashell/
+.config/borders/
+.config/btop/
+.config/hypr/
+.config/hyprpanel/
+.config/kanata/
+.config/karabiner/
+.config/kitty/
+.config/qt6ct/
+.config/rofi/
+.config/sketchybar/
+.config/skhd/
+.config/systemd/
+.config/uwsm/
+.config/yabai/
+.config/yazi/
+.config/zathura/
+.claude/
+
+{{ else if ne .chezmoi.os "linux" -}}
 
 # Ignore linux specific configs:
 .config/chromium-flags.conf

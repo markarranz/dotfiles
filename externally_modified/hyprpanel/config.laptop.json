@@ -452,7 +452,7 @@
   "theme.bar.buttons.modules.microphone.background": "#242438",
   "theme.bar.buttons.modules.microphone.icon": "#a6e3a1",
   "theme.bar.buttons.modules.microphone.icon_background": "#242438",
-  "menus.clock.weather.key": "REDACTED",
+  "menus.clock.weather.key": "",
   "bar.customModules.storage.paths": [
     "/"
   ],

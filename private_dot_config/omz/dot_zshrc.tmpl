@@ -30,6 +30,13 @@ autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
 
+{{- if .forWork }}
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+{{- end }}
+
 # Up arrow: fzf history search when text is typed, normal scroll when empty
 autoload -U up-line-or-beginning-search
 zle -N up-line-or-beginning-search

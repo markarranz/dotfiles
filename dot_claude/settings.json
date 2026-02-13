@@ -4,6 +4,18 @@
     "type": "command",
     "command": "bash ~/.claude/status-line.sh"
   },
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,

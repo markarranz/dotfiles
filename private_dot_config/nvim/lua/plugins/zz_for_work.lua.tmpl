@@ -32,5 +32,41 @@ return {
       },
     },
   },
+  {
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        preset = {
+          header = table.concat({
+            "██████╗ ██╗ ██████╗ ██╗████████╗███████╗          ✶",
+            "██╔══██╗██║██╔════╝ ██║╚══██╔══╝██╔════╝      ✦    ",
+            "██║  ██║██║██║  ███╗██║   ██║   ███████╗   ✧       ",
+            "██║  ██║██║██║   ██║██║   ██║   ╚════██║ ·         ",
+            "██████╔╝██║╚██████╔╝██║   ██║   ███████║           ",
+            "╚═════╝ ╚═╝ ╚═════╝ ╚═╝   ╚═╝   ╚══════╝           ",
+          }, "\n"),
+        },
+      },
+    },
+  },
+  {
+    "erichlf/devcontainer-cli.nvim",
+    dependencies = { "akinsho/toggleterm.nvim" },
+    config = function()
+      require("devcontainer-cli").setup({
+        interactive = false,
+        toplevel = true,
+        remove_existing_container = true,
+        dotfiles_repository = "https://github.com/MarkArranz/dotfiles.git",
+        dotfiles_branch = "main",
+        dotfiles_targetPath = "~/dotfiles",
+        dotfiles_install_command = "install-devcontainer.sh",
+        shell = "bash",
+        nvim_binary = "nvim",
+        log_level = "debug",
+        console_level = "info",
+      })
+    end,
+  },
 }
 {{- end }}
