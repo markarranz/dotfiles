@@ -30,30 +30,37 @@ type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/delta/refs/heads/main/catppuccin.gitconfig"
 refreshPeriod = "672h"  # every 28 days
 
-[".config/omz/ohmyzsh"]
-type = "archive"
-url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
-exact = true
-stripComponents = 1
-refreshPeriod = "168h"  # every 7 days
-
-[".config/omz/custom/plugins/zsh-autosuggestions"]
+[".config/zsh/plugins/zsh-autosuggestions"]
 type = "archive"
 url = "https://github.com/zsh-users/zsh-autosuggestions/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"  # every 7 days
 
-[".config/omz/custom/plugins/zsh-completions"]
+[".config/zsh/plugins/zsh-syntax-highlighting"]
 type = "archive"
-url = "https://github.com/zsh-users/zsh-completions/archive/master.tar.gz"
+url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"  # every 7 days
 
-[".config/omz/custom/plugins/zsh-syntax-highlighting"]
+[".config/zsh/plugins/fzf-tab"]
 type = "archive"
-url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+url = "https://github.com/Aloxaf/fzf-tab/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"  # every 7 days
+
+[".config/zsh/plugins/fzf-tab-source"]
+type = "archive"
+url = "https://github.com/Freed-Wu/fzf-tab-source/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"  # every 7 days
+
+[".config/zsh/plugins/zsh-vi-mode"]
+type = "archive"
+url = "https://github.com/jeffreytse/zsh-vi-mode/archive/master.tar.gz"
 exact = true
 stripComponents = 1
 refreshPeriod = "168h"  # every 7 days
@@ -65,4 +72,3 @@ url = "https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/
 refreshPeriod = "672h"  # every 28 days
 
 {{- end }}
-

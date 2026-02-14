@@ -44,14 +44,8 @@ fi
 # rustup
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
-# fzf:
-[[ -x $(which fzf) ]] && source <(fzf --zsh)
-
 # starship:
 [[ -x $(which starship) ]] && export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 
 # zoxide:
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
-
-# zsh-vi-mode:
-ZVM_SYSTEM_CLIPBOARD_ENABLED=true
