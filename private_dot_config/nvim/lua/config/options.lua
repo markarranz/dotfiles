@@ -32,3 +32,6 @@ vim.filetype.add({
 
 -- bacon-ls
 vim.g.lazyvim_rust_diagnostics = "bacon-ls"
+
+-- googlesql-lsp
+vim.lsp.enable("googlesql")
