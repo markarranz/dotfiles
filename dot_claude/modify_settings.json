@@ -1,0 +1,35 @@
+#!/bin/bash
+# Chezmoi modify_ script for ~/.claude/settings.json
+#
+# Manages: hooks, statusLine (chezmoi owns these)
+# Preserves: enabledPlugins, and anything else Claude Code writes
+
+current=$(cat)
+
+# If the file doesn't exist yet, start with empty object
+if [ -z "$current" ]; then
+  current='{}'
+fi
+
+# Keys that chezmoi owns — these always win
+managed='{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/status-line.sh"
+  }
+}'
+
+# Deep merge: current * managed (managed keys win, rest preserved)
+echo "$current" | jq --argjson managed "$managed" '. * $managed'
