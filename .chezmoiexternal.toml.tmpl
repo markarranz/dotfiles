@@ -1,5 +1,10 @@
 {{ if and (eq .chezmoi.os "linux") (not .forDevcontainer) -}}
 
+ [".config/hypr/themes/catppuccin/mocha.conf"]
+type = "file"
+url = "https://raw.githubusercontent.com/catppuccin/hyprland/refs/heads/main/themes/mocha.conf"
+refreshPeriod = "672h"  # every 28 days
+
 [".config/rofi/themes/spotlight-dark.rasi"]
 type = "file"
 url = "https://raw.githubusercontent.com/newmanls/rofi-themes-collection/refs/heads/master/themes/spotlight-dark.rasi"
