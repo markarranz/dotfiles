@@ -7,6 +7,14 @@ return {
 					hidden = true,
 					ignored = true,
 					exclude = { ".git" },
+					win = {
+						list = {
+							keys = {
+								["<c-j>"] = false,
+								["<c-k>"] = false,
+							},
+						},
+					},
 				},
 			},
 			hidden = true,
