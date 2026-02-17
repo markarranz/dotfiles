@@ -12,6 +12,7 @@ return {
 							keys = {
 								["<c-j>"] = false,
 								["<c-k>"] = false,
+								["<a-h>"] = false,
 							},
 						},
 					},

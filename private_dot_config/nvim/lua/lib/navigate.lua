@@ -171,14 +171,14 @@ end
 
 function M.resize(dir, amount)
 	amount = amount or 3
-	if dir == "left" then
-		vim.cmd("vertical resize -" .. amount)
-	elseif dir == "right" then
-		vim.cmd("vertical resize +" .. amount)
-	elseif dir == "up" then
-		vim.cmd("resize -" .. amount)
-	elseif dir == "down" then
-		vim.cmd("resize +" .. amount)
+	if dir == "left" or dir == "right" then
+		local at_edge = vim.fn.winnr() == vim.fn.winnr("l")
+		local grow = (dir == "right") ~= at_edge
+		vim.cmd("vertical resize " .. (grow and "+" or "-") .. amount)
+	else
+		local at_edge = vim.fn.winnr() == vim.fn.winnr("j")
+		local grow = (dir == "down") ~= at_edge
+		vim.cmd("resize " .. (grow and "+" or "-") .. amount)
 	end
 end
 
