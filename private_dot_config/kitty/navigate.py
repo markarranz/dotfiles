@@ -31,10 +31,18 @@ def encode_key_mapping(window, key_mapping):
     return window.encoded_key(event)
 
 
+def _get_state(boss):
+    if not hasattr(boss, '_navigate_prev'):
+        boss._navigate_prev = {}
+    return boss._navigate_prev
+
+
 def find_neighbor_window(direction, active, boss):
     tab = boss.active_tab
     if tab is None:
         return None
+
+    came_from_id = _get_state(boss).get((tab.id, active.id))
 
     ag = active.geometry
     a_cx = (ag.left + ag.right) / 2
@@ -69,6 +77,10 @@ def find_neighbor_window(direction, active, boss):
                 continue
             dist = abs(w_cx - a_cx)
 
+        # Prefer the window we came from if it's a valid candidate
+        if came_from_id is not None and window.id == came_from_id:
+            return window
+
         if dist < best_dist:
             best = window
             best_dist = dist
@@ -95,4 +107,6 @@ def handle_result(args, result, target_window_id, boss):
 
     neighbor = find_neighbor_window(direction, window, boss)
     if neighbor is not None:
+        state = _get_state(boss)
+        state[(boss.active_tab.id, neighbor.id)] = window.id
         boss.active_tab.set_active_window(neighbor)
