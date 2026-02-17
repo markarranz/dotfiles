@@ -156,14 +156,7 @@ function M.move_cursor(dir)
 
 	-- Normal splits: wincmd within neovim, mux at edge
 	if at_vim_edge(dir) then
-		-- Check for embedded floating windows (e.g. snacks explorer) before
-		-- crossing to the mux — wincmd can't reach them, but geometric nav can.
-		local float_target = find_win_in_direction(dir)
-		if float_target and is_embedded_float(float_target) then
-			vim.api.nvim_set_current_win(float_target)
-		else
-			mux_move(dir)
-		end
+		mux_move(dir)
 	else
 		vim.cmd("wincmd " .. wincmd_dir[dir])
 	end
