@@ -8,9 +8,9 @@ elseif vim.env.KITTY_LISTEN_ON then
 	mux = "kitty"
 end
 
--- Set IS_NVIM kitty user variable so kitty.conf's --when-focus-on var:IS_NVIM
--- conditionals pass Ctrl+hjkl and Alt+hjkl through to neovim instead of
--- handling them at the kitty level.
+-- Set IS_NVIM kitty user variable so kitty kittens (navigate.py,
+-- relative_resize.py) pass Ctrl+hjkl and Alt+hjkl through to neovim
+-- instead of handling them at the kitty level.
 if vim.env.KITTY_LISTEN_ON then
 	local set_seq = "\x1b]1337;SetUserVar=IS_NVIM=MQ==\x07"
 	local clear_seq = "\x1b]1337;SetUserVar=IS_NVIM=\x07"
@@ -34,7 +34,6 @@ if vim.env.KITTY_LISTEN_ON then
 end
 
 local wincmd_dir = { left = "h", right = "l", up = "k", down = "j" }
-local kitty_dir = { left = "left", right = "right", up = "top", down = "bottom" }
 local tmux_flag = { left = "-L", right = "-R", up = "-U", down = "-D" }
 local tmux_edge_var = { left = "pane_at_left", right = "pane_at_right", up = "pane_at_top", down = "pane_at_bottom" }
 
@@ -61,7 +60,7 @@ local function mux_move(dir)
 	end
 	if mux == "kitty" then
 		local r = vim.system(
-			{ "kitty", "@", "focus-window", "--match", "neighbor:" .. kitty_dir[dir] },
+			{ "kitty", "@", "action", "kitten", "navigate.py", "--no-passthrough", dir },
 			{ text = true }
 		):wait()
 		return r.code == 0

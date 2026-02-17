@@ -121,17 +121,11 @@ map kitty_mod+alt+enter new_window
 # View all kitty keyboard shortcuts:
 map kitty_mod+/ kitten keymap.py
 
-# Cross-terminal navigation (Neovim sets IS_NVIM to pass keys through)
-map ctrl+j neighboring_window down
-map ctrl+k neighboring_window up
-map ctrl+h neighboring_window left
-map ctrl+l neighboring_window right
-
-# Unset the mapping to pass the keys to neovim
-map --when-focus-on var:IS_NVIM ctrl+j
-map --when-focus-on var:IS_NVIM ctrl+k
-map --when-focus-on var:IS_NVIM ctrl+h
-map --when-focus-on var:IS_NVIM ctrl+l
+# Cross-terminal navigation (kitten checks IS_NVIM and passes key to neovim if set)
+map ctrl+j kitten navigate.py down  ctrl+j
+map ctrl+k kitten navigate.py up    ctrl+k
+map ctrl+h kitten navigate.py left  ctrl+h
+map ctrl+l kitten navigate.py right ctrl+l
 
 # Resize kitty windows (kitten checks IS_NVIM and passes key to neovim if set)
 map alt+j kitten relative_resize.py down  3 alt+j
