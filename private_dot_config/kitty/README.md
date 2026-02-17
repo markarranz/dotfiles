@@ -10,7 +10,7 @@
 
 ### Optional (for Neovim integration)
 
-- [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) -- seamless pane navigation between Kitty and Neovim
+- Neovim `lib/navigate.lua` module -- seamless pane navigation between Kitty, tmux, and Neovim
 - [kitty-scrollback.nvim](https://github.com/mikesmithgh/kitty-scrollback.nvim) -- browse terminal scrollback in Neovim
 
 ## Overview
@@ -28,7 +28,7 @@
 
 | Binding | Action |
 |---------|--------|
-| `Ctrl+h/j/k/l` | Navigate between Kitty/Neovim splits (via smart-splits) |
+| `Ctrl+h/j/k/l` | Navigate between Kitty/Neovim splits |
 | `Alt+h/j/k/l` | Resize panes |
 | `kitty_mod+Enter` | New window with current working directory |
 | `kitty_mod+Alt+Enter` | New window (home directory) |
@@ -46,3 +46,4 @@
 | `current-theme.conf` | Catppuccin Mocha color definitions |
 | `ssh.conf` | SSH-specific settings (editor, shell variables) |
 | `keymap.py` | Python kitten that displays keyboard shortcuts in a formatted table |
+| `relative_resize.py` | Python kitten for relative window resizing (`Alt+h/j/k/l`) |

@@ -95,7 +95,7 @@ include current-theme.conf
 # ADVANCED #
 # ######## #
 
-# Required for smart-splits.nvim:
+# Remote control for Neovim/kitty navigation integration:
 allow_remote_control yes
 {{- if eq .chezmoi.os "linux" }}
 listen_on unix:@mykitty
@@ -117,7 +117,7 @@ map kitty_mod+alt+enter new_window
 # View all kitty keyboard shortcuts:
 map kitty_mod+/ kitten keymap.py
 
-# smart-splits.nvim
+# Cross-terminal navigation (Neovim sets IS_NVIM to pass keys through)
 map ctrl+j neighboring_window down
 map ctrl+k neighboring_window up
 map ctrl+h neighboring_window left

@@ -17,7 +17,7 @@ The core LazyVim configuration lives in the `externally_modified/nvim/` director
 | Path | Purpose |
 |------|---------|
 | `lua/config/options.lua` | Editor options, filetype detection, LSP/formatter choices |
-| `lua/config/keymaps.lua` | Custom key mappings (smart-splits integration) |
+| `lua/config/keymaps.lua` | Custom key mappings (cross-terminal navigation) |
 | `lua/config/autocmds.lua` | Autocommands (e.g. Go template completion) |
 | `lua/plugins/` | Plugin specs that override or extend LazyVim defaults |
 | `after/ftplugin/` | Per-language settings (indentation, textwidth) |
@@ -25,7 +25,7 @@ The core LazyVim configuration lives in the `externally_modified/nvim/` director
 ## Key Customizations
 
 - **Colorscheme:** [Catppuccin](https://github.com/catppuccin/nvim) Mocha with dimmed inactive windows
-- **Kitty integration:** [smart-splits.nvim](https://github.com/mrjones2014/smart-splits.nvim) for seamless pane navigation between Neovim and Kitty (`Ctrl+h/j/k/l`), and [kitty-scrollback.nvim](https://github.com/mikesmithgh/kitty-scrollback.nvim) for browsing terminal scrollback in Neovim
+- **Kitty integration:** Custom `lib/navigate.lua` module for seamless pane navigation between Neovim, Kitty, and tmux (`Ctrl+h/j/k/l`), and [kitty-scrollback.nvim](https://github.com/mikesmithgh/kitty-scrollback.nvim) for browsing terminal scrollback in Neovim
 - **Language support:** Custom filetype detection for Hyprland configs, Go templates, and Rofi themes
 - **Python:** [basedpyright](https://github.com/DetachHead/basedpyright) LSP, [ruff](https://github.com/astral-sh/ruff) formatter, textwidth of 88
 - **Rust:** [bacon-ls](https://github.com/crisidev/bacon-ls) for background compilation diagnostics
