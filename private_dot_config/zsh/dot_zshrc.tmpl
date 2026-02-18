@@ -6,6 +6,7 @@ export PATH="$HOME/.local/bin:$PATH"
 setopt AUTO_CD              # type directory name to cd into it
 setopt INTERACTIVE_COMMENTS # allow comments in interactive shell
 setopt GLOB_DOTS            # include dotfiles in glob matches
+setopt HIST_VERIFY          # expand history substitutions before executing
 
 # Completion system
 autoload -Uz compinit
