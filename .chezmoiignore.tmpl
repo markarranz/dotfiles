@@ -10,7 +10,6 @@ externally_modified/
 {{ if .forDevcontainer -}}
 
 # Devcontainer: exclude all GUI/desktop configs and heavy tools
-.config/aerospace/
 .config/ashell/
 .config/borders/
 .config/btop/
@@ -49,7 +48,6 @@ externally_modified/
 {{ else if ne .chezmoi.os "darwin" -}}
 
 # Ignore macos specific configs:
-.config/aerospace/
 .config/borders/
 .config/karabiner/
 .config/sketchybar/
