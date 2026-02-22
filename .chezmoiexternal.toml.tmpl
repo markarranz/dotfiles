@@ -70,6 +70,27 @@ exact = true
 stripComponents = 1
 refreshPeriod = "168h"  # every 7 days
 
+[".config/tmux/plugins/tpm"]
+type = "archive"
+url = "https://github.com/tmux-plugins/tpm/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"  # every 7 days
+
+[".config/tmux/plugins/tmux-sensible"]
+type = "archive"
+url = "https://github.com/tmux-plugins/tmux-sensible/archive/master.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "168h"  # every 7 days
+
+[".config/tmux/plugins/tmux"]
+type = "archive"
+url = "https://github.com/catppuccin/tmux/archive/refs/tags/v2.1.3.tar.gz"
+exact = true
+stripComponents = 1
+refreshPeriod = "672h"  # every 28 days
+
 {{ if not .forDevcontainer -}}
 [".config/yazi/theme.toml"]
 type = "file"
