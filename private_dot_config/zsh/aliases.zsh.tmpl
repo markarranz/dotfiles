@@ -1,20 +1,26 @@
-# eza (ls replacement)
-alias ls='eza'
-alias l='eza -l'
-alias ll='eza -l'
-alias la='eza -la'
-alias lt='eza -l -snewest'
-alias lS='eza -l -ssize'
-alias ldot='eza -ld .*'
-alias lD='eza -lD'
-alias ltree='eza --tree'
+# eza (ls replacement) with fallback to ls
+if (( $+commands[eza] )); then
+  alias ls='eza'
+  alias l='eza -l'
+  alias ll='eza -l'
+  alias la='eza -la'
+  alias lt='eza -l -snewest'
+  alias lS='eza -l -ssize'
+  alias ldot='eza -ld .*'
+  alias lD='eza -lD'
+  alias ltree='eza --tree'
+else
+  alias l='ls -lh'
+  alias ll='ls -lh'
+  alias la='ls -lAh'
+fi
 
 # Directory navigation
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
 
-alias cd=z
+(( $+commands[zoxide] )) && alias cd=z
 alias which-alias="PS4='+%x:%I>' zsh -i -x -c '' |& grep "
 alias chm="chezmoi"
 alias s="kitten ssh"

@@ -22,9 +22,6 @@ setopt AUTO_PUSHD           # cd automatically pushes onto dir stack
 setopt PUSHD_IGNORE_DUPS    # don't push duplicate directories
 setopt PUSHD_MINUS          # swap +/- so cd -N is more intuitive
 
-# List directory contents on cd
-chpwd() { l }
-
 # Completion system
 autoload -Uz compinit
 compinit
@@ -33,20 +30,29 @@ compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
 
 # Plugins (fzf-tab after compinit, before widget-wrapping plugins)
-source "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh"
-source "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh"
-source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+[[ -f "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" ]] && \
+  source "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh"
+[[ -f "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" ]] && \
+  source "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh"
+[[ -f "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+  source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true  # must be set before loading zsh-vi-mode
-function zvm_after_init() { source <(fzf --zsh) }  # preserve fzf bindings across vi mode switches
-source "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+function zvm_after_init() { (( $+commands[fzf] )) && source <(fzf --zsh) }
+if [[ -f "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
+  source "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+else
+  # zsh-vi-mode absent — source fzf bindings directly since zvm_after_init won't fire
+  (( $+commands[fzf] )) && source <(fzf --zsh)
+fi
 
 # fzf-tab config
 zstyle ':completion:*:git-checkout:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command -v eza >/dev/null && eza -1 --color=always $realpath || ls -1 $realpath'
 zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
 zstyle ':fzf-tab:*' use-fzf-default-opts yes
 zstyle ':fzf-tab:*' switch-group '<' '>'
@@ -55,6 +61,9 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 source "$HOME/.config/zsh/exports.zsh"
 source "$HOME/.config/zsh/functions.zsh"
 source "$HOME/.config/zsh/aliases.zsh"
+
+# List directory contents on cd (must be after aliases so 'l' is expanded)
+chpwd() { l }
 
 # Tool inits
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)"
