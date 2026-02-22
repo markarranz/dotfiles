@@ -80,11 +80,10 @@ These tools are specific to a macOS desktop environment.
 
 | Tool | Description |
 |------|-------------|
-| [**AeroSpace**](https://github.com/nikitabobko/AeroSpace) | A tiling window manager for macOS inspired by i3. It organizes windows into workspaces with keyboard-driven navigation and layout management -- no mouse required. Configured with `Cmd`-based keybindings for window focus, movement, and workspace switching. |
-| [**yabai**](https://github.com/koekeishiya/yabai) | Another tiling window manager for macOS that uses a scripting addition for advanced features like window opacity, animations, and automatic space management. Included here alongside AeroSpace as an alternative. |
+| [**yabai**](https://github.com/koekeishiya/yabai) | A tiling window manager for macOS that uses a scripting addition for advanced features like window opacity, animations, and automatic space management. |
 | [**skhd**](https://github.com/koekeishiya/skhd) | A simple hotkey daemon for macOS. It listens for keyboard shortcuts globally and triggers actions like launching apps, focusing windows, or sending commands to yabai. Acts as the keybinding layer for the yabai window manager. |
 | [**Karabiner-Elements**](https://karabiner-elements.pqrs.org/) | A powerful, low-level keyboard remapper for macOS. It can remap any key, create complex modification rules (like tap-vs-hold behavior), and handle device-specific configurations. Used here for system-level keyboard customization. |
-| [**SketchyBar**](https://github.com/FelixKratz/SketchyBar) | A highly customizable status bar replacement for the macOS menu bar. Configured here with Lua scripts to show workspaces, the focused app, battery, CPU usage, volume, Wi-Fi, GitHub notifications, and more. Integrates with yabai/AeroSpace for workspace awareness. |
+| [**SketchyBar**](https://github.com/FelixKratz/SketchyBar) | A highly customizable status bar replacement for the macOS menu bar. Configured here with Lua scripts to show workspaces, the focused app, battery, CPU usage, volume, Wi-Fi, GitHub notifications, and more. Integrates with yabai for workspace awareness. |
 | [**JankyBorders**](https://github.com/FelixKratz/JankyBorders) | A lightweight utility that draws colored borders around the focused window on macOS, making it easy to see which window is active. Configured with a pink-to-sky gradient for the active window. |
 
 ## Repository Structure
@@ -100,7 +99,6 @@ These tools are specific to a macOS desktop environment.
 ├── dot_zshenv.tmpl             # Zsh environment entry point (XDG dirs, etc.)
 ├── dot_claude/                 # Claude Code IDE settings
 ├── private_dot_config/         # ~/.config/ directory contents
-│   ├── aerospace/              # [macOS] AeroSpace window manager
 │   ├── ashell/                 # [Linux] Ashell status bar
 │   ├── bat/                    # bat syntax highlighter
 │   ├── borders/                # [macOS] JankyBorders
@@ -136,8 +134,7 @@ Before applying, you may want to:
 
 1. **Review the chezmoi templates** -- files ending in `.tmpl` contain conditional logic based on OS and hostname. You will likely need to adjust hostname checks (e.g. `WORKMACHINE`) and monitor configurations to match your hardware.
 2. **Swap out personal details** -- the git config references a specific GitHub username and email. Update `dot_gitconfig.tmpl` with your own.
-3. **Choose your window manager** -- on macOS, both AeroSpace and yabai+skhd are included. Pick one and remove the other, or keep both and switch between them.
-4. **Adjust keybindings** -- keybindings are tailored to personal preference. Review the skhd, Hyprland, AeroSpace, and Kanata configs to make sure they work for your keyboard and workflow.
+3. **Adjust keybindings** -- keybindings are tailored to personal preference. Review the skhd, Hyprland, and Kanata configs to make sure they work for your keyboard and workflow.
 
 ## License
 

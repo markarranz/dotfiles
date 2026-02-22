@@ -5,11 +5,7 @@
 ## Prerequisites
 
 - [tmux](https://github.com/tmux/tmux) >= 3.0
-- [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager) -- clone it into `~/.config/tmux/plugins/tpm`:
-  ```sh
-  git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
-  ```
-  Then press `prefix + I` inside tmux to install plugins.
+- [TPM](https://github.com/tmux-plugins/tpm) (Tmux Plugin Manager) -- installed automatically via `.chezmoiexternal.toml`. As a fallback, press `prefix + I` inside tmux to re-fetch plugins.
 
 ## Plugins
 

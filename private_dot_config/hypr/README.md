@@ -19,7 +19,7 @@
 
 ## Overview
 
-The configuration is heavily template-driven, adapting to chassis type (laptop vs. desktop):
+The main config is static, with hardware-specific settings sourced from `hardware.conf.tmpl` (adapts to chassis type):
 
 | Setting | Laptop | Desktop |
 |---------|--------|---------|
@@ -38,7 +38,8 @@ The configuration is heavily template-driven, adapting to chassis type (laptop v
 
 | File | Purpose |
 |------|---------|
-| `hyprland.conf.tmpl` | Main compositor config (monitors, keybindings, rules, appearance) |
+| `hyprland.conf` | Main compositor config (static: keybindings, rules, appearance) |
+| `hardware.conf.tmpl` | Hardware-specific overrides (monitor, gaps, blur, touchpad, screenshots) |
 | `hyprlock.conf.tmpl` | Lock screen appearance (background image, clock, input field) |
 | `hypridle.conf` | Idle timers: dim at 2.5 min, lock at 5 min, screen off at 5.5 min, suspend at 10 min |
 | `hyprpaper.conf` | Wallpaper assignment |

@@ -42,8 +42,10 @@
 
 | File | Purpose |
 |------|---------|
-| `kitty.conf.tmpl` | Main configuration (platform-conditional) |
+| `kitty.conf` | Main configuration (static, uses `include` for platform-specific settings) |
+| `os.conf.tmpl` | OS-specific settings: font size, window decorations, listen socket, macOS option key |
+| `work.conf.tmpl` | Work-specific keybindings (session shortcut) |
 | `current-theme.conf` | Catppuccin Mocha color definitions |
-| `ssh.conf` | SSH-specific settings (editor, shell variables) |
+| `ssh.conf` | kitten ssh config: copies shell and editor configs to remote hosts |
 | `keymap.py` | Python kitten that displays keyboard shortcuts in a formatted table |
 | `relative_resize.py` | Python kitten for relative window resizing (`Alt+h/j/k/l`) |
