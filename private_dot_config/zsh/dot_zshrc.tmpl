@@ -6,7 +6,24 @@ export PATH="$HOME/.local/bin:$PATH"
 setopt AUTO_CD              # type directory name to cd into it
 setopt INTERACTIVE_COMMENTS # allow comments in interactive shell
 setopt GLOB_DOTS            # include dotfiles in glob matches
-setopt HIST_VERIFY          # expand history substitutions before executing
+setopt EXTENDED_GLOB        # enable ^ ~ # glob operators
+
+# History behavior
+setopt SHARE_HISTORY          # sync history across all open shells
+setopt EXTENDED_HISTORY       # save timestamps with each entry
+setopt HIST_VERIFY            # expand history substitutions before executing
+setopt HIST_IGNORE_ALL_DUPS   # remove older duplicate when new one is added
+setopt HIST_IGNORE_SPACE      # prefix with space to exclude from history
+setopt HIST_REDUCE_BLANKS     # strip extra whitespace from saved commands
+setopt HIST_EXPIRE_DUPS_FIRST # when trimming, remove dupes before unique entries
+
+# Directory stack
+setopt AUTO_PUSHD           # cd automatically pushes onto dir stack
+setopt PUSHD_IGNORE_DUPS    # don't push duplicate directories
+setopt PUSHD_MINUS          # swap +/- so cd -N is more intuitive
+
+# List directory contents on cd
+chpwd() { l }
 
 # Completion system
 autoload -Uz compinit
