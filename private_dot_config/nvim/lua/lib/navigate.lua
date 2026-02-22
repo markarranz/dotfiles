@@ -77,9 +77,12 @@ local function mux_move(dir)
 	return false
 end
 
+-- Track which window we navigated from (mirrors kitty navigate.py's came_from_id)
+local _nav_prev = {}
+
 -- Find the nearest focusable window in a direction using screen geometry.
--- Used for embedded floating windows where wincmd doesn't navigate correctly.
-local function find_win_in_direction(dir)
+-- When multiple candidates exist, prefers the window we previously came from.
+local function find_win_in_direction(dir, prefer)
 	local cur = vim.api.nvim_get_current_win()
 	local pos = vim.api.nvim_win_get_position(cur)
 	local h, w = vim.api.nvim_win_get_height(cur), vim.api.nvim_win_get_width(cur)
@@ -127,8 +130,13 @@ local function find_win_in_direction(dir)
 			end
 		end
 
-		if valid and dist < best_dist then
-			best, best_dist = win, dist
+		if valid then
+			if prefer and win == prefer then
+				return win
+			end
+			if dist < best_dist then
+				best, best_dist = win, dist
+			end
 		end
 		::continue::
 	end
@@ -136,28 +144,21 @@ local function find_win_in_direction(dir)
 end
 
 function M.move_cursor(dir)
-	-- Embedded floating windows (snacks explorer): geometric navigation
-	if is_embedded_float() then
-		local target = find_win_in_direction(dir)
-		if target then
-			vim.api.nvim_set_current_win(target)
-		else
-			mux_move(dir)
-		end
-		return
-	end
+	local cur = vim.api.nvim_get_current_win()
 
 	-- Regular floating windows (snacks terminal): always delegate to mux
-	if is_floating() then
+	if is_floating() and not is_embedded_float() then
 		mux_move(dir)
 		return
 	end
 
-	-- Normal splits: wincmd within neovim, mux at edge
-	if at_vim_edge(dir) then
-		mux_move(dir)
+	-- Embedded floats and normal splits: geometric navigation with recency preference
+	local target = find_win_in_direction(dir, _nav_prev[cur])
+	if target then
+		_nav_prev[target] = cur
+		vim.api.nvim_set_current_win(target)
 	else
-		vim.cmd("wincmd " .. wincmd_dir[dir])
+		mux_move(dir)
 	end
 end
 
