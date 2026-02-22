@@ -2,12 +2,17 @@ export XDG_CACHE_HOME="${HOME}/.cache"
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_HOME="${HOME}/.local/share"
 
-NVIM_PATH="$(which nvim)"
-
-export EDITOR="${NVIM_PATH}"
-export VISUAL="${NVIM_PATH}"
-
-export MANPAGER="${NVIM_PATH} +Man!"
+if command -v nvim >/dev/null 2>&1; then
+  export EDITOR="nvim"
+  export VISUAL="nvim"
+  export MANPAGER="nvim +Man!"
+elif command -v vim >/dev/null 2>&1; then
+  export EDITOR="vim"
+  export VISUAL="vim"
+else
+  export EDITOR="vi"
+  export VISUAL="vi"
+fi
 
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
