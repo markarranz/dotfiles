@@ -13,6 +13,15 @@ model=$(echo "$input" | jq -r '.model.display_name // empty')
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // empty')
 output_style=$(echo "$input" | jq -r '.output_style.name // empty')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+remaining_pct=$(echo "$input" | jq -r '.context_window.remaining_percentage // empty')
+
+# Yield to built-in "Context left until auto-compact" bar when context is low
+if [ -n "$remaining_pct" ]; then
+    rp=${remaining_pct%.*}
+    if [[ "$rp" =~ ^[0-9]+$ ]] && [ "$rp" -le 20 ]; then
+        exit 0
+    fi
+fi
 
 if [ -z "$cwd" ] || [ ! -d "$cwd" ]; then
     printf '%s' "${model:-claude}"
@@ -50,12 +59,12 @@ if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
 fi
 
 # --- Context usage color ---
-cc="$S"
+uc="$S"
 if [ -n "$used_pct" ]; then
     pi=${used_pct%.*}
     if [[ "$pi" =~ ^[0-9]+$ ]]; then
-        if [ "$pi" -ge 80 ]; then cc="$R"
-        elif [ "$pi" -ge 60 ]; then cc="$Y"
+        if [ "$pi" -ge 80 ]; then uc="$R"
+        elif [ "$pi" -ge 60 ]; then uc="$Y"
         fi
     fi
 fi
@@ -74,7 +83,7 @@ if [ -n "$git_info" ]; then
 fi
 
 if [ -n "$used_pct" ]; then
-    s="${s} ${V}│${X} ${cc}◆ ${used_pct}%${X}"
+    s="${s} ${V}│${X} ${uc}◆ ${used_pct}%${X}"
 fi
 
 printf '%b' "$s"
