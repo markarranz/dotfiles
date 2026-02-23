@@ -98,3 +98,11 @@ url = "https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/
 refreshPeriod = "672h"  # every 28 days
 
 {{- end }}
+
+{{ if eq .chezmoi.os "darwin" -}}
+[".config/sketchybar/lib/icon_map.lua"]
+type = "file"
+url = "https://github.com/kvndrsslr/sketchybar-app-font/releases/latest/download/icon_map.lua"
+refreshPeriod = "168h"  # every 7 days
+
+{{- end }}
