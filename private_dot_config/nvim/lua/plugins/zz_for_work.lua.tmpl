@@ -50,6 +50,26 @@ return {
     },
   },
   {
+    "mfussenegger/nvim-lint",
+    optional = true,
+    opts = function()
+      -- Fix golangci-lint in go.work workspaces: GOMOD=/dev/null in workspace mode
+      -- causes nvim-lint to pass a single file path instead of the package directory,
+      -- resulting in "undefined" errors for cross-file symbols.
+      local linter = require("lint").linters.golangcilint
+      if linter and linter.args then
+        for i, arg in ipairs(linter.args) do
+          if type(arg) == "function" then
+            linter.args[i] = function()
+              return vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
+            end
+            break
+          end
+        end
+      end
+    end,
+  },
+  {
     "erichlf/devcontainer-cli.nvim",
     dependencies = { "akinsho/toggleterm.nvim" },
     config = function()
