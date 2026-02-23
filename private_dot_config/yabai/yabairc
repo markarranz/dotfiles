@@ -15,6 +15,12 @@ sudo yabai --load-sa
 
 yabai -m signal --add event=space_changed action='/usr/bin/env sh -c "${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"'
 
+# Focus the space where the activated app already has a window
+yabai -m signal --add event=application_activated action='
+  space=$(yabai -m query --windows | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).space // empty" 2>/dev/null)
+  [ -n "$space" ] && yabai -m space --focus "$space"
+'
+
 # ##### #
 # RULES #
 # ##### #
