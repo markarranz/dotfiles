@@ -1,0 +1,7 @@
+# vim: ft=yaml
+git:
+  pagers:
+    - pager: delta --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+      colorArg: always
+    - pager: delta --paging=never --side-by-side --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
+      colorArg: always
