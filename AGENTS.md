@@ -104,7 +104,7 @@ Rules:
 - Use lowercase for scope and description
 - Use imperative mood ("add" not "added")
 - Keep subject line under 72 characters
-- AI-generated commits start with `[ai]`
+- Multi-agent beneficial changes start with `[ai]` (e.g., AGENTS.md updates)
 
 ---
 
