@@ -33,6 +33,9 @@
 [merge]
     conflictStyle = zdiff3
 
+[alias]
+    clean-worktrees = "!~/.config/git/scripts/git-clean-worktrees.sh"
+
 {{ if .forWork -}}
 
 [includeIf "gitdir:~/Code/work/"]
