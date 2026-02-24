@@ -1,0 +1,71 @@
+{
+	"$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+	"agents": {
+		"sisyphus": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"atlas": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"oracle": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"librarian": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"explore": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"prometheus": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"metis": {
+			"model": "anthropic/claude-opus-4-6"
+		},
+		"momus": {
+			"model": "anthropic/claude-opus-4-6"
+		}
+	},
+	"categories": {
+		"visual-engineering": {
+			"model": "google/gemini-3-pro",
+			"model_qualifier": "high"
+		},
+		"ultrabrain": {
+			"model": "openai/gpt-5.3-codex",
+			"model_qualifier": "xhigh"
+		},
+		"deep": {
+			"model": "openai/gpt-5.3-codex",
+			"model_qualifier": "medium"
+		},
+		"artistry": {
+			"model": "google/gemini-3-pro",
+			"model_qualifier": "high"
+		},
+		"quick": {
+			"model": "anthropic/claude-haiku-4-5"
+		},
+		"unspecified-low": {
+			"model": "anthropic/claude-sonnet-4-6"
+		},
+		"unspecified-high": {
+			"model": "anthropic/claude-opus-4-6",
+			"model_qualifier": "max"
+		},
+		"writing": {
+			"model": "kimi-for-coding/k2p5"
+		}
+	},
+	"lsp": {
+		"gopls-gotmpl": {
+			"command": [
+				"/Users/mark/.local/share/nvim/mason/bin/gopls"
+			],
+			"extensions": [
+				".tmpl",
+				".gotmpl"
+			]
+		}
+	}
+}
