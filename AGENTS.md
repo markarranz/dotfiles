@@ -6,6 +6,7 @@ This is a **chezmoi-managed dotfiles repository**. It contains configuration fil
 1. [Repository Overview](#repository-overview)
 2. [Build/Lint/Test Commands](#buildlinttest-commands)
 3. [Code Style Guidelines](#code-style-guidelines)
+   - [Git Commit Messages](#git-commit-messages)
 4. [Template Conventions](#template-conventions)
 5. [Tool-Specific Guidelines](#tool-specific-guidelines)
 
@@ -89,6 +90,23 @@ chezmoi cat-config templates.dot_gitconfig
 ---
 
 ## Code Style Guidelines
+
+### Git Commit Messages
+
+Format: `[<scope>] <description>`
+
+Examples:
+- `[ashell] fix updates widget to run yay in kitty properly`
+- `[neovim] add golangci-lint fix for go.work workspaces`
+- `[sketchybar] auto-update app font icon map via chezmoi external`
+
+Rules:
+- Use lowercase for scope and description
+- Use imperative mood ("add" not "added")
+- Keep subject line under 72 characters
+- AI-generated commits start with `[ai]`
+
+---
 
 ### General Principles
 
