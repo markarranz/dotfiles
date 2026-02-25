@@ -1,5 +1,3 @@
-# vim: ft=sh
-
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
 
 # ################## #
@@ -99,3 +97,6 @@ yabai -m config \
   right_padding 3 \
   window_gap 6 \
   auto_balance off
+
+
+# vim: ft=sh
