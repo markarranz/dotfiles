@@ -5,10 +5,11 @@ This is a **chezmoi-managed dotfiles repository**. It contains configuration fil
 ## Table of Contents
 1. [Repository Overview](#repository-overview)
 2. [Build/Lint/Test Commands](#buildlinttest-commands)
-3. [Code Style Guidelines](#code-style-guidelines)
+3. [Formatters & Linters](#formatters--linters)
+4. [Code Style Guidelines](#code-style-guidelines)
    - [Git Commit Messages](#git-commit-messages)
-4. [Template Conventions](#template-conventions)
-5. [Tool-Specific Guidelines](#tool-specific-guidelines)
+5. [Template Conventions](#template-conventions)
+6. [Tool-Specific Guidelines](#tool-specific-guidelines)
 
 ---
 
@@ -86,6 +87,31 @@ chezmoi cat-config templates.dot_gitconfig
 ```bash
 # Inside tmux: press prefix + I (Ctrl+Space then I)
 ```
+
+---
+
+## Formatters & Linters
+
+Agents must run the appropriate formatter and linter after modifying files. These match the Neovim (LazyVim) toolchain. All tools use their default settings — no `.prettierrc`, `ruff.toml`, `taplo.toml`, or `.markdownlint*` config files exist.
+
+| Language | Formatter | Linter | Command |
+|----------|-----------|--------|---------|
+| Shell/Bash | shfmt | shellcheck | `shfmt -w <file> && shellcheck <file>` |
+| Lua | stylua | — | `stylua <file>` |
+| Python | ruff | ruff | `ruff format <file> && ruff check --fix <file>` |
+| YAML | prettier | — | `prettier --write <file>` |
+| JSON | prettier | — | `prettier --write <file>` |
+| TOML | taplo | — | `taplo format <file>` |
+| Markdown | prettier | — | `prettier --write <file>` |
+
+**Rules**:
+- Run the formatter and linter for the file type after modifying any file
+- If a tool is not installed, skip it — do not fail the task
+- Lua uses **tab** indentation; stylua's defaults apply (no repo-root `stylua.toml` needed — the one in `externally_modified/nvim/` is the LazyVim starter and does not apply here)
+
+**Do NOT format**:
+- `.tmpl` files — Go template directives (`{{- ... -}}`) would break
+- Files in `externally_modified/` — upstream copies, not ours to format
 
 ---
 
