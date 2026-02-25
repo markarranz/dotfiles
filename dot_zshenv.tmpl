@@ -17,8 +17,8 @@ fi
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
 export HISTFILE="${XDG_DATA_HOME}/zsh_history"  # History filepath
-export HISTSIZE=1000000                   # Maximum events for internal history
-export SAVEHIST=1000000                   # Maximum events in history file
+export HISTSIZE=1000000                         # Maximum events for internal history
+export SAVEHIST=1000000                         # Maximum events in history file
 
 {{- if and (eq .chezmoi.os "linux") (not .forDevcontainer) }}
 
