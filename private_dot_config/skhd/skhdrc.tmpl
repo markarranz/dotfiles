@@ -7,7 +7,7 @@ cmd - 0x29         : open -a kitty --args -1=yes
 cmd + shift - 0x29 : open -na kitty --args -1=yes
 
 # slash - keycode 0x2C
-ctrl - 0x2C : kitten quick-access-terminal
+ctrl - 0x2C : kitten quick-access-terminal sh -c 'cd ~ && exec $SHELL'
 
 {{ $browser := "Firefox" -}}
 {{- if .forWork }}
