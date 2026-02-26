@@ -42,15 +42,17 @@ cmd + alt - r : yabai -m space --rotate 270 # clockwise
 cmd + alt - u : yabai -m space --rotate 90  # counter-clockwise
  
 # Focus space with CMD + [0-9]:
+# yabai returns non-zero when focusing the already-focused space, so we
+# guard the create-fallback to only fire when the target space is missing.
 cmd - 1 : yabai -m space --focus 1
-cmd - 2 : yabai -m space --focus 2  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 3 : yabai -m space --focus 3  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 4 : yabai -m space --focus 4  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 5 : yabai -m space --focus 5  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 6 : yabai -m space --focus 6  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 7 : yabai -m space --focus 7  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 8 : yabai -m space --focus 8  || (yabai -m space --create; yabai -m space --focus last)
-cmd - 9 : yabai -m space --focus 9  || (yabai -m space --create; yabai -m space --focus last)
+cmd - 2 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "2" ] || yabai -m space --focus 2 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 3 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "3" ] || yabai -m space --focus 3 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 4 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "4" ] || yabai -m space --focus 4 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 5 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "5" ] || yabai -m space --focus 5 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 6 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "6" ] || yabai -m space --focus 6 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 7 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "7" ] || yabai -m space --focus 7 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 8 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "8" ] || yabai -m space --focus 8 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 9 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "9" ] || yabai -m space --focus 9 || (yabai -m space --create; yabai -m space --focus last)
 
 # Move window to prev/next space with CMD + SHIFT + ALT + [hl]:
 cmd + shift + alt - h : yabai -m window --space prev --focus
