@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Tuple dad-joke-greeter: room-joined trigger
+#
+# Fetches a random dad joke from icanhazdadjoke.com and speaks it aloud
+# when someone joins a Tuple room. Audio is routed in parallel to both
+# local speakers and BlackHole 2ch so remote Tuple participants hear it too.
+#
+# PREREQUISITE (one-time): Set Tuple's audio input to "BH + Mic Input"
+#   Tuple > Preferences > Audio > Input Device > "BH + Mic Input"
+#
+# To disable temporarily without removing the trigger:
+#   export TUPLE_DAD_JOKES_ENABLED=0
+set -uo pipefail
+
+BLACKHOLE_DEVICE="BlackHole 2ch"
+SPEAKER_DEVICE="MacBook Pro Speakers"
+API_URL="https://icanhazdadjoke.com/"
+
+# Allow opt-out without removing the trigger file
+if [[ "${TUPLE_DAD_JOKES_ENABLED:-1}" == "0" ]]; then
+  exit 0
+fi
+
+# Fetch a random joke
+joke=$(
+  curl -sfS --connect-timeout 3 --max-time 5 \
+    -H "Accept: application/json" \
+    -H "User-Agent: TupleDadJokeGreeter/1.0" \
+    "$API_URL" | jq -r '.joke // empty'
+)
+
+if [[ -z "$joke" ]]; then
+  echo "$(date -Iseconds) [dad-joke-greeter] Failed to fetch joke" >&2
+  exit 1
+fi
+
+joiner="${TUPLE_TRIGGER_FULL_NAME:-someone}"
+is_self="${TUPLE_TRIGGER_IS_SELF:-false}"
+
+if [[ "$is_self" == "true" ]]; then
+  greeting="Welcome to the room. Here is a dad joke."
+else
+  greeting="${joiner} just joined. Here is a dad joke."
+fi
+
+full_text="${greeting} ${joke}"
+echo "$(date -Iseconds) [dad-joke-greeter] Joke: $joke"
+
+# Play to local speakers and BlackHole (Tuple's audio input) in parallel
+say -a "$SPEAKER_DEVICE" "$full_text" &
+say -a "$BLACKHOLE_DEVICE" "$full_text" || true &
+wait

@@ -93,6 +93,7 @@ BREW_FORMULAE=(
 )
 
 BREW_CASKS=(
+  blackhole-2ch
   font-jetbrains-mono-nerd-font
   font-noto-color-emoji
   font-sketchybar-app-font
