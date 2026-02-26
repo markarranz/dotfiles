@@ -13,36 +13,37 @@
 
 ### Application Launchers
 
-| Binding | Action |
-|---------|--------|
-| `Cmd+;` | Open / focus Kitty |
-| `Cmd+Shift+;` | New Kitty window |
-| `Cmd+b` | Open / focus browser |
-| `Cmd+Shift+b` | New browser window |
-| `Cmd+e` | Open Finder |
+| Binding       | Action                                        |
+| ------------- | --------------------------------------------- |
+| `Cmd+;`       | Open / focus Kitty                            |
+| `Cmd+Shift+;` | New Kitty window                              |
+| `Ctrl+/`      | Toggle quick-access terminal (Quake dropdown) |
+| `Cmd+b`       | Open / focus browser                          |
+| `Cmd+Shift+b` | New browser window                            |
+| `Cmd+e`       | Open Finder                                   |
 
 ### Space Navigation
 
-| Binding | Action |
-|---------|--------|
-| `Cmd+Alt+Tab` | Toggle to recent space |
-| `Cmd+Alt+h` / `l` | Previous / next space |
-| `Cmd+1-9` | Focus space (creates it if needed) |
+| Binding           | Action                             |
+| ----------------- | ---------------------------------- |
+| `Cmd+Alt+Tab`     | Toggle to recent space             |
+| `Cmd+Alt+h` / `l` | Previous / next space              |
+| `Cmd+1-9`         | Focus space (creates it if needed) |
 
 ### Window Management
 
-| Binding | Action |
-|---------|--------|
-| `Cmd+h/j/k/l` | Focus window west/south/north/east |
-| `Cmd+Shift+h/j/k/l` | Move (warp) window |
-| `Cmd+Shift+1-9` | Send window to space |
-| `Cmd+Shift+f` | Toggle native fullscreen |
-| `Cmd+Alt+f` | Toggle float (centered grid) |
-| `Cmd+Alt+r` | Rotate tree clockwise |
-| `Cmd+Alt+u` | Rotate tree counter-clockwise |
-| `Alt+t` | Toggle split direction |
-| `Alt+p` | Toggle sticky (window on all spaces) |
-| `Shift+Alt+p` | Toggle picture-in-picture |
+| Binding             | Action                               |
+| ------------------- | ------------------------------------ |
+| `Cmd+h/j/k/l`       | Focus window west/south/north/east   |
+| `Cmd+Shift+h/j/k/l` | Move (warp) window                   |
+| `Cmd+Shift+1-9`     | Send window to space                 |
+| `Cmd+Shift+f`       | Toggle native fullscreen             |
+| `Cmd+Alt+f`         | Toggle float (centered grid)         |
+| `Cmd+Alt+r`         | Rotate tree clockwise                |
+| `Cmd+Alt+u`         | Rotate tree counter-clockwise        |
+| `Alt+t`             | Toggle split direction               |
+| `Alt+p`             | Toggle sticky (window on all spaces) |
+| `Shift+Alt+p`       | Toggle picture-in-picture            |
 
 ### Blacklisted Applications
 

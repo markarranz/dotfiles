@@ -6,6 +6,9 @@
 cmd - 0x29         : open -a kitty --args -1=yes
 cmd + shift - 0x29 : open -na kitty --args -1=yes
 
+# slash - keycode 0x2C
+ctrl - 0x2C : kitten quick-access-terminal
+
 {{ $browser := "Firefox" -}}
 {{- if .forWork }}
 {{- $browser = "Google Chrome" }}

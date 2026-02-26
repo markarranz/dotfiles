@@ -35,7 +35,6 @@
 | `kitty_mod+h` | Browse scrollback in Neovim |
 | `kitty_mod+g` | Show last command output in Neovim |
 | `kitty_mod+/` | Show all keyboard shortcuts |
-| `Ctrl+/` | Toggle quick-access terminal (Quake dropdown) |
 
 `kitty_mod` is `Ctrl+Shift` by default.
 
