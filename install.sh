@@ -66,22 +66,22 @@ info "Detected platform: $PLATFORM"
 
 # Cross-platform tools (installed on both macOS and Linux)
 COMMON_TOOLS=(
-  git
-  chezmoi
-  neovim
-  zsh
-  tmux
-  starship
-  fzf
-  zoxide
   bat
-  yazi
-  eza
-  ripgrep
-  git-delta
   btop
-  jq
+  chezmoi
   direnv
+  eza
+  fzf
+  git
+  git-delta
+  jq
+  neovim
+  ripgrep
+  starship
+  tmux
+  yazi
+  zoxide
+  zsh
 )
 
 # --- macOS (Homebrew) ---
@@ -92,11 +92,11 @@ BREW_FORMULAE=(
 )
 
 BREW_CASKS=(
-  kitty
-  karabiner-elements
   font-jetbrains-mono-nerd-font
   font-noto-color-emoji
   font-sketchybar-app-font
+  karabiner-elements
+  kitty
 )
 
 BREW_TAPS=(
@@ -116,9 +116,9 @@ BREW_TAP_FORMULAE=(
 PACMAN_PACKAGES=(
   "${COMMON_TOOLS[@]}"
   kitty
-  ttf-jetbrains-mono-nerd
   noto-fonts-emoji
   nvm
+  ttf-jetbrains-mono-nerd
   firefox
   # Hyprland ecosystem
   hyprland
@@ -128,14 +128,14 @@ PACMAN_PACKAGES=(
   hyprsunset
   uwsm
   # Desktop utilities
+  blueman
+  brightnessctl
+  nautilus
+  nm-connection-editor
+  playerctl
+  qt6ct
   rofi
   rofi-calc
-  qt6ct
-  nautilus
-  brightnessctl
-  playerctl
-  nm-connection-editor
-  blueman
   # PDF viewer
   zathura
   zathura-pdf-mupdf
@@ -143,10 +143,10 @@ PACMAN_PACKAGES=(
 
 AUR_PACKAGES=(
   ashell
-  kanata
-  walker
   clipse
+  kanata
   pwvucontrol
+  walker
 )
 
 # ---------------------------------------------------------------------------
