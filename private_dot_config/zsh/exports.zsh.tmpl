@@ -35,23 +35,20 @@ fi
 # ALL #
 #######
 
-# uv & uvx
-[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="$HOME/.local/share/../bin:$PATH"
-
 # go install:
 [[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
 
 # mason.nvim:
 [[ -d "$HOME/.local/share/nvim/mason/bin" ]] && export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 
-# opencode profile:
-export OCX_PROFILE="${OCX_PROFILE:-omo}"
-
 # rustup
 [[ -r "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
 # starship:
 [[ -x $(which starship) ]] && export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
+
+# uv & uvx
+[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="$HOME/.local/share/../bin:$PATH"
 
 # zoxide:
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
