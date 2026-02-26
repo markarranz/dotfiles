@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Only announce if we're currently in a room (state set by dad-joke-greeter)
+set -uo pipefail
+
+MY_ROOM_FILE="$HOME/.tuple/.state/my-room"
+
+if [[ ! -f "$MY_ROOM_FILE" ]]; then
+  exit 0
+fi
+
+raw_name="${TUPLE_TRIGGER_FULL_NAME:-someone}"
+name="$(printf '%s' "$raw_name" | tr -cd '[:alpha:] ')"
+name="${name:-someone}"
+
+say "${name} has left."
