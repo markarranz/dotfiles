@@ -26,6 +26,14 @@ cmd + alt - tab : yabai -m space --focus recent
 cmd + alt - h   : yabai -m space --focus prev
 cmd + alt - l   : yabai -m space --focus next
 
+# Move space to prev/next position with CMD + CTRL + ALT + [hl]:
+cmd + ctrl + alt - h : yabai -m space --move prev
+cmd + ctrl + alt - l : yabai -m space --move next
+
+# Move space to prev/next display with CMD + CTRL + ALT + [jk]:
+cmd + ctrl + alt - j : yabai -m space --display prev
+cmd + ctrl + alt - k : yabai -m space --display next
+
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270 # clockwise
 cmd + alt - u : yabai -m space --rotate 90  # counter-clockwise
