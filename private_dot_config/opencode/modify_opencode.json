@@ -12,7 +12,7 @@ if [ -z "$current" ]; then
 fi
 
 # Plugin entry to add (idempotently)
-plugin_entry="file://$HOME/.config/opencode/plugins/opencode-notifier"
+plugin_entry="@markarranz/opencode-focus-notify@latest"
 
 # Add plugin entry to .plugin array only if not already present
 echo "$current" | jq --arg entry "$plugin_entry" \
