@@ -89,6 +89,7 @@ BREW_FORMULAE=(
   "${COMMON_TOOLS[@]}"
   nvm
   switchaudio-osx
+  terminal-notifier
 )
 
 BREW_CASKS=(
