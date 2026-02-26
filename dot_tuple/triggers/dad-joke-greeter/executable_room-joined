@@ -23,7 +23,7 @@ fi
 
 # Fetch a random joke
 joke=$(
-  curl -sfS --connect-timeout 3 --max-time 5 \
+  curl -sfS --connect-timeout 3 --max-time 3 \
     -H "Accept: application/json" \
     -H "User-Agent: TupleDadJokeGreeter/1.0" \
     "$API_URL" | jq -r '.joke // empty'
@@ -34,7 +34,11 @@ if [[ -z "$joke" ]]; then
   exit 1
 fi
 
-joiner="${TUPLE_TRIGGER_FULL_NAME:-someone}"
+# Sanitize joiner name to printable letters and spaces only (prevent injection)
+raw_joiner="${TUPLE_TRIGGER_FULL_NAME:-someone}"
+joiner="$(printf '%s' "$raw_joiner" | tr -cd '[:alpha:] ')"
+joiner="${joiner:-someone}"
+
 is_self="${TUPLE_TRIGGER_IS_SELF:-false}"
 
 if [[ "$is_self" == "true" ]]; then
@@ -44,9 +48,11 @@ else
 fi
 
 full_text="${greeting} ${joke}"
-echo "$(date -Iseconds) [dad-joke-greeter] Joke: $joke"
 
-# Play to local speakers and BlackHole (Tuple's audio input) in parallel
-say -a "$SPEAKER_DEVICE" "$full_text" &
-say -a "$BLACKHOLE_DEVICE" "$full_text" || true &
+# Play to local speakers and BlackHole (Tuple's audio input) in parallel.
+# Both use || true so a missing audio device never fails the trigger.
+say -a "$SPEAKER_DEVICE" -- "$full_text" || true &
+say -a "$BLACKHOLE_DEVICE" -- "$full_text" || true &
 wait
+
+echo "$(date -Iseconds) [dad-joke-greeter] Told joke to ${joiner}: ${joke}"
