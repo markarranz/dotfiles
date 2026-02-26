@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Tuple dad-joke-greeter: room-left trigger
+#
+# Updates room membership tracking when someone leaves a room.
+# When we leave, also clears the my-room marker.
+set -uo pipefail
+
+TRACKED_ROOMS_FILE="$HOME/.tuple/tracked-rooms"
+STATE_DIR="$HOME/.tuple/.state"
+MY_ROOM_FILE="$STATE_DIR/my-room"
+
+is_self="${TUPLE_TRIGGER_IS_SELF:-false}"
+room_name="${TUPLE_TRIGGER_ROOM_NAME:-}"
+leaver_email="${TUPLE_TRIGGER_EMAIL:-}"
+my_email="${TUPLE_TRIGGER_CURRENT_USER_EMAIL:-}"
+
+# Only proceed for tracked rooms
+if [[ ! -f "$TRACKED_ROOMS_FILE" ]] || ! grep -qxF "$room_name" "$TRACKED_ROOMS_FILE"; then
+  exit 0
+fi
+
+safe_room="$(printf '%s' "$room_name" | tr -cd '[:alnum:] _-' | tr ' ' '_')"
+MEMBERS_FILE="$STATE_DIR/rooms/$safe_room/members"
+
+# Remove the person from the members list
+email_to_remove=""
+if [[ "$is_self" == "true" ]]; then
+  email_to_remove="$my_email"
+  rm -f "$MY_ROOM_FILE"
+else
+  email_to_remove="$leaver_email"
+fi
+
+if [[ -n "$email_to_remove" ]] && [[ -f "$MEMBERS_FILE" ]]; then
+  tmp=$(grep -vxF "$email_to_remove" "$MEMBERS_FILE" || true)
+  if [[ -n "$tmp" ]]; then
+    printf '%s\n' "$tmp" > "$MEMBERS_FILE"
+  else
+    rm -f "$MEMBERS_FILE"
+  fi
+fi
