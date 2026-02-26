@@ -35,6 +35,7 @@
 | `kitty_mod+h` | Browse scrollback in Neovim |
 | `kitty_mod+g` | Show last command output in Neovim |
 | `kitty_mod+/` | Show all keyboard shortcuts |
+| `Ctrl+/` | Toggle quick-access terminal (Quake dropdown) |
 
 `kitty_mod` is `Ctrl+Shift` by default.
 
@@ -49,3 +50,4 @@
 | `ssh.conf` | kitten ssh config: copies shell and editor configs to remote hosts |
 | `keymap.py` | Python kitten that displays keyboard shortcuts in a formatted table |
 | `relative_resize.py` | Python kitten for relative window resizing (`Alt+h/j/k/l`) |
+| `quick-access-terminal.conf` | Quick-access terminal config (Quake dropdown): edge, size, opacity |
