@@ -1,89 +1,17 @@
-#!/bin/bash
-# Claude Code status line — receives JSON session data on stdin
+#!/usr/bin/env bash
+# Claude Code status line — OMC HUD with Catppuccin Mocha theming.
+# Pipes stdin through the OMC HUD, then substitutes its standard 8-color
+# ANSI codes with Catppuccin Mocha 24-bit RGB equivalents.
 
-# --- Parse input ---
-input=$(cat)
-
-if ! command -v jq > /dev/null 2>&1; then
-    printf 'status-line: jq required'
-    exit 0
-fi
-
-model=$(echo "$input" | jq -r '.model.display_name // empty')
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // empty')
-output_style=$(echo "$input" | jq -r '.output_style.name // empty')
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-remaining_pct=$(echo "$input" | jq -r '.context_window.remaining_percentage // empty')
-
-# Yield to built-in "Context left until auto-compact" bar when context is low
-if [ -n "$remaining_pct" ]; then
-    rp=${remaining_pct%.*}
-    if [[ "$rp" =~ ^[0-9]+$ ]] && [ "$rp" -le 20 ]; then
-        exit 0
-    fi
-fi
-
-if [ -z "$cwd" ] || [ ! -d "$cwd" ]; then
-    printf '%s' "${model:-claude}"
-    exit 0
-fi
-
-# --- Catppuccin Mocha palette ---
-M='\e[38;2;203;166;247m'   # Mauve
-P='\e[38;2;245;194;231m'   # Pink
-O='\e[38;2;250;179;135m'   # Peach
-G='\e[38;2;166;227;161m'   # Green
-Y='\e[38;2;249;226;175m'   # Yellow
-S='\e[38;2;137;220;235m'   # Sky
-R='\e[38;2;243;139;168m'   # Red
-T='\e[38;2;166;173;200m'   # Subtext
-V='\e[38;2;127;132;156m'   # Overlay
-L='\e[38;2;180;190;254m'   # Lavender
-X='\e[0m'                   # Reset
-
-# --- Git branch + dirty indicator ---
-git_info=""
-gc="$G"
-
-if git -C "$cwd" rev-parse --git-dir > /dev/null 2>&1; then
-    branch=$(git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null)
-    if [ -n "$branch" ]; then
-        dirty=""
-        if ! git -C "$cwd" diff-index --quiet HEAD -- 2>/dev/null; then
-            dirty="*"
-            gc="$Y"
-        fi
-
-        git_info=" (${branch}${dirty})"
-    fi
-fi
-
-# --- Context usage color ---
-uc="$S"
-if [ -n "$used_pct" ]; then
-    pi=${used_pct%.*}
-    if [[ "$pi" =~ ^[0-9]+$ ]]; then
-        if [ "$pi" -ge 80 ]; then uc="$R"
-        elif [ "$pi" -ge 60 ]; then uc="$Y"
-        fi
-    fi
-fi
-
-# --- Compose output ---
-s="${M}${model}${X}"
-
-if [ -n "$output_style" ] && [ "$output_style" != "default" ]; then
-    s="${s} ${P}[${output_style}]${X}"
-fi
-
-s="${s} ${T}in${X} ${O}$(basename "$cwd")${X}"
-
-if [ -n "$git_info" ]; then
-    s="${s}${gc}${git_info}${X}"
-fi
-
-if [ -n "$used_pct" ]; then
-    s="${s} ${V}│${X} ${uc}◆ ${used_pct}%${X}"
-fi
-
-printf '%b' "$s"
+node ~/.claude/hud/omc-hud.mjs | perl -pe '
+  s/\x1b\[31m/\x1b[38;2;243;139;168m/g;  # Red      #F38BA8
+  s/\x1b\[32m/\x1b[38;2;166;227;161m/g;  # Green    #A6E3A1
+  s/\x1b\[33m/\x1b[38;2;249;226;175m/g;  # Yellow   #F9E2AF
+  s/\x1b\[34m/\x1b[38;2;137;180;250m/g;  # Blue     #89B4FA
+  s/\x1b\[35m/\x1b[38;2;203;166;247m/g;  # Mauve    #CBA6F7
+  s/\x1b\[36m/\x1b[38;2;137;220;235m/g;  # Sky      #89DCEB
+  s/\x1b\[37m/\x1b[38;2;205;214;244m/g;  # Text     #CDD6F4
+  s/\x1b\[94m/\x1b[38;2;116;199;236m/g;  # Sapphire #74C7EC
+  s/\x1b\[95m/\x1b[38;2;245;194;231m/g;  # Pink     #F5C2E7
+  s/\x1b\[96m/\x1b[38;2;148;226;213m/g;  # Teal     #94E2D5
+'
