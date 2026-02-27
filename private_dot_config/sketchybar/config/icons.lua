@@ -58,8 +58,8 @@ return {
 
 	-- Mic
 	mic = {
-		on = "󰍬",
-		off = "󰍭",
+		on = "",
+		off = "",
 	},
 
 	-- WiFi

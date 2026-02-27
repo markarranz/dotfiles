@@ -172,6 +172,11 @@ final class MediaMonitor {
         log("State changed: ACTIVE=\(active)")
         lastActive = active
         triggerSketchybar(active: active)
+        writeStateFile(active: active)
+    }
+
+    private func writeStateFile(active: UInt32) {
+        try? "\(active)".write(toFile: "/tmp/mic-monitor-state", atomically: true, encoding: .utf8)
     }
 
     private func triggerSketchybar(active: UInt32) {
