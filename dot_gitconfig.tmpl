@@ -1,6 +1,6 @@
 [user]
-  name = "Mark Arranz"
-  email = "4390451+MarkArranz@users.noreply.github.com"
+    name = "Mark Arranz"
+    email = "4390451+MarkArranz@users.noreply.github.com"
 
 [core]
     editor = nvim
@@ -10,18 +10,12 @@
 [init]
     defaultBranch = main
 
-# Configure neovim as the difftool and mergetool: 
-; [diff]
-;     tool = "nvimdiff1"
-; [merge]
-;     tool = "nvimdiff2"
-
 # Configure git-delta
 [interactive]
     diffFilter = delta --color-only
 
 [include]
-  path = ~/.config/delta/themes/catppuccin.gitconfig
+    path = ~/.config/delta/themes/catppuccin.gitconfig
 
 [delta]
     features = catppuccin-mocha
@@ -31,8 +25,14 @@
 [merge]
     conflictStyle = zdiff3
 
+[worktree]
+    guessRemote = true
+    useRelativePaths = true
+
 [alias]
+    bare-clone = "!~/.config/git/scripts/git-bare-clone.sh"
     clean-worktrees = "!~/.config/git/scripts/git-clean-worktrees.sh"
+    track = "!git branch --set-upstream-to=origin/$(git branch --show-current)"
 
 {{ if .forWork -}}
 
