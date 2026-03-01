@@ -145,6 +145,7 @@ PACMAN_PACKAGES=(
 
 AUR_PACKAGES=(
   ashell
+  elephant-all
   kanata
   pwvucontrol
   walker
