@@ -4,6 +4,13 @@ theme = "catppuccin-mocha"
 default = ["desktopapplications", "calc", "websearch"]
 empty = []
 
+[[providers.prefixes]]
+prefix = "?"
+provider = "menus:help"
+
+[placeholders]
+"default" = { input = "Search (? for help)", list = "No Results" }
+
 [providers.actions]
 desktopapplications = [
   { action = "start", default = true, bind = "Return" },
