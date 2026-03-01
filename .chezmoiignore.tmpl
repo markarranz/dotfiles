@@ -19,9 +19,11 @@ externally_modified/
 {{ if .forDevcontainer -}}
 
 # Devcontainer: exclude all GUI/desktop configs and heavy tools
+.claude/
 .config/ashell/
 .config/borders/
 .config/btop/
+.config/elephant/
 .config/hypr/
 .config/hyprpanel/
 .config/kanata/
@@ -33,10 +35,10 @@ externally_modified/
 .config/skhd/
 .config/systemd/
 .config/uwsm/
+.config/walker/
 .config/yabai/
 .config/yazi/
 .config/zathura/
-.claude/
 
 {{ else if ne .chezmoi.os "linux" -}}
 
@@ -46,13 +48,15 @@ externally_modified/
 .config/spotify-launcher.conf
 
 .config/ashell/
+.config/elephant/
 .config/hypr/
 .config/hyprpanel/
 .config/kanata/
 .config/qt6ct/
-.config/systemd/
 .config/rofi/
+.config/systemd/
 .config/uwsm/
+.config/walker/
 
 {{ else if ne .chezmoi.os "darwin" -}}
 
@@ -62,7 +66,6 @@ externally_modified/
 .config/sketchybar/
 .config/skhd/
 .config/yabai/
-create-aggregate-audio-device.swift
 .tuple/
 
 {{- end }}
