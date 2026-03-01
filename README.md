@@ -6,7 +6,7 @@ A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied
 
 ## Prerequisites
 
-- [chezmoi](https://www.chezmoi.io/install/) -- dotfile manager that uses templates to handle cross-platform differences. It maps this repo's source files (e.g. `dot_gitconfig.tmpl`) to their real locations (e.g. `~/.gitconfig`).
+- [chezmoi](https://www.chezmoi.io/install/) -- dotfile manager that uses templates to handle cross-platform differences. It maps this repo's source files (e.g. `private_dot_config/git/config.tmpl`) to their real locations (e.g. `~/.config/git/config`).
 - [Nerd Font](https://www.nerdfonts.com/) -- many tools here expect a patched Nerd Font for icons and symbols. The configs default to **JetBrains Mono NL Nerd Font**.
 
 ## Getting Started
@@ -94,15 +94,14 @@ These tools are specific to a macOS desktop environment.
 ├── .chezmoi.toml.tmpl          # Chezmoi config: detects OS, chassis type, hostname
 ├── .chezmoiexternal.toml.tmpl  # External dependencies (themes, plugins, archives)
 ├── .chezmoiignore.tmpl         # Platform-specific ignore rules
-├── dot_gitconfig.tmpl          # Git configuration
-├── dot_gitignore_global        # Global gitignore patterns
+├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
 ├── dot_zshenv.tmpl             # Zsh environment entry point (XDG dirs, etc.)
 ├── dot_claude/                 # Claude Code IDE settings
 ├── private_dot_config/         # ~/.config/ directory contents
 │   ├── ashell/                 # [Linux] Ashell status bar
 │   ├── bat/                    # bat syntax highlighter
 │   ├── borders/                # [macOS] JankyBorders
-│   ├── delta/                  # delta diff pager theme
+│   ├── elephant/               # [Linux] Elephant data provider (Walker backend)
 │   ├── hypr/                   # [Linux] Hyprland compositor + utilities
 │   ├── hyprpanel/              # [Linux] HyprPanel status bar
 │   ├── kanata/                 # [Linux] Kanata keyboard remapper
@@ -110,8 +109,8 @@ These tools are specific to a macOS desktop environment.
 │   ├── kitty/                  # Kitty terminal emulator
 │   ├── nvim/                   # Neovim (LazyVim)
 │   ├── qt6ct/                  # [Linux] Qt6 theming
+│   ├── git/                    # Git config, ignore, helper scripts
 │   ├── rofi/                   # [Linux] Rofi application launcher
-│   ├── sketchybar/             # [macOS] SketchyBar status bar
 │   ├── skhd/                   # [macOS] skhd hotkey daemon
 │   ├── starship/               # Starship shell prompt
 │   ├── systemd/                # [Linux] Systemd user services
@@ -133,7 +132,7 @@ These tools are specific to a macOS desktop environment.
 Before applying, you may want to:
 
 1. **Review the chezmoi templates** -- files ending in `.tmpl` contain conditional logic based on OS and hostname. You will likely need to adjust hostname checks (e.g. `WORKMACHINE`) and monitor configurations to match your hardware.
-2. **Swap out personal details** -- the git config references a specific GitHub username and email. Update `dot_gitconfig.tmpl` with your own.
+2. **Swap out personal details** -- the git config references a specific GitHub username and email. Update `private_dot_config/git/config.tmpl` with your own.
 3. **Adjust keybindings** -- keybindings are tailored to personal preference. Review the skhd, Hyprland, and Kanata configs to make sure they work for your keyboard and workflow.
 
 ## License

@@ -23,12 +23,11 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 ├── .chezmoiignore.tmpl         # OS-conditional file exclusion
 ├── install.sh                  # Cross-platform installer (Homebrew / pacman+yay)
 ├── install-devcontainer.sh     # Devcontainer bootstrap script
-├── dot_gitconfig.tmpl          # Git config with conditional identity includes
-├── dot_gitignore_global        # Global gitignore patterns
 ├── dot_zshenv.tmpl             # Zsh entry point (XDG dirs, EDITOR, HISTFILE)
 ├── dot_claude/                 # Claude Code IDE settings
+├── dot_claude/                 # Claude Code IDE settings
 ├── dot_tuple/                  # Tuple.app triggers and tracked-room scripts
-├── run_once_create-aggregate-audio-device.swift  # [macOS] one-time audio setup
+├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
 ├── private_dot_config/
 │   ├── nvim/                   # Neovim (LazyVim) — see nvim/README.md
 │   ├── sketchybar/             # [macOS] SketchyBar Lua bar — see sketchybar/README.md
@@ -45,7 +44,7 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 │   ├── borders/                # [macOS] JankyBorders (pink→sky gradient)
 │   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
 │   ├── hyprpanel/              # [Linux] HyprPanel symlink config
-│   ├── git/                    # Git helper scripts
+│   ├── git/                    # Git config, ignore, helper scripts
 │   ├── opencode/               # OpenCode local settings
 │   └── {bat,delta,lazygit,yazi,zathura,qt6ct,uwsm,systemd}/
 └── externally_modified/        # Git-tracked, NOT chezmoi-managed (symlinked in)
@@ -79,7 +78,7 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 | macOS hotkey | `private_dot_config/skhd/skhdrc.tmpl` | Template for work/personal |
 | SketchyBar widget | `private_dot_config/sketchybar/items/widgets/` | Lua scripts |
 | Tmux config | `private_dot_config/tmux/tmux.conf` | Static (no template) |
-| Git identity switching | `dot_gitconfig.tmpl` | Conditional includes by directory |
+│ Git identity switching │ `private_dot_config/git/config.tmpl` │ Conditional includes by directory │
 | Manually tracked config | `externally_modified/` | Symlinked via `symlink_*.tmpl` |
 
 ---
@@ -89,7 +88,7 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 ```bash
 chezmoi diff                    # Preview changes (dry run)
 chezmoi apply                   # Apply dotfiles
-chezmoi cat ~/.gitconfig        # Render template to stdout
+chezmoi cat ~/.config/git/config # Render template to stdout
 chezmoi data                    # Show template variables
 chezmoi add ~/.newconfig        # Add file to chezmoi
 shellcheck script.sh            # Lint shell scripts

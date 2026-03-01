@@ -15,3 +15,6 @@
 .claude
 .codex
 .cursor
+
+
+# vim: ft=gitignore
