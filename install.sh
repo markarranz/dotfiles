@@ -254,9 +254,6 @@ install_linux() {
 setup_common() {
   info "Running post-install setup..."
 
-  # Oh My Zsh is managed by chezmoi (downloaded via .chezmoiexternal.toml),
-  # so no separate install step is needed — it arrives with `chezmoi apply`.
-
   # TPM (Tmux Plugin Manager)
   local tpm_dir="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins/tpm"
   if [[ ! -d "$tpm_dir" ]]; then
