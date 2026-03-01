@@ -1,0 +1,66 @@
+name = "help"
+name_pretty = "Help"
+icon = "help-about"
+search_name = true
+fixed_order = true
+keywords = ["help", "cheatsheet", "shortcuts", "prefixes"]
+
+[[entries]]
+text = "=  Calculator"
+subtext = "math & unit conversion"
+icon = "accessories-calculator"
+keywords = ["calc", "math", "convert"]
+
+[[entries]]
+text = "/  Files"
+subtext = "search files & folders"
+icon = "system-file-manager"
+keywords = ["files", "folders", "search"]
+
+[[entries]]
+text = ":  Clipboard"
+subtext = "clipboard history"
+icon = "edit-paste"
+keywords = ["clipboard", "paste", "copy"]
+
+[[entries]]
+text = ">  Runner"
+subtext = "run shell commands"
+icon = "utilities-terminal"
+keywords = ["runner", "terminal", "command", "shell"]
+
+[[entries]]
+text = ".  Symbols"
+subtext = "emojis & symbols"
+icon = "face-smile"
+keywords = ["symbols", "emoji", "emoticon"]
+
+[[entries]]
+text = "!  Todo"
+subtext = "todo list"
+icon = "checkbox-checked"
+keywords = ["todo", "task", "list"]
+
+[[entries]]
+text = "%  Bookmarks"
+subtext = "saved bookmarks"
+icon = "bookmark-new"
+keywords = ["bookmarks", "urls", "links"]
+
+[[entries]]
+text = "@  Websearch"
+subtext = "search the web"
+icon = "web-browser"
+keywords = ["websearch", "google", "search"]
+
+[[entries]]
+text = "$  Windows"
+subtext = "switch open windows"
+icon = "preferences-system-windows"
+keywords = ["windows", "switch", "focus"]
+
+[[entries]]
+text = ";  Providers"
+subtext = "list all providers"
+icon = "view-list"
+keywords = ["providers", "list", "all"]
