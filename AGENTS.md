@@ -42,14 +42,12 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 │   ├── ashell/                 # [Linux] Ashell status bar (TOML config)
 │   ├── borders/                # [macOS] JankyBorders (pink→sky gradient)
 │   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
-│   ├── hyprpanel/              # [Linux] HyprPanel symlink config
 │   ├── git/                    # Git config, ignore, helper scripts
 │   ├── opencode/               # OpenCode local settings
 │   └── {bat,delta,lazygit,yazi,zathura,qt6ct,uwsm,systemd}/
 └── externally_modified/        # Git-tracked, NOT chezmoi-managed (symlinked in)
     ├── nvim/                   # LazyVim base distribution
-    ├── karabiner/              # Karabiner-Elements JSON (49k lines)
-    └── hyprpanel/              # HyprPanel configs (laptop/desktop variants)
+    └── karabiner/              # Karabiner-Elements JSON (49k lines)
 ```
 
 ---
@@ -70,7 +68,6 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 | PATH/exports | `private_dot_config/zsh/exports.zsh.tmpl` | OS + work conditionals |
 | Add git helper script | `private_dot_config/git/scripts/` | Shell scripts used by git tooling |
 | OpenCode settings | `private_dot_config/opencode/` | JSON config files |
-| HyprPanel source config | `externally_modified/hyprpanel/` | Managed outside chezmoi templates |
 | Kitty keybinding | `private_dot_config/kitty/kitty.conf` | Python kittens for complex behavior |
 | Hyprland keybinding | `private_dot_config/hypr/hyprland.conf` | Static config |
 | Hyprland hardware config | `private_dot_config/hypr/hardware.conf.tmpl` | Chassis-type conditional |
@@ -185,7 +182,7 @@ Karabiner → skhd            OS-level key remap before hotkey daemon
 
 ## Notes & Gotchas
 
-- **externally_modified/**: LazyVim core, Karabiner JSON, HyprPanel are git-tracked but NOT chezmoi-managed. Edit there directly, symlinked via `symlink_*.tmpl`.
+- **externally_modified/**: LazyVim core and Karabiner JSON are git-tracked but NOT chezmoi-managed. Edit there directly, symlinked via `symlink_*.tmpl`.
 - **Zsh config**: `zsh/` is the active setup and uses manually sourced plugins from `~/.config/zsh/plugins/`.
 - **Home-row mods on both platforms**: Kanata (Linux) + Karabiner (macOS). Same layout: a/;=Ctrl, s/l=Alt, d/k=Meta, f/j=Shift.
 - **Catppuccin variants**: Mocha (most tools), Macchiato (tmux), Frappe (qt6ct).

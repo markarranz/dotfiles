@@ -3,7 +3,7 @@
 #########
 {{- if eq .chezmoi.os "linux" }}
 
-# bun - hyprpanel dependency:
+# bun:
 if [[ -s "$HOME/.bun/_bun" ]]; then
   source "$HOME/.bun/_bun"
   export BUN_INSTALL="$HOME/.bun"

@@ -102,7 +102,6 @@ These tools are specific to a macOS desktop environment.
 │   ├── borders/                # [macOS] JankyBorders
 │   ├── elephant/               # [Linux] Elephant data provider (Walker backend)
 │   ├── hypr/                   # [Linux] Hyprland compositor + utilities
-│   ├── hyprpanel/              # [Linux] HyprPanel status bar
 │   ├── kanata/                 # [Linux] Kanata keyboard remapper
 │   ├── karabiner/              # [macOS] Karabiner-Elements (symlink)
 │   ├── kitty/                  # Kitty terminal emulator
@@ -121,8 +120,7 @@ These tools are specific to a macOS desktop environment.
 │       └── omz/                # Legacy Oh My Zsh artifacts (not active)
 └── externally_modified/        # Configs tracked in git but not managed by chezmoi
     ├── karabiner/              # [macOS] Karabiner-Elements
-    ├── lazyvim/                # LazyVim distribution
-    └── hyprpanel/              # [Linux] Hyprpanel configs
+    └── lazyvim/                # LazyVim distribution
 ```
 
 ## Customization
