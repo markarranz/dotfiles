@@ -10,7 +10,7 @@ right = ["SystemInfo", ["Tray", "Clock", "Privacy", "Settings"]]
 
 [updates]
 check_cmd = "checkupdates; yay -Sy"
-update_cmd = 'kitty @ launch --type os-window --hold -- zsh -c "yay"'
+update_cmd = 'kitty --single-instance --hold -e zsh -c "yay"'
 
 [workspaces]
 enable_workspace_filling = true
