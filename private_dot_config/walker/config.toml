@@ -1,6 +1,7 @@
 theme = "catppuccin-mocha"
 
 [providers]
+default = ["desktopapplications", "calc", "websearch"]
 empty = []
 
 [providers.actions]
