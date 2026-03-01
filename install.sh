@@ -145,7 +145,6 @@ PACMAN_PACKAGES=(
 
 AUR_PACKAGES=(
   ashell
-  clipse
   kanata
   pwvucontrol
   walker
