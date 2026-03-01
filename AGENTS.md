@@ -40,7 +40,6 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 │   ├── skhd/                   # [macOS] skhd hotkey daemon
 │   ├── kanata/                 # [Linux] Kanata keyboard remapper (home-row mods)
 │   ├── ashell/                 # [Linux] Ashell status bar (TOML config)
-│   ├── rofi/                   # [Linux] Rofi launcher (RASI format, Catppuccin theme)
 │   ├── borders/                # [macOS] JankyBorders (pink→sky gradient)
 │   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
 │   ├── hyprpanel/              # [Linux] HyprPanel symlink config
@@ -193,5 +192,5 @@ Karabiner → skhd            OS-level key remap before hotkey daemon
 - **yabai SIP**: Scripting addition requires partial SIP disable on macOS. Cannot be automated.
 - **TPM first-time setup**: Press `prefix + I` inside tmux if plugins not auto-installed.
 - **Hostname "WORKMACHINE"**: Triggers work-mode (`.forWork = true`). Affects Git identity, NVM source, Neovim plugins, skhd browser choice.
-- **`exact_*` directories**: bat/exact_themes, delta/exact_themes, rofi/exact_themes, tmux/exact_plugins, zsh/exact_plugins, qt6ct/exact_colors — chezmoi deletes any files not in source.
+- **`exact_*` directories**: bat/exact_themes, delta/exact_themes, tmux/exact_plugins, zsh/exact_plugins, qt6ct/exact_colors — chezmoi deletes any files not in source.
 - **run_onchange_after_bat-cache.sh**: Auto-rebuilds bat theme cache after apply.

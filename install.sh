@@ -136,8 +136,6 @@ PACMAN_PACKAGES=(
   nm-connection-editor
   playerctl
   qt6ct
-  rofi
-  rofi-calc
   # PDF viewer
   zathura
   zathura-pdf-mupdf

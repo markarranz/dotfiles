@@ -69,7 +69,6 @@ These tools are specific to a Linux (Wayland/Hyprland) desktop environment.
 |------|-------------|
 | [**Hyprland**](https://hyprland.org/) | A dynamic tiling Wayland compositor (window manager) with smooth animations, rounded corners, and a highly scriptable configuration. It manages window placement, workspaces, keybindings, and multi-monitor setups. Also includes companion utilities: [hyprlock](https://github.com/hyprwm/hyprlock) (lock screen), [hypridle](https://github.com/hyprwm/hypridle) (idle management), [hyprpaper](https://github.com/hyprwm/hyprpaper) (wallpaper), and [hyprsunset](https://github.com/hyprwm/hyprsunset) (blue light filter). |
 | [**Ashell**](https://github.com/MalpenZibo/ashell) | A status bar and notification panel for Hyprland. Displays workspaces, the focused window title, system info, a tray, clock, and more along the top of the screen. |
-| [**Rofi**](https://github.com/davatorium/rofi) | An application launcher and window switcher. Press a keybinding and a search bar appears where you can type to find and launch applications, switch windows, browse files, or run shell commands. |
 | [**Kanata**](https://github.com/jtroo/kanata) | A software keyboard remapper that runs as a background service. Used here to implement home-row mods -- holding `a`, `s`, `d`, `f` (and their right-hand counterparts) produces Ctrl, Alt, Meta, and Shift, while tapping them types the normal letter. |
 | [**Qt6ct**](https://github.com/trialuser02/qt6ct) | A configuration tool for Qt 6 application appearance on non-KDE desktops. Used here to apply the Catppuccin Frappe theme to Qt-based applications so they match the rest of the desktop. |
 | Chromium & Electron flags | Configuration files (`chromium-flags.conf`, `electron-flags.conf`) that enable native Wayland support for Chromium-based browsers and Electron apps, preventing them from falling back to XWayland. |
@@ -110,7 +109,6 @@ These tools are specific to a macOS desktop environment.
 │   ├── nvim/                   # Neovim (LazyVim)
 │   ├── qt6ct/                  # [Linux] Qt6 theming
 │   ├── git/                    # Git config, ignore, helper scripts
-│   ├── rofi/                   # [Linux] Rofi application launcher
 │   ├── skhd/                   # [macOS] skhd hotkey daemon
 │   ├── starship/               # Starship shell prompt
 │   ├── systemd/                # [Linux] Systemd user services
