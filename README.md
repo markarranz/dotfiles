@@ -16,7 +16,7 @@ A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied
 An install script is included that installs all tools and their prerequisites for the current platform (macOS with Homebrew or Arch Linux with pacman/yay):
 
 ```sh
-git clone https://github.com/MarkArranz/dotfiles.git
+git clone https://github.com/markarranz/dotfiles.git
 cd dotfiles
 ./install.sh
 ```
