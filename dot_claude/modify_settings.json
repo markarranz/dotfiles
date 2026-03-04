@@ -1,7 +1,8 @@
 #!/bin/bash
 # Chezmoi modify_ script for ~/.claude/settings.json
 #
-# Manages: hooks, statusLine (chezmoi owns these)
+# Manages: statusLine (chezmoi owns these)
+# Cleans up: stale hooks left from removed config
 # Preserves: enabledPlugins, and anything else Claude Code writes
 
 current=$(cat)
@@ -20,4 +21,9 @@ managed='{
 }'
 
 # Deep merge: current * managed (managed keys win, rest preserved)
-echo "$current" | jq --argjson managed "$managed" '. * $managed'
+# Then remove stale Notification hook (script was deleted)
+echo "$current" | jq --argjson managed "$managed" '
+  . * $managed
+  | del(.hooks.Notification)
+  | if .hooks == {} then del(.hooks) else . end
+'
