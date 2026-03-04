@@ -266,11 +266,48 @@ install_linux() {
   success "Arch Linux packages installed"
 }
 
+install_rtk_token_killer() {
+  local rtk_path=""
+
+  if command_exists rtk; then
+    if rtk gain > /dev/null 2>&1; then
+      success "Rust Token Killer already installed"
+      return 0
+    fi
+
+    warn "Detected non-Token-Killer 'rtk' binary; replacing it"
+    rtk_path="$(command -v rtk || true)"
+
+    if command_exists cargo; then
+      cargo uninstall rtk > /dev/null 2>&1 || true
+    fi
+
+    if [[ -n "$rtk_path" && -f "$rtk_path" ]]; then
+      if ! rm -f "$rtk_path" 2> /dev/null; then
+        warn "Could not remove $rtk_path automatically"
+      fi
+    fi
+  fi
+
+  info "Installing Rust Token Killer (rtk-ai/rtk)..."
+  if curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh; then
+    if command_exists rtk && rtk gain > /dev/null 2>&1; then
+      success "Rust Token Killer installed"
+    else
+      warn "rtk installed but verification failed; run 'rtk gain' manually"
+    fi
+  else
+    warn "Failed to install Rust Token Killer automatically"
+  fi
+}
+
 # ---------------------------------------------------------------------------
 # Cross-platform post-install setup
 # ---------------------------------------------------------------------------
 setup_common() {
   info "Running post-install setup..."
+
+  install_rtk_token_killer
 
   # TPM (Tmux Plugin Manager)
   local tpm_dir="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins/tpm"
