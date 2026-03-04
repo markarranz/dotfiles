@@ -1,7 +1,7 @@
 log_level = "warn"
 outputs = "All"
 position = "Top"
-app_launcher_cmd = "walker"
+app_launcher_cmd = "nc -U /run/user/1000/walker/walker.sock"
 
 [modules]
 left = [["appLauncher", "Updates", "Workspaces"]]
