@@ -39,6 +39,17 @@ chezmoi init --apply <your-github-username>
 
 See the [chezmoi quick start guide](https://www.chezmoi.io/quick-start/) for more details.
 
+### Pre-commit Hooks
+
+To enforce formatting/lint checks before each commit:
+
+```sh
+pre-commit install
+pre-commit run --all-files
+```
+
+This repo's hooks run whitespace/JSON/TOML/YAML checks plus `shfmt`, `shellcheck`, and `stylua`.
+
 ## Included Tools
 
 ### Cross-Platform
