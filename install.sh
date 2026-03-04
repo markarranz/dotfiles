@@ -243,6 +243,22 @@ install_linux() {
     systemctl --user enable kanata.service 2>/dev/null || true
   fi
 
+  # JDK 21 (Eclipse Temurin)
+  local jdk_dir="$HOME/.local/jdks"
+  local jdk_link="$jdk_dir/jdk-21"
+  if [[ ! -d "$jdk_link" ]]; then
+    info "Installing JDK 21 (Eclipse Temurin)..."
+    mkdir -p "$jdk_dir"
+    curl -fL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse" \
+      -o "$jdk_dir/temurin21.tar.gz"
+    tar -xzf "$jdk_dir/temurin21.tar.gz" -C "$jdk_dir"
+    rm -f "$jdk_dir/temurin21.tar.gz"
+    ln -sfn "$jdk_dir"/jdk-21.* "$jdk_link"
+    success "JDK 21 installed at $jdk_link"
+  else
+    success "JDK 21 already installed"
+  fi
+
   success "Arch Linux packages installed"
 }
 
