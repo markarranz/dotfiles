@@ -15,6 +15,7 @@ A chezmoi [modify_ script](https://www.chezmoi.io/reference/source-state-attribu
 
 **Managed keys:**
 - `statusLine` — custom bash status line (see below)
+- `hooks.PreToolUse` — [RTK](https://github.com/rtk-ai/rtk) command rewrite hook (see below)
 
 ### Status Line (`status-line.sh`)
 
@@ -28,3 +29,7 @@ A custom bash script that renders a rich status line showing:
 - Context window usage percentage (color-coded: green < 60%, yellow 60-80%, red > 80%)
 
 All colors use the Catppuccin Mocha palette.
+
+### RTK Hook (`hooks/rtk-rewrite.sh`)
+
+A [PreToolUse hook](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/hooks) that transparently rewrites Bash commands through [RTK (Rust Token Killer)](https://github.com/rtk-ai/rtk) to compress CLI output before it enters the context window. Requires `rtk` to be installed (`brew install rtk`).
