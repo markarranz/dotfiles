@@ -56,6 +56,12 @@ return {
 		_0 = "􀊣",
 	},
 
+	-- Mic
+	mic = {
+		on = "",
+		off = "",
+	},
+
 	-- WiFi
 	wifi = {
 		connected = "􀙇",

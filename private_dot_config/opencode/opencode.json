@@ -1,5 +1,4 @@
 {
-  "plugin": [
-    "oh-my-opencode@latest"
-  ]
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["oh-my-opencode@latest", "openrtk"]
 }
