@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Focus an existing window of the given class, or launch the app if none exists.
+# Usage: focus-or-launch <class> <launch-command...>
+
+class="$1"
+shift
+
+address=$(hyprctl clients -j | jq -r --arg c "$class" '.[] | select(.class == $c) | .address' | head -1)
+
+if [[ -n "$address" ]]; then
+  hyprctl dispatch focuswindow "address:$address"
+else
+  exec "$@"
+fi

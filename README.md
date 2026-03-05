@@ -6,7 +6,7 @@ A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied
 
 ## Prerequisites
 
-- [chezmoi](https://www.chezmoi.io/install/) -- dotfile manager that uses templates to handle cross-platform differences. It maps this repo's source files (e.g. `dot_gitconfig.tmpl`) to their real locations (e.g. `~/.gitconfig`).
+- [chezmoi](https://www.chezmoi.io/install/) -- dotfile manager that uses templates to handle cross-platform differences. It maps this repo's source files (e.g. `private_dot_config/git/config.tmpl`) to their real locations (e.g. `~/.config/git/config`).
 - [Nerd Font](https://www.nerdfonts.com/) -- many tools here expect a patched Nerd Font for icons and symbols. The configs default to **JetBrains Mono NL Nerd Font**.
 
 ## Getting Started
@@ -16,7 +16,7 @@ A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied
 An install script is included that installs all tools and their prerequisites for the current platform (macOS with Homebrew or Arch Linux with pacman/yay):
 
 ```sh
-git clone https://github.com/MarkArranz/dotfiles.git
+git clone https://github.com/markarranz/dotfiles.git
 cd dotfiles
 ./install.sh
 ```
@@ -39,6 +39,17 @@ chezmoi init --apply <your-github-username>
 
 See the [chezmoi quick start guide](https://www.chezmoi.io/quick-start/) for more details.
 
+### Pre-commit Hooks
+
+To enforce formatting/lint checks before each commit:
+
+```sh
+pre-commit install
+pre-commit run --all-files
+```
+
+This repo's hooks run whitespace/JSON/TOML/YAML checks plus `shfmt`, `shellcheck`, and `stylua`.
+
 ## Included Tools
 
 ### Cross-Platform
@@ -48,7 +59,7 @@ These tools are configured for both macOS and Linux.
 | Tool | Description |
 |------|-------------|
 | [**Neovim**](https://neovim.io/) | A modern, extensible terminal-based text editor forked from Vim. Configured here with the [LazyVim](https://www.lazyvim.org/) distribution, which provides a batteries-included IDE experience with LSP support, syntax highlighting via Tree-sitter, fuzzy finding, and more. |
-| [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. Two configs are included that you can switch between by changing `ZDOTDIR`: one based on [Oh My Zsh](https://ohmyz.sh/) (`omz/`) and one based on [Zap](https://github.com/zap-zsh/zap) (`zsh/`). Both provide aliases, autosuggestions, syntax highlighting, and vi-mode keybindings. |
+| [**Zsh**](https://www.zsh.org/) | A powerful Unix shell with advanced tab completion, globbing, and scripting capabilities. The active setup lives in `zsh/` and manually sources plugins from `~/.config/zsh/plugins/`. It provides aliases, autosuggestions, syntax highlighting, and vi-mode keybindings. |
 | [**Git**](https://git-scm.com/) | Distributed version control system. Configured with [delta](https://github.com/dandavison/delta) as the pager for improved diffs, conditional includes for separating work and personal identities, and `zdiff3` merge conflict style. |
 | [**tmux**](https://github.com/tmux/tmux) | A terminal multiplexer that lets you run multiple terminal sessions inside a single window, detach and reattach to sessions, and split panes. Configured here with `Ctrl+Space` as the prefix key, vim-style pane navigation, and the [TPM](https://github.com/tmux-plugins/tpm) plugin manager. |
 | [**Starship**](https://starship.rs/) | A fast, minimal, and highly customizable shell prompt written in Rust. It displays contextual information such as the current git branch, active language runtimes, and exit codes -- all rendered with Nerd Font icons. |
@@ -69,7 +80,6 @@ These tools are specific to a Linux (Wayland/Hyprland) desktop environment.
 |------|-------------|
 | [**Hyprland**](https://hyprland.org/) | A dynamic tiling Wayland compositor (window manager) with smooth animations, rounded corners, and a highly scriptable configuration. It manages window placement, workspaces, keybindings, and multi-monitor setups. Also includes companion utilities: [hyprlock](https://github.com/hyprwm/hyprlock) (lock screen), [hypridle](https://github.com/hyprwm/hypridle) (idle management), [hyprpaper](https://github.com/hyprwm/hyprpaper) (wallpaper), and [hyprsunset](https://github.com/hyprwm/hyprsunset) (blue light filter). |
 | [**Ashell**](https://github.com/MalpenZibo/ashell) | A status bar and notification panel for Hyprland. Displays workspaces, the focused window title, system info, a tray, clock, and more along the top of the screen. |
-| [**Rofi**](https://github.com/davatorium/rofi) | An application launcher and window switcher. Press a keybinding and a search bar appears where you can type to find and launch applications, switch windows, browse files, or run shell commands. |
 | [**Kanata**](https://github.com/jtroo/kanata) | A software keyboard remapper that runs as a background service. Used here to implement home-row mods -- holding `a`, `s`, `d`, `f` (and their right-hand counterparts) produces Ctrl, Alt, Meta, and Shift, while tapping them types the normal letter. |
 | [**Qt6ct**](https://github.com/trialuser02/qt6ct) | A configuration tool for Qt 6 application appearance on non-KDE desktops. Used here to apply the Catppuccin Frappe theme to Qt-based applications so they match the rest of the desktop. |
 | Chromium & Electron flags | Configuration files (`chromium-flags.conf`, `electron-flags.conf`) that enable native Wayland support for Chromium-based browsers and Electron apps, preventing them from falling back to XWayland. |
@@ -94,24 +104,21 @@ These tools are specific to a macOS desktop environment.
 ├── .chezmoi.toml.tmpl          # Chezmoi config: detects OS, chassis type, hostname
 ├── .chezmoiexternal.toml.tmpl  # External dependencies (themes, plugins, archives)
 ├── .chezmoiignore.tmpl         # Platform-specific ignore rules
-├── dot_gitconfig.tmpl          # Git configuration
-├── dot_gitignore_global        # Global gitignore patterns
+├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
 ├── dot_zshenv.tmpl             # Zsh environment entry point (XDG dirs, etc.)
 ├── dot_claude/                 # Claude Code IDE settings
 ├── private_dot_config/         # ~/.config/ directory contents
 │   ├── ashell/                 # [Linux] Ashell status bar
 │   ├── bat/                    # bat syntax highlighter
 │   ├── borders/                # [macOS] JankyBorders
-│   ├── delta/                  # delta diff pager theme
+│   ├── elephant/               # [Linux] Elephant data provider (Walker backend)
 │   ├── hypr/                   # [Linux] Hyprland compositor + utilities
-│   ├── hyprpanel/              # [Linux] HyprPanel status bar
 │   ├── kanata/                 # [Linux] Kanata keyboard remapper
 │   ├── karabiner/              # [macOS] Karabiner-Elements (symlink)
 │   ├── kitty/                  # Kitty terminal emulator
 │   ├── nvim/                   # Neovim (LazyVim)
 │   ├── qt6ct/                  # [Linux] Qt6 theming
-│   ├── rofi/                   # [Linux] Rofi application launcher
-│   ├── sketchybar/             # [macOS] SketchyBar status bar
+│   ├── git/                    # Git config, ignore, helper scripts
 │   ├── skhd/                   # [macOS] skhd hotkey daemon
 │   ├── starship/               # Starship shell prompt
 │   ├── systemd/                # [Linux] Systemd user services
@@ -120,12 +127,11 @@ These tools are specific to a macOS desktop environment.
 │   ├── yabai/                  # [macOS] yabai window manager
 │   ├── yazi/                   # Yazi file manager
 │   ├── zathura/                # Zathura PDF viewer
-│   ├── omz/                    # Zsh config (Oh My Zsh)
-│   └── zsh/                    # Zsh config (Zap)
+│   └── zsh/                    # Zsh config (manual plugin sourcing)
+│       └── omz/                # Legacy Oh My Zsh artifacts (not active)
 └── externally_modified/        # Configs tracked in git but not managed by chezmoi
     ├── karabiner/              # [macOS] Karabiner-Elements
-    ├── lazyvim/                # LazyVim distribution
-    └── hyprpanel/              # [Linux] Hyprpanel configs
+    └── lazyvim/                # LazyVim distribution
 ```
 
 ## Customization
@@ -133,7 +139,7 @@ These tools are specific to a macOS desktop environment.
 Before applying, you may want to:
 
 1. **Review the chezmoi templates** -- files ending in `.tmpl` contain conditional logic based on OS and hostname. You will likely need to adjust hostname checks (e.g. `digdug`) and monitor configurations to match your hardware.
-2. **Swap out personal details** -- the git config references a specific GitHub username and email. Update `dot_gitconfig.tmpl` with your own.
+2. **Swap out personal details** -- the git config references a specific GitHub username and email. Update `private_dot_config/git/config.tmpl` with your own.
 3. **Adjust keybindings** -- keybindings are tailored to personal preference. Review the skhd, Hyprland, and Kanata configs to make sure they work for your keyboard and workflow.
 
 ## License

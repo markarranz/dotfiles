@@ -7,14 +7,14 @@ package.path = config_dir .. "/?.lua;" .. package.path
 package.cpath = package.cpath .. ";" .. os.getenv("HOME") .. "/.local/share/sketchybar_lua/?.so"
 
 -- Build the C helper (must complete before use, so use os.execute)
-os.execute("(cd " .. config_dir .. "/helper && make) >/dev/null 2>&1")
+os.execute("(cd " .. config_dir .. "/helpers/event_provider && make) >/dev/null 2>&1")
 
 -- Launch the CPU helper early using os.execute (not sbar.exec) so it starts
 -- immediately as a real child process. This gives it time to register its Mach
 -- service before sbar.end_config() tries to connect via the mach_helper property.
 local colors = require("config.colors")
 os.execute(string.format(
-	"killall helper 2>/dev/null; RED=0x%x ORANGE=0x%x YELLOW=0x%x LABEL_COLOR=0x%x %s/helper/helper git.felix.helper &",
+	"killall helper 2>/dev/null; RED=0x%x ORANGE=0x%x YELLOW=0x%x LABEL_COLOR=0x%x %s/helpers/event_provider/helper git.felix.helper &",
 	colors.red,
 	colors.orange,
 	colors.yellow,

@@ -1,3 +1,4 @@
+{{- if eq .chezmoi.os "darwin" -}}
 #!/usr/bin/env swift
 // Creates the "BH + Mic Input" aggregate audio device on macOS.
 // Combines BlackHole 2ch (virtual loopback) + built-in microphone so Tuple
@@ -180,3 +181,4 @@ if createStatus == noErr && newDeviceID != AudioObjectID(kAudioObjectUnknown) {
 #else
 // Non-Apple platform — CoreAudio not available, nothing to do.
 #endif
+{{- end }}

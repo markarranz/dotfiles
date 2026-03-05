@@ -1,339 +1,193 @@
 # AGENTS.md - Development Guidelines for This Repository
 
-This is a **chezmoi-managed dotfiles repository**. It contains configuration files for development tools (Neovim, Zsh, Git, tmux, etc.) and desktop environments (Hyprland, yabai, SketchyBar).
+Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git, tmux, Kitty, Starship) + desktop environments (Hyprland on Linux, yabai/SketchyBar on macOS). Catppuccin Mocha theme throughout.
 
 ## Table of Contents
-1. [Repository Overview](#repository-overview)
-2. [Build/Lint/Test Commands](#buildlinttest-commands)
-3. [Formatters & Linters](#formatters--linters)
-4. [Code Style Guidelines](#code-style-guidelines)
-   - [Git Commit Messages](#git-commit-messages)
-5. [Template Conventions](#template-conventions)
-6. [Tool-Specific Guidelines](#tool-specific-guidelines)
+1. [Structure](#structure)
+2. [Where to Look](#where-to-look)
+3. [Commands](#commands)
+4. [Conventions](#conventions)
+5. [Template System](#template-system)
+6. [Anti-Patterns](#anti-patterns)
+7. [Cross-Tool Dependencies](#cross-tool-dependencies)
+8. [Notes & Gotchas](#notes--gotchas)
 
 ---
 
-## Repository Overview
+## Structure
 
-- **Manager**: [chezmoi](https://www.chezmoi.io/) — dotfile manager using Go templates
-- **Platforms**: macOS and Linux (Arch-based)
-- **Structure**:
-  - `dot_*` files → map to `~/.*` (e.g., `dot_gitconfig.tmpl` → `~/.gitconfig`)
-  - `private_dot_*` files → map to `~/.*` (private, not in git)
-  - `private_dot_config/*` → map to `~/.config/*`
-  - `.tmpl` suffix → Go template files with conditional logic
-
----
-
-## Build/Lint/Test Commands
-
-### Chezmoi Operations
-
-```bash
-# Apply dotfiles (dry run)
-chezmoi diff
-
-# Apply dotfiles (for real)
-chezmoi apply
-
-# Edit a dotfile source
-chezmoi edit ~/.gitconfig
-
-# Add a new file to chezmoi
-chezmoi add ~/.somefile
-
-# Check template syntax
-chezmoi data  # Shows rendered template data
 ```
-
-### Shell Script Linting
-
-This repo uses shell scripts for installation and hooks. Install [shellcheck](https://www.shellcheck.net/):
-
-```bash
-# macOS
-brew install shellcheck
-
-# Arch Linux
-sudo pacman -S shellcheck
-
-# Run linting on a shell script
-shellcheck install.sh
-shellcheck dot_claude/modify_settings.json
-```
-
-### Single Test (Template Rendering)
-
-To test a specific template file renders correctly:
-
-```bash
-# Render a specific template and see the output
-chezmoi cat ~/.gitconfig
-
-# Or check the source template
-chezmoi cat-config templates.dot_gitconfig
-```
-
-### Neovim (LazyVim) Plugin Sync
-
-```bash
-# Inside Neovim
-:Lazy  # Opens LazyVim plugin manager
-:Lazy sync  # Sync all plugins
-```
-
-### Tmux Plugin Installation
-
-```bash
-# Inside tmux: press prefix + I (Ctrl+Space then I)
+.
+├── .chezmoi.toml.tmpl          # Platform detection (OS, chassis, hostname, work flag)
+├── .chezmoiexternal.toml.tmpl  # External deps (Catppuccin themes, zsh/tmux plugins)
+├── .chezmoiignore.tmpl         # OS-conditional file exclusion
+├── install.sh                  # Cross-platform installer (Homebrew / pacman+yay)
+├── install-devcontainer.sh     # Devcontainer bootstrap script
+├── dot_zshenv.tmpl             # Zsh entry point (XDG dirs, EDITOR, HISTFILE)
+├── dot_claude/                 # Claude Code IDE settings
+├── dot_claude/                 # Claude Code IDE settings
+├── dot_tuple/                  # Tuple.app triggers and tracked-room scripts
+├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
+├── private_dot_config/
+│   ├── nvim/                   # Neovim (LazyVim) — see nvim/README.md
+│   ├── sketchybar/             # [macOS] SketchyBar Lua bar — see sketchybar/README.md
+│   ├── kitty/                  # Kitty terminal (Python kittens for navigation/resize)
+│   ├── hypr/                   # [Linux] Hyprland + hyprlock/hypridle/hyprpaper/hyprsunset
+│   ├── zsh/                    # Zsh config (aliases, exports, functions, plugins)
+│   ├── tmux/                   # Tmux (Ctrl+Space prefix, vim-style, TPM, Catppuccin)
+│   ├── starship/               # Starship prompt (Catppuccin Mocha, 60+ language symbols)
+│   ├── yabai/                  # [macOS] yabai tiling WM
+│   ├── skhd/                   # [macOS] skhd hotkey daemon
+│   ├── kanata/                 # [Linux] Kanata keyboard remapper (home-row mods)
+│   ├── ashell/                 # [Linux] Ashell status bar (TOML config)
+│   ├── borders/                # [macOS] JankyBorders (pink→sky gradient)
+│   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
+│   ├── git/                    # Git config, ignore, helper scripts
+│   ├── opencode/               # OpenCode local settings
+│   └── {bat,delta,lazygit,yazi,zathura,qt6ct,uwsm,systemd}/
+└── externally_modified/        # Git-tracked, NOT chezmoi-managed (symlinked in)
+    ├── nvim/                   # LazyVim base distribution
+    └── karabiner/              # Karabiner-Elements JSON (49k lines)
 ```
 
 ---
 
-## Formatters & Linters
+## Where to Look
 
-Agents must run the appropriate formatter and linter after modifying files. These match the Neovim (LazyVim) toolchain. All tools use their default settings — no `.prettierrc`, `ruff.toml`, `taplo.toml`, or `.markdownlint*` config files exist.
-
-| Language | Formatter | Linter | Command |
-|----------|-----------|--------|---------|
-| Shell/Bash | shfmt | shellcheck | `shfmt -w <file> && shellcheck <file>` |
-| Lua | stylua | — | `stylua <file>` |
-| Python | ruff | ruff | `ruff format <file> && ruff check --fix <file>` |
-| YAML | prettier | — | `prettier --write <file>` |
-| JSON | prettier | — | `prettier --write <file>` |
-| TOML | taplo | — | `taplo format <file>` |
-| Markdown | prettier | — | `prettier --write <file>` |
-
-**Rules**:
-- Run the formatter and linter for the file type after modifying any file
-- If a tool is not installed, skip it — do not fail the task
-- Lua uses **tab** indentation; stylua's defaults apply (no repo-root `stylua.toml` needed — the one in `externally_modified/nvim/` is the LazyVim starter and does not apply here)
-
-**Do NOT format**:
-- `.tmpl` files — Go template directives (`{{- ... -}}`) would break
-- Files in `externally_modified/` — upstream copies, not ours to format
-
----
-
-## Code Style Guidelines
-
-### Git Commit Messages
-
-Format: `[<scope>] <description>`
-
-Examples:
-- `[ashell] fix updates widget to run yay in kitty properly`
-- `[neovim] add golangci-lint fix for go.work workspaces`
-- `[sketchybar] auto-update app font icon map via chezmoi external`
-
-Rules:
-- Use lowercase for scope and description
-- Use imperative mood ("add" not "added")
-- Keep subject line under 72 characters
-- Multi-agent beneficial changes start with `[ai]` (e.g., AGENTS.md updates)
+| Task | Location | Notes |
+|------|----------|-------|
+| Add new dotfile | `chezmoi add ~/.newconfig` | Creates in chezmoi source dir |
+| Platform-specific logic | `.tmpl` files | Use Go template conditionals |
+| Add/update external dep | `.chezmoiexternal.toml.tmpl` | Themes: 672h refresh, plugins: 168h |
+| Exclude file per-OS | `.chezmoiignore.tmpl` | Conditional ignore blocks |
+| Add Neovim plugin | `externally_modified/nvim/lua/plugins/` | Use `private_dot_config/nvim/lua/plugins/` for chezmoi-managed overrides |
+| Per-language editor settings | `private_dot_config/nvim/after/ftplugin/` | Vim script or Lua |
+| LSP server config | `private_dot_config/nvim/after/lsp/` | Lua files |
+| Add shell alias | `private_dot_config/zsh/aliases.zsh.tmpl` | OS-conditional sections |
+| Add shell function | `private_dot_config/zsh/functions.zsh` | Static (no template) |
+| PATH/exports | `private_dot_config/zsh/exports.zsh.tmpl` | OS + work conditionals |
+| Add git helper script | `private_dot_config/git/scripts/` | Shell scripts used by git tooling |
+| OpenCode settings | `private_dot_config/opencode/` | JSON config files |
+| Kitty keybinding | `private_dot_config/kitty/kitty.conf` | Python kittens for complex behavior |
+| Hyprland keybinding | `private_dot_config/hypr/hyprland.conf` | Static config |
+| Hyprland hardware config | `private_dot_config/hypr/hardware.conf.tmpl` | Chassis-type conditional |
+| macOS hotkey | `private_dot_config/skhd/skhdrc.tmpl` | Template for work/personal |
+| SketchyBar widget | `private_dot_config/sketchybar/items/widgets/` | Lua scripts |
+| Tmux config | `private_dot_config/tmux/tmux.conf` | Static (no template) |
+│ Git identity switching │ `private_dot_config/git/config.tmpl` │ Conditional includes by directory │
+| Manually tracked config | `externally_modified/` | Symlinked via `symlink_*.tmpl` |
 
 ---
 
-### General Principles
-
-1. **No comments unless required** — Avoid adding explanatory comments; code should be self-documenting
-2. **Use meaningful names** — Variables and functions should have descriptive names
-3. **Keep files focused** — Each file should have a single purpose
-4. **Platform-agnostic by default** — Use chezmoi templates for platform-specific logic
-
-### Shell Script Conventions
-
-Follow these conventions for shell scripts (e.g., `install.sh`, hooks):
+## Commands
 
 ```bash
-#!/usr/bin/env bash
-set -euo pipefail  # Always use strict mode
-
-# Function naming: lowercase with underscores
-function setup_common() { ... }
-
-# Local variables: prefix with local
-local current_shell
-current_shell="$(basename "$SHELL")"
-
-# Colors: use for user-facing output only
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-RESET='\033[0m'
-
-# Helper functions for output
-info()    { printf "${BLUE}::${RESET} %s\n" "$*"; }
-success() { printf "${GREEN}::${RESET} %s\n" "$*"; }
-warn()    { printf "${YELLOW}:: %s${RESET}\n" "$*"; }
-error()   { printf "${RED}:: %s${RESET}\n" "$*" >&2; }
-```
-
-**Error handling**:
-- Always use `set -euo pipefail`
-- Check command exit status explicitly when needed: `command || error "Failed"`
-- Use `command_exists()` helper before running commands
-
-**Quotes**:
-- Always quote variables: `"$var"` not `$var`
-- Use single quotes for literal strings
-
-### Go Template Conventions
-
-Templates use [chezmoi templating](https://www.chezmoi.io/reference/templates/):
-
-```tmpl
-{{- $chassisType := "desktop" }}
-{{- if eq .chezmoi.os "darwin" }}
-{{-   if contains "MacBook" (output "sysctl" "-n" "hw.model") }}
-{{-     $chassisType = "laptop" }}
-{{-   end }}
-{{- end }}
-
-[data]
-chassisType = {{ $chassisType | quote }}
-```
-
-**Rules**:
-- Use `{{-` to strip leading whitespace (preferred)
-- Use `-}}` to strip trailing whitespace
-- Access chezmoi variables via `.chezmoi.*`
-- Access custom data via `..*`
-- Use `env "VAR_NAME"` to read environment variables
-- Use `output "cmd" "arg1" "arg2"` for command output
-
-### Lua Conventions
-
-Used in Neovim (LazyVim) and SketchyBar:
-
-```lua
--- Use snake_case for variables and functions
-local function setup_statusline()
-  local status = require("status")
-end
-
--- Prefer explicit returns
-local M = {}
-M.setup = function()
-  -- setup code
-end
-return M
-```
-
-### YAML Conventions
-
-Used in lazygit, yazi, kitty:
-
-```yaml
-# Use 2-space indentation
-key: value
-
-# Arrays use inline format for short lists
-plugins:
-  - tmux
-  - git
-
-# Use comments sparingly to explain non-obvious config
-```
-
-### TOML Conventions
-
-Used in starship, ashell, bat:
-
-```toml
-# Use = with spaces around it
-key = "value"
-
-# Tables for grouping
-[table]
-key = "value"
-
-# Inline tables for short configs
-plugins = ["git", "tmux"]
+chezmoi diff                    # Preview changes (dry run)
+chezmoi apply                   # Apply dotfiles
+chezmoi cat ~/.config/git/config # Render template to stdout
+chezmoi data                    # Show template variables
+chezmoi add ~/.newconfig        # Add file to chezmoi
+shellcheck script.sh            # Lint shell scripts
 ```
 
 ---
 
-## Template Conventions
+## Conventions
+
+### Git Commits
+Format: `[<scope>] <description>` — lowercase, imperative, <72 chars.
+AI changes: `[ai] description`.
+
+### Shell Scripts
+- `set -euo pipefail` always
+- Quote all variables: `"$var"`
+- `command_exists()` check before running tools
+- Helper functions: `info()`, `success()`, `warn()`, `error()`
+
+### Go Templates
+- `{{-` / `-}}` for whitespace control (always use dash form)
+- `.chezmoi.os`, `.chezmoi.hostname` for platform detection
+- `.chassisType`, `.forWork`, `.forDevcontainer` for custom data
+- `output "cmd" "args"` for command execution, `env "VAR"` for env vars
+
+### Lua (Neovim + SketchyBar)
+- `snake_case` for variables/functions
+- Explicit `return M` module pattern
+- No comments unless non-obvious
+
+### Config Formats by Tool
+| Format | Tools |
+|--------|-------|
+| Lua | Neovim, SketchyBar |
+| TOML | Starship, ashell, bat |
+| YAML | lazygit, yazi |
+| Shell | yabai, skhd, borders, tmux |
+| Python | Kitty kittens |
+| RASI | Rofi |
+| KBD | Kanata |
+| Hyprlang | Hyprland |
+| JSON | Karabiner |
+
+---
+
+## Template System
+
+### Variables (from `.chezmoi.toml.tmpl`)
+| Variable | Values | Used In |
+|----------|--------|---------|
+| `.chezmoi.os` | `"darwin"`, `"linux"` | Most `.tmpl` files |
+| `.chezmoi.hostname` | Machine hostname | Git config (`"digdug"` = work) |
+| `.chassisType` | `"laptop"`, `"desktop"` | Hyprland hardware, hyprlock |
+| `.forWork` | Boolean | Zsh (NVM), Kitty, Git, Neovim |
+| `.forDevcontainer` | Boolean | Zsh, chezmoiignore |
 
 ### File Naming
+| Prefix/Suffix | Meaning |
+|---------------|---------|
+| `dot_*` | Maps to `~/.*` |
+| `private_dot_*` | Private file (restricted perms) |
+| `*.tmpl` | Go template (processed by chezmoi) |
+| `executable_*` | Marked executable |
+| `symlink_*` | Creates symlink |
+| `exact_*` | Exact directory (deletes unmanaged files) |
+| `run_once_*` | Runs once when first applied |
+| `run_onchange_*` | Runs when source changes |
 
-| Source File | Target File |
-|-------------|-------------|
-| `dot_gitconfig.tmpl` | `~/.gitconfig` |
-| `dot_zshenv.tmpl` | `~/.zshenv` |
-| `private_dot_config/nvim/` | `~/.config/nvim/` |
-| `.chezmoi.toml.tmpl` | `.chezmoi.toml` |
+---
 
-### Conditional Logic
+## Anti-Patterns
 
-```tmpl
-{{- if eq .chezmoi.os "darwin" }}
-# macOS-specific config
-{{- else if eq .chezmoi.os "linux" }}
-# Linux-specific config
-{{- end }}
+- **No comments unless required** — code should be self-documenting
+- **No hardcoded paths** — use chezmoi variables and XDG conventions
+- **No platform logic outside templates** — use `.tmpl` files for OS conditionals
+- **No multi-purpose files** — each file has a single focus
+- **No unquoted shell variables** — always `"$var"`
+- **Keep files focused** — one tool/concern per config file
+
+---
+
+## Cross-Tool Dependencies
+
 ```
-
-### Hostname-Based Configuration
-
-```tmpl
-{{- if eq .chezmoi.hostname "work-machine" }}
-# Work-specific settings
-{{- end }}
+Kitty ↔ Neovim ↔ Tmux     Ctrl+hjkl seamless navigation (navigate.lua/navigate.py)
+Zsh → SketchyBar           brew() wrapper triggers bar update (macOS)
+yabai → SketchyBar          42px top padding reserved; workspace state queries
+skhd → yabai                Hotkeys send yabai commands
+Hyprland → Ashell → Walker  Status bar + app launcher (Unix socket)
+Kanata → Hyprland           OS-level key remap before compositor sees keys
+Karabiner → skhd            OS-level key remap before hotkey daemon
 ```
 
 ---
 
-## Tool-Specific Guidelines
+## Notes & Gotchas
 
-### Neovim (LazyVim)
-
-- Modify via `private_dot_config/nvim/`
-- Use Lua in `lua/plugins/` for custom plugins
-- See `externally_modified/nvim/` for manually tracked overrides
-
-### Git Configuration
-
-- Template in `dot_gitconfig.tmpl`
-- Use conditional includes for different identities
-- Delta as pager: `git config --global core.pager delta`
-
-### Terminal (Kitty)
-
-- Config in `private_dot_config/kitty/`
-- Uses `kitty.conf` syntax
-- Fonts: JetBrains Mono NL Nerd Font
-
-### Desktop Environments
-
-**macOS**: yabai, skhd, SketchyBar, Karabiner-Elements, JankyBorders
-**Linux**: Hyprland, ashell, rofi, kanata, qt6ct
-
----
-
-## Common Tasks
-
-### Adding a New Dotfile
-
-```bash
-# Add existing file to chezmoi
-chezmoi add ~/.newconfig
-
-# Create from scratch
-touch ~/.config/newtool/config.toml
-chezmoi add ~/.config/newtool/config.toml
-```
-
-### Updating External Dependencies
-
-Edit `.chezmoiexternal.toml.tmpl` to change versioned external files.
-
-### Testing Changes
-
-```bash
-# Preview changes
-chezmoi diff
-
-# Apply and verify
-chezmoi apply
-```
+- **externally_modified/**: LazyVim core and Karabiner JSON are git-tracked but NOT chezmoi-managed. Edit there directly, symlinked via `symlink_*.tmpl`.
+- **Zsh config**: `zsh/` is the active setup and uses manually sourced plugins from `~/.config/zsh/plugins/`.
+- **Home-row mods on both platforms**: Kanata (Linux) + Karabiner (macOS). Same layout: a/;=Ctrl, s/l=Alt, d/k=Meta, f/j=Shift.
+- **Catppuccin variants**: Mocha (most tools), Macchiato (tmux), Frappe (qt6ct).
+- **yabai SIP**: Scripting addition requires partial SIP disable on macOS. Cannot be automated.
+- **TPM first-time setup**: Press `prefix + I` inside tmux if plugins not auto-installed.
+- **Hostname "digdug"**: Triggers work-mode (`.forWork = true`). Affects Git identity, NVM source, Neovim plugins, skhd browser choice.
+- **`exact_*` directories**: bat/exact_themes, delta/exact_themes, tmux/exact_plugins, zsh/exact_plugins, qt6ct/exact_colors — chezmoi deletes any files not in source.
+- **run_onchange_after_bat-cache.sh**: Auto-rebuilds bat theme cache after apply.

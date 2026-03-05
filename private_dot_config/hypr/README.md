@@ -11,8 +11,7 @@
 - [hyprsunset](https://github.com/hyprwm/hyprsunset) -- blue light filter (night mode)
 - [uwsm](https://github.com/Vladimir-csp/uwsm) -- session manager for Hyprland
 - [Kitty](https://sw.kovidgoyal.net/kitty/) -- default terminal
-- [walker](https://github.com/abenz1267/walker) -- application launcher
-- [clipse](https://github.com/savedra1/clipse) -- clipboard manager
+- [walker](https://github.com/abenz1267/walker) -- application launcher + clipboard (via [Elephant](https://github.com/abenz1267/elephant))
 - [nautilus](https://apps.gnome.org/Nautilus/) -- file manager
 - [Firefox](https://www.mozilla.org/firefox/) -- default browser
 - [brightnessctl](https://github.com/Haikarainen/brightnessctl) -- keyboard backlight control (laptop)
@@ -51,4 +50,3 @@ The main config is static, with hardware-specific settings sourced from `hardwar
 
 - **ashell** -- status bar / system panel
 - **walker** -- application launcher daemon (listens on a Unix socket)
-- **clipse** -- clipboard history manager

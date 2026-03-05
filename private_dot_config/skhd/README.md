@@ -17,7 +17,6 @@
 | ------------- | --------------------------------------------- |
 | `Cmd+;`       | Open / focus Kitty                            |
 | `Cmd+Shift+;` | New Kitty window                              |
-| `Ctrl+/`      | Toggle quick-access terminal (Quake dropdown) |
 | `Cmd+b`       | Open / focus browser                          |
 | `Cmd+Shift+b` | New browser window                            |
 | `Cmd+e`       | Open Finder                                   |

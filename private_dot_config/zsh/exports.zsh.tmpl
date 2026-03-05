@@ -3,7 +3,7 @@
 #########
 {{- if eq .chezmoi.os "linux" }}
 
-# bun - hyprpanel dependency:
+# bun:
 if [[ -s "$HOME/.bun/_bun" ]]; then
   source "$HOME/.bun/_bun"
   export BUN_INSTALL="$HOME/.bun"
@@ -12,6 +12,10 @@ fi
 
 # node-version-manager:
 [[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
+
+# java (temurin):
+[[ -d "$HOME/.local/jdks/jdk-21" ]] && export JAVA_HOME="$HOME/.local/jdks/jdk-21"
+[[ -n "$JAVA_HOME" && -d "$JAVA_HOME/bin" ]] && export PATH="$JAVA_HOME/bin:$PATH"
 
 # texlive:
 [[ -d "/usr/local/texlive" ]] && export PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH"

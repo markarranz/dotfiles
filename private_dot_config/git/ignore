@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+
+# AI tooling
+.omc
+.sisyphus
+.claude
+.codex
+.cursor
+
+
+# vim: ft=gitignore

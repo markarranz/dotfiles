@@ -107,6 +107,9 @@ fi
 
 full_text="${greeting} ${joke}"
 
+# Let the joiner settle in before the joke
+sleep 2.5
+
 # Play to local speakers and BlackHole (Tuple's audio input) in parallel.
 # Both use || true so a missing audio device never fails the trigger.
 say -a "$SPEAKER_DEVICE" -- "$full_text" || true &

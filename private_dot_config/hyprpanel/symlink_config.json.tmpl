@@ -1,5 +1,0 @@
-{{- if eq .chassisType "laptop" -}}
-{{ .chezmoi.sourceDir }}/externally_modified/hyprpanel/config.laptop.json
-{{- else if eq .chassisType "desktop" -}}
-{{ .chezmoi.sourceDir }}/externally_modified/hyprpanel/config.desktop.json
-{{- end -}}
