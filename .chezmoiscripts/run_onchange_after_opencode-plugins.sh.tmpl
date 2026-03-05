@@ -1,9 +1,0 @@
-#!/bin/sh
-# opencode.json hash: {{ include "private_dot_config/opencode/opencode.json" | sha256sum }}
-# Install opencode plugin dependencies when plugin list changes
-set -eu
-
-if command -v bun >/dev/null 2>&1; then
-  cd "${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
-  bun add github:martinstannard/openrtk 2>/dev/null
-fi
