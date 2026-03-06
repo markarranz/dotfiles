@@ -64,9 +64,9 @@ yabai -m config \
   external_bar all:42:0 \
   menubar_opacity 1.0 \
   mouse_follows_focus off \
-  focus_follows_mouse off \
-  display_arrangement_order default \
-  window_origin_display default \
+  focus_follows_mouse on \
+  display_arrangement_order horizontal \
+  window_origin_display focused \
   window_placement second_child \
   window_insertion_point focused \
   window_zoom_persist off \
@@ -89,7 +89,7 @@ yabai -m config \
 # ############## #
 
 yabai -m config \
-  layout bsp \
+  layout stack \
   split_type auto \
   top_padding 0 \
   bottom_padding 3 \
@@ -97,6 +97,5 @@ yabai -m config \
   right_padding 3 \
   window_gap 6 \
   auto_balance off
-
 
 # vim: ft=sh
