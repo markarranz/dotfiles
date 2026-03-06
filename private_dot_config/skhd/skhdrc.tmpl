@@ -44,6 +44,10 @@ cmd + ctrl + alt - k : yabai -m space --display next
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270 # clockwise
 cmd + alt - u : yabai -m space --rotate 90  # counter-clockwise
+
+# Mirror window tree across axes:
+cmd + alt - 0x2A : yabai -m space --mirror y-axis # \\
+cmd + alt - 0x1B : yabai -m space --mirror x-axis # -
  
 # Focus space with CMD + [0-9]:
 # yabai returns non-zero when focusing the already-focused space, so we
@@ -67,6 +71,7 @@ cmd + shift + alt - l : yabai -m window --space next --focus
 # WINDOW COMMANDS #
 # ############### #
 
+
 # Toggle fullscreen:
 cmd + shift - f : yabai -m window --toggle native-fullscreen
 
@@ -82,11 +87,14 @@ alt - p : yabai -m window --toggle sticky
 # Toggle PiP:
 shift + alt - p : yabai -m window --toggle pip
 
+# Toggle layout (bsp/stack):
+alt - s : yabai -m space --layout "$([ "$(yabai -m query --spaces --space | jq -r '.type')" = bsp ] && echo stack || echo bsp)"; sketchybar --trigger yabai_layout_change
+
 # Focus window with CMD + [hjkl]
-cmd - h : yabai -m window --focus west
-cmd - j : yabai -m window --focus south
-cmd - k : yabai -m window --focus north
-cmd - l : yabai -m window --focus east
+cmd - h : yabai -m window --focus stack.prev || yabai -m window --focus west
+cmd - j : yabai -m window --focus stack.next || yabai -m window --focus south
+cmd - k : yabai -m window --focus stack.prev || yabai -m window --focus north
+cmd - l : yabai -m window --focus stack.next || yabai -m window --focus east
 
 # Move window with CMD + SHIFT + [hjkl]
 cmd + shift - h : yabai -m window --warp west
