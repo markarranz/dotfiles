@@ -5,5 +5,5 @@ set -eu
 
 if command -v bun >/dev/null 2>&1; then
   cd "${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
-  bun add github:martinstannard/openrtk 2>/dev/null
+  bun install 2>/dev/null
 fi
