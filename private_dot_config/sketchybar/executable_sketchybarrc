@@ -3,7 +3,7 @@
 local config_dir = os.getenv("HOME") .. "/.config/sketchybar"
 
 -- Setup package paths
-package.path = config_dir .. "/?.lua;" .. package.path
+package.path = config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua;" .. package.path
 package.cpath = package.cpath .. ";" .. os.getenv("HOME") .. "/.local/share/sketchybar_lua/?.so"
 
 -- Build the C helper (must complete before use, so use os.execute)
