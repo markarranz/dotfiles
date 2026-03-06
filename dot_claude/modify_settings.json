@@ -1,8 +1,8 @@
 #!/bin/bash
 # Chezmoi modify_ script for ~/.claude/settings.json
 #
-# Manages: statusLine, hooks.PreToolUse (chezmoi owns these)
-# Cleans up: stale hooks left from removed config
+# Manages: statusLine (chezmoi owns this)
+# Preserves: enabledPlugins, and anything else Claude Code writes
 # Preserves: enabledPlugins, and anything else Claude Code writes
 
 current=$(cat)
@@ -12,23 +12,12 @@ if [ -z "$current" ]; then
   current='{}'
 fi
 
-# Keys that chezmoi owns — these always win
 managed='{
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/status-line.sh"
-  },
-  "hooks": {
-    "PreToolUse": [{
-      "matcher": "Bash",
-      "hooks": [{ "type": "command", "command": "~/.claude/hooks/rtk-rewrite.sh" }]
-    }]
   }
 }'
 
 # Deep merge: current * managed (managed keys win, rest preserved)
-# Then remove stale Notification hook (script was deleted)
-echo "$current" | jq --argjson managed "$managed" '
-  . * $managed
-  | del(.hooks.Notification)
-'
+echo "$current" | jq --argjson managed "$managed" '. * $managed'
