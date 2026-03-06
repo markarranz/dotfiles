@@ -105,8 +105,20 @@ def handle_result(args, result, target_window_id, boss):
             return
         direction = args[1]
 
+    tab = boss.active_tab
+    if tab is None:
+        return
+
+    # In stack layout, j/k cycle through stacked windows
+    if tab.current_layout.name == 'stack' and direction in ('down', 'up'):
+        if direction == 'down':
+            tab.next_window()
+        else:
+            tab.previous_window()
+        return
+
     neighbor = find_neighbor_window(direction, window, boss)
     if neighbor is not None:
         state = _get_state(boss)
-        state[(boss.active_tab.id, neighbor.id)] = window.id
-        boss.active_tab.set_active_window(neighbor)
+        state[(tab.id, neighbor.id)] = window.id
+        tab.set_active_window(neighbor)
