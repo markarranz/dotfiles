@@ -1,0 +1,26 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+{{- if lookPath "sketchybar" }}
+# sketchybar: {{ output "sketchybar" "--version" | trim | sha256sum }}
+{{- end }}
+{{- if lookPath "lua" }}
+# lua: {{ output "lua" "-v" | trim | sha256sum }}
+{{- end }}
+# Rebuild SBarLua when sketchybar or Lua version changes (ABI compatibility)
+set -eu
+
+if ! command -v sketchybar >/dev/null 2>&1; then exit 0; fi
+if ! command -v git >/dev/null 2>&1; then exit 0; fi
+
+echo "[sketchybar] Rebuilding SBarLua..."
+tmpdir=$(mktemp -d)
+trap 'rm -rf "$tmpdir"' EXIT
+git clone --depth 1 https://github.com/FelixKratz/SbarLua.git "$tmpdir" 2>/dev/null
+(cd "$tmpdir" && make install) >/dev/null 2>&1
+echo "[sketchybar] SBarLua rebuilt successfully"
+
+if brew services list 2>/dev/null | grep -q "sketchybar.*started"; then
+  brew services restart sketchybar >/dev/null 2>&1
+  echo "[sketchybar] Restarted"
+fi
+{{ end -}}

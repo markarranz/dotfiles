@@ -13,20 +13,22 @@ os.execute("(cd " .. config_dir .. "/helpers/event_provider && make) >/dev/null 
 -- immediately as a real child process. This gives it time to register its Mach
 -- service before sbar.end_config() tries to connect via the mach_helper property.
 local colors = require("config.colors")
-os.execute(string.format(
-	"killall helper 2>/dev/null; RED=0x%x ORANGE=0x%x YELLOW=0x%x LABEL_COLOR=0x%x %s/helpers/event_provider/helper git.felix.helper &",
-	colors.red,
-	colors.orange,
-	colors.yellow,
-	colors.white,
-	config_dir
-))
+os.execute(
+  string.format(
+    "killall helper 2>/dev/null; RED=0x%x ORANGE=0x%x YELLOW=0x%x LABEL_COLOR=0x%x %s/helpers/event_provider/helper git.felix.helper &",
+    colors.red,
+    colors.orange,
+    colors.yellow,
+    colors.white,
+    config_dir
+  )
+)
 
 -- Load sketchybar module
 sbar = require("sketchybar")
 
 -- Unload macOS volume overlay (async)
-sbar.exec("launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist >/dev/null 2>&1")
+-- sbar.exec("launchctl unload -F /System/Library/LaunchAgents/com.apple.OSDUIHelper.plist >/dev/null 2>&1")
 
 -- Bundle configuration into a single message
 sbar.begin_config()
