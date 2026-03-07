@@ -32,24 +32,24 @@ confirm() {
   printf "${BOLD}%s [Y/n]${RESET} " "$1"
   read -r answer
   case "$answer" in
-    [nN]*) return 1 ;;
-    *) return 0 ;;
+  [nN]*) return 1 ;;
+  *) return 0 ;;
   esac
 }
 
-command_exists() { command -v "$1" &> /dev/null; }
+command_exists() { command -v "$1" &>/dev/null; }
 
 # ---------------------------------------------------------------------------
 # Detect platform
 # ---------------------------------------------------------------------------
 OS="$(uname -s)"
 case "$OS" in
-  Darwin) PLATFORM="macos" ;;
-  Linux) PLATFORM="linux" ;;
-  *)
-    error "Unsupported platform: $OS"
-    exit 1
-    ;;
+Darwin) PLATFORM="macos" ;;
+Linux) PLATFORM="linux" ;;
+*)
+  error "Unsupported platform: $OS"
+  exit 1
+  ;;
 esac
 
 if [[ "$PLATFORM" == "linux" ]] && ! command_exists pacman; then
@@ -108,12 +108,14 @@ BREW_CASKS=(
 BREW_TAPS=(
   jackielii/tap
   koekeishiya/formulae
+  oven-sh/bun
   FelixKratz/formulae
 )
 
 BREW_TAP_FORMULAE=(
-  koekeishiya/formulae/yabai
   jackielii/tap/skhd-zig
+  koekeishiya/formulae/yabai
+  oven-sh/bun/bun
   FelixKratz/formulae/sketchybar
   FelixKratz/formulae/borders
 )
@@ -177,7 +179,7 @@ install_macos() {
   # Taps
   info "Adding Homebrew taps..."
   for tap in "${BREW_TAPS[@]}"; do
-    brew tap "$tap" 2> /dev/null || true
+    brew tap "$tap" 2>/dev/null || true
   done
 
   # Formulae
@@ -194,8 +196,8 @@ install_macos() {
 
   # Zathura (requires its own tap)
   info "Installing Zathura..."
-  brew tap homebrew-zathura/zathura 2> /dev/null || true
-  brew install zathura zathura-pdf-mupdf 2> /dev/null || true
+  brew tap homebrew-zathura/zathura 2>/dev/null || true
+  brew install zathura zathura-pdf-mupdf 2>/dev/null || true
 
   # SBarLua (SketchyBar Lua API)
   if [[ ! -d "$HOME/.local/share/sketchybar_lua" ]]; then
@@ -244,7 +246,7 @@ install_linux() {
   # Enable Kanata systemd service
   if command_exists kanata; then
     info "Enabling Kanata keyboard remapper service..."
-    systemctl --user enable kanata.service 2> /dev/null || true
+    systemctl --user enable kanata.service 2>/dev/null || true
   fi
 
   # JDK 21 (Eclipse Temurin)
@@ -266,13 +268,11 @@ install_linux() {
   success "Arch Linux packages installed"
 }
 
-
 # ---------------------------------------------------------------------------
 # Cross-platform post-install setup
 # ---------------------------------------------------------------------------
 setup_common() {
   info "Running post-install setup..."
-
 
   # TPM (Tmux Plugin Manager)
   local tpm_dir="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins/tpm"
@@ -365,8 +365,8 @@ main() {
   echo ""
 
   case "$PLATFORM" in
-    macos) install_macos ;;
-    linux) install_linux ;;
+  macos) install_macos ;;
+  linux) install_linux ;;
   esac
 
   setup_common
