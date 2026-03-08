@@ -1,3 +1,11 @@
+# clear
+alias cl='clear'
+
+alias which-alias="PS4='+%x:%I>' zsh -i -x -c '' |& grep "
+alias chz="chezmoi"
+alias s="kitten ssh"
+alias kdiff="git difftool --no-symlinks --dir-diff"
+
 # eza (ls replacement) with fallback to ls
 if (( $+commands[eza] )); then
   alias ls='eza'
@@ -21,10 +29,6 @@ alias -g ....='../../..'
 alias -g .....='../../../..'
 
 (( $+commands[zoxide] )) && alias cd=z
-alias which-alias="PS4='+%x:%I>' zsh -i -x -c '' |& grep "
-alias chz="chezmoi"
-alias s="kitten ssh"
-alias kdiff="git difftool --no-symlinks --dir-diff"
 
 # Suppress oh-my-opencode startup noise (see code-yeongyu/oh-my-opencode#2191)
 alias opencode="NODE_ENV=production opencode"
