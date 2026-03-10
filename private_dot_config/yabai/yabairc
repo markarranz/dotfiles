@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-"$HOME/.config"}
 
 # ################## #
@@ -43,17 +45,22 @@ unmanaged_apps=(
   "VLC"
 )
 
-# Save the current IFS value
-OLD_IFS="$IFS"
-IFS="|"
-joined_string="${unmanaged_apps[*]}"
-IFS="$OLD_IFS"
+join_by() { local IFS="$1"; shift; echo "$*"; }
 
-yabai -m rule --add app="^(${joined_string})$" manage=off
+yabai -m rule --add app="^($(join_by '|' "${unmanaged_apps[@]}"))$" manage=off
 
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+
+# Space assignments:
+chat_apps=("Slack" "zoom.us" "Tuple")
+code_apps=("kitty" "Claude" "Cursor" "Codes" "Code")
+docs_apps=("Notion" "Slab" "Figma")
+
+yabai -m rule --add label="chat" app="^($(join_by '|' "${chat_apps[@]}"))$" space=chat
+yabai -m rule --add label="code" app="^($(join_by '|' "${code_apps[@]}"))$" space=code
+yabai -m rule --add label="docs" app="^($(join_by '|' "${docs_apps[@]}"))$" space=docs
 
 # ############### #
 # GLOBAL SETTINGS #
@@ -87,6 +94,27 @@ yabai -m config \
 # ############## #
 # SPACE SETTINGS #
 # ############## #
+
+# Ensure at least 3 spaces exist, then label them left-to-right across displays:
+#   left → chat, center → code, right → docs
+labels=(chat code docs)
+
+current_count=$(yabai -m query --spaces | jq length)
+for ((n = current_count + 1; n <= $#labels; n++)); do
+  yabai -m space --create
+done
+
+# Collect all space indices ordered by physical display position (left→right), then index
+spaces=($(yabai -m query --displays | jq -r '
+  sort_by(.frame.x) | .[].index' |
+  while read -r display; do
+    yabai -m query --spaces --display "$display" | jq -r 'sort_by(.index) | .[].index'
+  done
+))
+
+for ((i = 1; i <= $#labels; i++)); do
+  [[ -n "${spaces[$i]:-}" ]] && yabai -m space "${spaces[$i]}" --label "${labels[$i]}"
+done
 
 yabai -m config \
   layout stack \
