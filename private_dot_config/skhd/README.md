@@ -23,26 +23,39 @@
 
 ### Space Navigation
 
-| Binding           | Action                             |
-| ----------------- | ---------------------------------- |
-| `Cmd+Alt+Tab`     | Toggle to recent space             |
-| `Cmd+Alt+h` / `l` | Previous / next space              |
-| `Cmd+1-9`         | Focus space (creates it if needed) |
+| Binding               | Action                                |
+| --------------------- | ------------------------------------- |
+| `Cmd+Alt+Tab`         | Toggle to recent space                |
+| `Alt+h` / `l`         | Previous / next space (wraps across displays) |
+| `Cmd+1-9, 0`          | Focus space (creates it if needed)    |
+| `Cmd+Alt+h` / `l`     | Focus left / right display            |
+| `Cmd+Alt+Shift+h / l` | Move space to left / right display    |
+| `Alt+Shift+h` / `l`   | Move window to prev / next space      |
+| `Cmd+Alt+r`           | Rotate tree clockwise                 |
+| `Cmd+Alt+u`           | Rotate tree counter-clockwise         |
+| `Cmd+Alt+\\`          | Mirror tree (y-axis)                  |
+| `Cmd+Alt+-`           | Mirror tree (x-axis)                  |
+| `Alt+s`               | Toggle layout (bsp / stack)           |
 
 ### Window Management
 
-| Binding             | Action                               |
-| ------------------- | ------------------------------------ |
-| `Cmd+h/j/k/l`       | Focus window west/south/north/east   |
-| `Cmd+Shift+h/j/k/l` | Move (warp) window                   |
-| `Cmd+Shift+1-9`     | Send window to space                 |
-| `Cmd+Shift+f`       | Toggle native fullscreen             |
-| `Cmd+Alt+f`         | Toggle float (centered grid)         |
-| `Cmd+Alt+r`         | Rotate tree clockwise                |
-| `Cmd+Alt+u`         | Rotate tree counter-clockwise        |
-| `Alt+t`             | Toggle split direction               |
-| `Alt+p`             | Toggle sticky (window on all spaces) |
-| `Shift+Alt+p`       | Toggle picture-in-picture            |
+| Binding               | Action                                |
+| --------------------- | ------------------------------------- |
+| `Cmd+h/j/k/l`        | Focus window west/south/north/east    |
+| `Cmd+Shift+h/j/k/l`  | Move (warp) window                    |
+| `Cmd+Shift+1-9, 0`   | Send window to space                  |
+| `Cmd+Shift+f`         | Toggle native fullscreen              |
+| `Cmd+Alt+f`           | Toggle float (centered grid)          |
+| `Cmd+Alt+p`           | Toggle picture-in-picture             |
+| `Alt+t`               | Toggle split direction                |
+| `Alt+p`               | Toggle sticky (window on all spaces)  |
+
+### System
+
+| Binding       | Action         |
+| ------------- | -------------- |
+| `Hyper+r`     | Restart yabai  |
+| `Hyper+m`     | Toggle mic     |
 
 ### Blacklisted Applications
 

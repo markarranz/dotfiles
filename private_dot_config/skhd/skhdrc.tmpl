@@ -15,31 +15,25 @@ cmd + shift - b : open -na "{{ $browser }}"
 
 cmd - e : open -na Finder $HOME
 
-cmd + alt + ctrl - r : yabai --restart-service
+hyper - r : yabai --restart-service
 
 # mic mute toggle
-cmd + alt + ctrl + shift - m : ~/.config/skhd/toggle-mic.sh
+hyper - m : ~/.config/skhd/toggle-mic.sh
 
 # ############## #
 # SPACE COMMANDS #
 # ############## #
 
-# Focus space with CMD + ALT + [\t | hl]
+# Focus space with CMD + ALT + [\t]; focus prev/next space with ALT + [hl]; focus left/right display with CMD + ALT + [hl]:
 cmd + alt - tab : yabai -m space --focus recent
-cmd + alt - h   : yabai -m space --focus prev
-cmd + alt - l   : yabai -m space --focus next
+alt - h          : yabai -m space --focus prev || (yabai -m display --focus prev && yabai -m space --focus last)
+alt - l          : yabai -m space --focus next || (yabai -m display --focus next && yabai -m space --focus first)
+cmd + alt - h   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m display --focus "$target"
+cmd + alt - l   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m display --focus "$target"
 
-# Move space to prev/next position with CMD + CTRL + ALT + [hl]:
-cmd + ctrl + alt - h : yabai -m space --move prev
-cmd + ctrl + alt - l : yabai -m space --move next
-
-# Focus prev/next display with CMD + ALT + [jk]:
-cmd + alt - j : yabai -m display --focus prev
-cmd + alt - k : yabai -m display --focus next
-
-# Move space to prev/next display with CMD + CTRL + ALT + [jk]:
-cmd + ctrl + alt - j : yabai -m space --display prev
-cmd + ctrl + alt - k : yabai -m space --display next
+# Move space to left/right display (coordinate-sorted) with CMD + ALT + SHIFT + [hl]:
+cmd + alt + shift - h : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m space --display "$target"
+cmd + alt + shift - l : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m space --display "$target"
 
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270 # clockwise
@@ -48,7 +42,7 @@ cmd + alt - u : yabai -m space --rotate 90  # counter-clockwise
 # Mirror window tree across axes:
 cmd + alt - 0x2A : yabai -m space --mirror y-axis # \\
 cmd + alt - 0x1B : yabai -m space --mirror x-axis # -
- 
+
 # Focus space with CMD + [0-9]:
 # yabai returns non-zero when focusing the already-focused space, so we
 # guard the create-fallback to only fire when the target space is missing.
@@ -61,16 +55,15 @@ cmd - 6 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "6" ]
 cmd - 7 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "7" ] || yabai -m space --focus 7 || (yabai -m space --create; yabai -m space --focus last)
 cmd - 8 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "8" ] || yabai -m space --focus 8 || (yabai -m space --create; yabai -m space --focus last)
 cmd - 9 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "9" ] || yabai -m space --focus 9 || (yabai -m space --create; yabai -m space --focus last)
+cmd - 0 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "10" ] || yabai -m space --focus 10 || (yabai -m space --create; yabai -m space --focus last)
 
-# Move window to prev/next space with CMD + SHIFT + ALT + [hl]:
-cmd + shift + alt - h : yabai -m window --space prev --focus
-cmd + shift + alt - l : yabai -m window --space next --focus
-
+# Move window to prev/next space with ALT + SHIFT + [hl]:
+alt + shift - h : yabai -m window --space prev --focus
+alt + shift - l : yabai -m window --space next --focus
 
 # ############### #
 # WINDOW COMMANDS #
 # ############### #
-
 
 # Toggle fullscreen:
 cmd + shift - f : yabai -m window --toggle native-fullscreen
@@ -85,7 +78,7 @@ alt - t : yabai -m window --toggle split
 alt - p : yabai -m window --toggle sticky
 
 # Toggle PiP:
-shift + alt - p : yabai -m window --toggle pip
+cmd + alt - p : yabai -m window --toggle pip
 
 # Toggle layout (bsp/stack):
 alt - s : yabai -m space --layout "$([ "$(yabai -m query --spaces --space | jq -r '.type')" = bsp ] && echo stack || echo bsp)"; sketchybar --trigger yabai_layout_change
@@ -113,7 +106,6 @@ cmd + shift - 7 : yabai -m window --space 7 --focus  || (yabai -m space --create
 cmd + shift - 8 : yabai -m window --space 8 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
 cmd + shift - 9 : yabai -m window --space 9 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
 cmd + shift - 0 : yabai -m window --space 10 --focus || (yabai -m space --create; yabai -m window --space last --focus)
-
 
 # ######################## #
 # BLACKLISTED APPLICATIONS #
