@@ -30,9 +30,6 @@ alias -g .....='../../../..'
 
 (( $+commands[zoxide] )) && alias cd=z
 
-# Suppress oh-my-opencode startup noise (see code-yeongyu/oh-my-opencode#2191)
-alias opencode="NODE_ENV=production opencode"
-
 # Load multiple config files for lazygit
 alias lazygit="lazygit --use-config-file=\"$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/theme.yml\""
 
