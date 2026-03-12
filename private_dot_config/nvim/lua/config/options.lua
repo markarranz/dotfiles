@@ -33,7 +33,7 @@ vim.filetype.add({
 -- bacon-ls
 vim.g.lazyvim_rust_diagnostics = "bacon-ls"
 
--- googlesql-lsp
-if vim.fn.executable("googlesql-ls") == 1 then
-	vim.lsp.enable("googlesql")
+-- ssql
+if vim.fn.executable("ssql-ls-full") == 1 then
+	vim.lsp.enable("ssql")
 end

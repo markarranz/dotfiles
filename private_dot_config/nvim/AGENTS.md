@@ -24,7 +24,7 @@ nvim/
 │       └── navigate.lua  # 208-line cross-mux navigation module
 ├── after/
 │   ├── ftplugin/         # Per-language: python.vim, go.vim, sql.vim, cs.vim, rust.lua, http.vim
-│   └── lsp/              # LSP configs: googlesql.lua, sqlls.lua (conditional)
+│   └── lsp/              # LSP configs: ssql.lua, sqlls.lua (conditional)
 ├── queries/gotmpl/       # Tree-sitter injection for Go templates
 └── symlink_*.tmpl        # Chezmoi symlinks to externally_modified/nvim/ base
 ```
@@ -74,6 +74,6 @@ nvim/
 ## Notes
 
 - **navigate.lua**: Detects multiplexer (tmux > kitty), uses geometric window detection, sets `IS_NVIM` kitty user var for passthrough. Handles floating windows, DCS passthrough in tmux.
-- **sqlls.lua**: Conditionally disables itself if `googlesql-ls` is available (work environment).
+- **sqlls.lua**: Conditionally disables itself if `ssql-ls-full` is available (work environment).
 - **`zz_` prefix**: `zz_for_work.lua.tmpl` loads last to ensure work plugins don't conflict.
 - **Filetype detection**: Hyprland (`*.conf` under `hypr/`), Go templates (`.gotmpl`), Rofi (`.rasi`).

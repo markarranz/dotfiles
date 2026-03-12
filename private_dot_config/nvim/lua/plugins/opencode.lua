@@ -37,7 +37,15 @@ return {
 			},
 		},
 		config = function()
-			vim.g.opencode_opts = {}
+			vim.g.opencode_opts = {
+				server = {
+					toggle = function()
+						require("opencode.terminal").toggle("opencode --port", {
+							width = math.floor(vim.o.columns * 0.5),
+						})
+					end,
+				},
+			}
 			vim.o.autoread = true
 		end,
 	},
