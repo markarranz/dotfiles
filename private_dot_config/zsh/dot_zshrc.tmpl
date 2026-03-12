@@ -21,6 +21,7 @@ setopt PUSHD_IGNORE_DUPS    # don't push duplicate directories
 setopt PUSHD_MINUS          # swap +/- so cd -N is more intuitive
 
 # Completion system
+fpath=("$HOME/.local/share/zsh/completions" $fpath)
 autoload -Uz compinit
 compinit
 
