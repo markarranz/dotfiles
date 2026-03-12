@@ -23,6 +23,10 @@ The prefix key is remapped to `Ctrl+Space` (default tmux uses `Ctrl+b`).
 | `prefix + -` | Split pane vertically |
 | `prefix + h/j/k/l` | Navigate panes (vim-style) |
 | `prefix + H/J/K/L` | Resize panes |
+| `prefix + ;` | Last pane |
 | `prefix + n` | Next window |
 | `prefix + p` | Previous window |
+| `prefix + w` | Choose window interactively |
 | `prefix + c` | New window (inherits current path) |
+| `prefix + C-Space` | Send prefix to nested tmux session |
+| `prefix + F` | tmux-fzf: fuzzy-find sessions, windows, panes, commands |
