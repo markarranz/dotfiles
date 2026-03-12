@@ -310,16 +310,26 @@ setup_common() {
     warn "Skipping chezmoi apply — run 'chezmoi apply' when ready"
   fi
 
-  # Set default shell to Zsh
+  # Set default shell to Homebrew's Zsh (macOS) or system Zsh (Linux)
+  local target_zsh
+  if [[ "$PLATFORM" == "macos" ]] && [[ -x /opt/homebrew/bin/zsh ]]; then
+    target_zsh="/opt/homebrew/bin/zsh"
+  else
+    target_zsh="$(which zsh)"
+  fi
   local current_shell
   current_shell="$(basename "$SHELL")"
-  if [[ "$current_shell" != "zsh" ]]; then
-    if confirm "Change default shell to Zsh?"; then
-      chsh -s "$(which zsh)"
-      success "Default shell changed to Zsh (takes effect on next login)"
+  if [[ "$current_shell" != "zsh" ]] || [[ "$SHELL" != "$target_zsh" ]]; then
+    if ! grep -qxF "$target_zsh" /etc/shells; then
+      info "Adding $target_zsh to /etc/shells..."
+      echo "$target_zsh" | sudo tee -a /etc/shells >/dev/null
+    fi
+    if confirm "Change default shell to $target_zsh?"; then
+      chsh -s "$target_zsh"
+      success "Default shell changed to $target_zsh (takes effect on next login)"
     fi
   else
-    success "Default shell is already Zsh"
+    success "Default shell is already $target_zsh"
   fi
 }
 
