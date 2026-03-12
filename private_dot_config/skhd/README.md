@@ -26,11 +26,11 @@
 | Binding               | Action                                |
 | --------------------- | ------------------------------------- |
 | `Cmd+Alt+Tab`         | Toggle to recent space                |
-| `Alt+h` / `l`         | Previous / next space (wraps across displays) |
+| `Ctrl+Alt+h` / `l`   | Previous / next space (wraps across displays) |
 | `Cmd+1-9, 0`          | Focus space (creates it if needed)    |
 | `Cmd+Alt+h` / `l`     | Focus left / right display            |
 | `Cmd+Alt+Shift+h / l` | Move space to left / right display    |
-| `Alt+Shift+h` / `l`   | Move window to prev / next space      |
+| `Ctrl+Alt+Shift+h` / `l` | Move window to prev / next space      |
 | `Cmd+Alt+r`           | Rotate tree clockwise                 |
 | `Cmd+Alt+u`           | Rotate tree counter-clockwise         |
 | `Cmd+Alt+\\`          | Mirror tree (y-axis)                  |

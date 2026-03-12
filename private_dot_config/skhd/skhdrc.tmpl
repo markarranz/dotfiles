@@ -24,10 +24,10 @@ hyper - m : ~/.config/skhd/toggle-mic.sh
 # SPACE COMMANDS #
 # ############## #
 
-# Focus space with CMD + ALT + [\t]; focus prev/next space with ALT + [hl]; focus left/right display with CMD + ALT + [hl]:
+# Focus space with CMD + ALT + [\t]; focus prev/next space with CTRL + ALT + [hl]; focus left/right display with CMD + ALT + [hl]:
 cmd + alt - tab : yabai -m space --focus recent
-alt - h          : yabai -m space --focus prev || (yabai -m display --focus prev && yabai -m space --focus last)
-alt - l          : yabai -m space --focus next || (yabai -m display --focus next && yabai -m space --focus first)
+ctrl + alt - h   : yabai -m space --focus prev || (yabai -m display --focus prev && yabai -m space --focus last)
+ctrl + alt - l   : yabai -m space --focus next || (yabai -m display --focus next && yabai -m space --focus first)
 cmd + alt - h   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m display --focus "$target"
 cmd + alt - l   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m display --focus "$target"
 
@@ -57,9 +57,9 @@ cmd - 8 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "8" ]
 cmd - 9 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "9" ] || yabai -m space --focus 9 || (yabai -m space --create; yabai -m space --focus last)
 cmd - 0 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "10" ] || yabai -m space --focus 10 || (yabai -m space --create; yabai -m space --focus last)
 
-# Move window to prev/next space with ALT + SHIFT + [hl]:
-alt + shift - h : yabai -m window --space prev --focus
-alt + shift - l : yabai -m window --space next --focus
+# Move window to prev/next space with CTRL + ALT + SHIFT + [hl]:
+ctrl + alt + shift - h : yabai -m window --space prev --focus
+ctrl + alt + shift - l : yabai -m window --space next --focus
 
 # ############### #
 # WINDOW COMMANDS #
