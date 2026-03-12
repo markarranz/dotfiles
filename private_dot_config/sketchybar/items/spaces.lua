@@ -3,7 +3,54 @@ local icons = require("config.icons")
 local settings = require("config.settings")
 local app_icons = require("lib.app_icons")
 
+local MAX_APPS = 8
+
 local spaces = {}
+local space_app_items = {}
+local brackets = {}
+local space_apps = {}
+local space_selected = {}
+local current_front_app = ""
+
+local function update_space_icons(space_num)
+	local apps = space_apps[space_num]
+	local items = space_app_items[space_num]
+	if not spaces[space_num] or not items then
+		return
+	end
+
+	local has_apps = apps and #apps > 0
+	local selected = space_selected[space_num]
+
+	for j = 1, MAX_APPS do
+		if has_apps and j <= #apps then
+			local app_name = apps[j]
+			local app_icon = app_icons(app_name)
+			local is_focused = app_name == current_front_app
+			local is_last = j == #apps
+			local color = is_focused and colors.lavender or (selected and colors.white or colors.grey)
+			items[j]:set({
+				drawing = true,
+				label = {
+					string = app_icon,
+					color = color,
+					padding_right = is_last and 20 or 0,
+				},
+			})
+		else
+			items[j]:set({ drawing = false })
+		end
+	end
+
+	sbar.animate("sin", 10, function()
+		spaces[space_num]:set({
+			label = {
+				string = has_apps and "" or " —",
+				drawing = not has_apps,
+			},
+		})
+	end)
+end
 
 for i = 1, 9 do
 	local space = sbar.add("space", "space." .. i, {
@@ -26,7 +73,38 @@ for i = 1, 9 do
 			y_offset = -1,
 		},
 		padding_left = 2,
-		padding_right = 2,
+		padding_right = 0,
+		background = { drawing = false },
+	})
+
+	local app_items = {}
+	local bracket_members = { "space." .. i }
+
+	for j = 1, MAX_APPS do
+		local app_item = sbar.add("item", "space." .. i .. ".app." .. j, {
+			space = i,
+			icon = { drawing = false },
+			label = {
+				padding_left = 4,
+				padding_right = 4,
+				color = colors.grey,
+				font = {
+					family = "sketchybar-app-font",
+					style = "Regular",
+					size = 16.0,
+				},
+				y_offset = 0,
+			},
+			padding_left = 3,
+			padding_right = 3,
+			drawing = false,
+			background = { color = 0x00000000 },
+		})
+		app_items[j] = app_item
+		table.insert(bracket_members, "space." .. i .. ".app." .. j)
+	end
+
+	local bracket = sbar.add("bracket", "space.bracket." .. i, bracket_members, {
 		background = {
 			color = colors.bg1,
 			border_color = colors.bg2,
@@ -34,6 +112,8 @@ for i = 1, 9 do
 	})
 
 	spaces[i] = space
+	space_app_items[i] = app_items
+	brackets[i] = bracket
 
 	-- Handle space selection highlighting
 	space:subscribe("space_change", function(env)
@@ -46,12 +126,14 @@ for i = 1, 9 do
 				end
 			end
 		end
+		space_selected[i] = selected
 		local border_color = selected and colors.grey or colors.bg2
 		space:set({
 			icon = { highlight = selected },
 			label = { highlight = selected },
-			background = { border_color = border_color },
 		})
+		brackets[i]:set({ background = { border_color = border_color } })
+		update_space_icons(i)
 	end)
 
 	-- Handle mouse clicks
@@ -93,6 +175,9 @@ local space_creator = sbar.add("item", "space_creator", {
 	click_script = "yabai -m space --create",
 })
 
+-- Custom event for yabai window move/resize signals
+sbar.add("event", "windows_on_spaces_changed")
+
 -- Update space labels with app icons
 space_creator:subscribe("space_windows_change", function(env)
 	local space_num = env.INFO and env.INFO.space
@@ -100,19 +185,42 @@ space_creator:subscribe("space_windows_change", function(env)
 		return
 	end
 
-	local apps = env.INFO.apps
-	local icon_strip = ""
-
-	if apps and next(apps) then
-		for app_name, _ in pairs(apps) do
-			local app_icon = app_icons(app_name)
-			icon_strip = icon_strip .. " " .. app_icon
+	sbar.exec(
+		"yabai -m query --windows --space "
+			.. space_num
+			.. [[ | jq -r '[.[] | select(."is-minimized" == false and ."is-hidden" == false and ."is-visible" == true)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
+		function(result)
+			local apps = {}
+			for app_name in result:gmatch("[^\n]+") do
+				table.insert(apps, app_name)
+			end
+			space_apps[space_num] = apps
+			update_space_icons(space_num)
 		end
-	else
-		icon_strip = " —"
-	end
+	)
+end)
 
-	sbar.animate("sin", 10, function()
-		spaces[space_num]:set({ label = { string = icon_strip } })
-	end)
+space_creator:subscribe("front_app_switched", function(env)
+	current_front_app = env.INFO or ""
+	for space_num, _ in pairs(space_apps) do
+		update_space_icons(space_num)
+	end
+end)
+
+space_creator:subscribe("windows_on_spaces_changed", function()
+	for space_num, _ in pairs(space_apps) do
+		sbar.exec(
+			"yabai -m query --windows --space "
+				.. space_num
+				.. [[ | jq -r '[.[] | select(."is-minimized" == false and ."is-hidden" == false and ."is-visible" == true)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
+			function(result)
+				local apps = {}
+				for app_name in result:gmatch("[^\n]+") do
+					table.insert(apps, app_name)
+				end
+				space_apps[space_num] = apps
+				update_space_icons(space_num)
+			end
+		)
+	end
 end)

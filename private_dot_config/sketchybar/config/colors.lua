@@ -9,6 +9,9 @@ return {
 	orange = 0xfffab387,  -- Peach
 	magenta = 0xffcba6f7, -- Mauve
 	grey = 0xff9399b2,    -- Overlay2
+	lavender = 0xffb4befe, -- Lavender
+	pink = 0xfff5c2e7,    -- Pink
+	sky = 0xff89dceb,     -- Sky
 	transparent = 0x00000000,
 
 	-- Background colors

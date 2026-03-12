@@ -13,7 +13,7 @@ sudo yabai --load-sa
 # SIGNALS #
 # ####### #
 
-yabai -m signal --add event=space_changed action='/usr/bin/env sh -c "${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"'
+yabai -m signal --add event=space_changed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"
 
 # Focus the space where the activated app already has a window
 yabai -m signal --add event=application_activated action='
@@ -21,9 +21,17 @@ yabai -m signal --add event=application_activated action='
   [ -n "$space" ] && yabai -m space --focus "$space"
 '
 
+# Re-query window order in SketchyBar when windows swap/move positions
+yabai -m signal --add event=window_moved action="sketchybar --trigger windows_on_spaces_changed"
+yabai -m signal --add event=window_resized action="sketchybar --trigger windows_on_spaces_changed"
+yabai -m signal --add event=window_minimized action="sketchybar --trigger windows_on_spaces_changed"
+yabai -m signal --add event=window_deminimized action="sketchybar --trigger windows_on_spaces_changed"
+yabai -m signal --add event=application_hidden action="sketchybar --trigger windows_on_spaces_changed"
+yabai -m signal --add event=application_visible action="sketchybar --trigger windows_on_spaces_changed"
+
 # Restore spaces when displays are added or removed
-yabai -m signal --add event=display_added action='/usr/bin/env sh -c "${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.sh &"'
-yabai -m signal --add event=display_removed action='/usr/bin/env sh -c "${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.sh &"'
+yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.sh &"
+yabai -m signal --add event=display_removed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.sh &"
 
 # ##### #
 # RULES #
