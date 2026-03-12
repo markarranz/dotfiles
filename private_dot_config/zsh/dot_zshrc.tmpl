@@ -27,20 +27,23 @@ compinit
 # Hyphen-insensitive completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
 
+_zwarn() { printf '\033[0;33m:: %s not found\033[0m\n' "$*" >&2 }
+
 # Plugins (fzf-tab after compinit, before widget-wrapping plugins)
 [[ -f "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh"
+  source "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" || _zwarn "fzf-tab plugin"
 [[ -f "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh"
+  source "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" || _zwarn "fzf-tab-source plugin"
 [[ -f "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" || _zwarn "zsh-autosuggestions plugin"
 [[ -f "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || _zwarn "zsh-syntax-highlighting plugin"
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true  # must be set before loading zsh-vi-mode
 function zvm_after_init() { (( $+commands[fzf] )) && source <(fzf --zsh) }
 if [[ -f "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
   source "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
 else
+  _zwarn "zsh-vi-mode plugin"
   # zsh-vi-mode absent — source fzf bindings directly since zvm_after_init won't fire
   (( $+commands[fzf] )) && source <(fzf --zsh)
 fi
@@ -64,19 +67,17 @@ source "$HOME/.config/zsh/aliases.zsh"
 chpwd() { l }
 
 # Tool inits
-(( $+commands[direnv] )) && eval "$(direnv hook zsh)"
-(( $+commands[starship] )) && eval "$(starship init zsh)"
+(( $+commands[direnv] )) && eval "$(direnv hook zsh)" || _zwarn "direnv"
+(( $+commands[starship] )) && eval "$(starship init zsh)" || _zwarn "starship"
 
 {{- if .forWork }}
 
 # Work NVM:
 export NVM_DIR="$HOME/.nvm"
-[[ -s "$NVM_DIR/nvm.sh" ]] && \. "$NVM_DIR/nvm.sh"
-[[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion"
+[[ -s "$NVM_DIR/nvm.sh" ]] && \. "$NVM_DIR/nvm.sh" || _zwarn "nvm"
+[[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion" || _zwarn "nvm bash_completion"
 
 {{- end }}
 
-# bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # vim: ft=zsh
