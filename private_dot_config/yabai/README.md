@@ -27,6 +27,8 @@
 
 These apps are excluded from tiling: 1Password, Activity Monitor, App Store, Calculator, Finder preferences, Logi Options, Python, Raycast, Steam, System Settings, VLC, and others.
 
-### Helper Script
+### Helper Scripts
 
-`clean_empty_spaces.sh` runs on space change events to automatically remove empty, unfocused spaces, keeping the workspace list clean.
+`clean_empty_spaces.sh` runs on space change events to automatically remove empty, unfocused spaces, keeping the workspace list clean. It skips cleanup during display transitions (see below).
+
+`restore_spaces.sh` runs on `display_added` and `display_removed` events to preserve spaces when monitors are plugged or unplugged. It sets a temporary lockfile so `clean_empty_spaces.sh` won't destroy spaces while macOS is rearranging them, then recreates and labels any missing spaces (chat, code, docs) across the current displays.
