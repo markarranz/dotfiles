@@ -4,3 +4,6 @@
 # LazyVim lock file:
 **/lazy-lock.json
 .claude/settings.local.json
+
+# Python bytecode cache
+**/__pycache__/
