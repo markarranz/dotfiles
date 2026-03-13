@@ -11,6 +11,7 @@ local brackets = {}
 local space_apps = {}
 local space_selected = {}
 local current_front_app = ""
+local space_spacers = {}
 
 local function update_space_icons(space_num)
 	local apps = space_apps[space_num]
@@ -34,7 +35,7 @@ local function update_space_icons(space_num)
 				label = {
 					string = app_icon,
 					color = color,
-					padding_right = is_last and 20 or 0,
+					padding_right = is_last and 12 or 0,
 				},
 			})
 		else
@@ -53,16 +54,25 @@ local function update_space_icons(space_num)
 end
 
 for i = 1, 9 do
+	if i > 1 then
+		space_spacers[i] = sbar.add("item", "space.spacer." .. i, {
+			width = 0,
+			background = { drawing = false },
+			icon = { drawing = false },
+			label = { drawing = false },
+		})
+	end
+
 	local space = sbar.add("space", "space." .. i, {
 		space = i,
 		icon = {
 			string = tostring(i),
 			padding_left = 10,
-			padding_right = 10,
+			padding_right = 8,
 			highlight_color = colors.red,
 		},
 		label = {
-			padding_right = 20,
+			padding_right = 10,
 			color = colors.grey,
 			highlight_color = colors.white,
 			font = {
@@ -82,7 +92,6 @@ for i = 1, 9 do
 
 	for j = 1, MAX_APPS do
 		local app_item = sbar.add("item", "space." .. i .. ".app." .. j, {
-			space = i,
 			icon = { drawing = false },
 			label = {
 				padding_left = 4,
@@ -188,7 +197,7 @@ space_creator:subscribe("space_windows_change", function(env)
 	sbar.exec(
 		"yabai -m query --windows --space "
 			.. space_num
-			.. [[ | jq -r '[.[] | select(."is-minimized" == false and ."is-hidden" == false and ."is-visible" == true)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
+			.. [[ | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
 		function(result)
 			local apps = {}
 			for app_name in result:gmatch("[^\n]+") do
@@ -212,7 +221,7 @@ space_creator:subscribe("windows_on_spaces_changed", function()
 		sbar.exec(
 			"yabai -m query --windows --space "
 				.. space_num
-				.. [[ | jq -r '[.[] | select(."is-minimized" == false and ."is-hidden" == false and ."is-visible" == true)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
+				.. [[ | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
 			function(result)
 				local apps = {}
 				for app_name in result:gmatch("[^\n]+") do
@@ -224,3 +233,44 @@ space_creator:subscribe("windows_on_spaces_changed", function()
 		)
 	end
 end)
+
+-- Seed all spaces and manage spacer visibility on load
+local function refresh_spaces()
+	sbar.exec("yabai -m query --spaces | jq -r '.[].index'", function(result)
+		local active = {}
+		for space_num_str in result:gmatch("%d+") do
+			local space_num = tonumber(space_num_str)
+			if space_num then
+				active[space_num] = true
+			end
+		end
+
+		-- Update spacer widths based on which spaces exist
+		for i = 2, 9 do
+			if space_spacers[i] then
+				space_spacers[i]:set({ width = active[i] and settings.group_paddings or 0 })
+			end
+		end
+
+		-- Seed window icons for active spaces
+		for space_num, _ in pairs(active) do
+			if spaces[space_num] then
+				sbar.exec(
+					"yabai -m query --windows --space "
+						.. space_num
+						.. [[ | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']],
+					function(win_result)
+						local apps = {}
+						for app_name in win_result:gmatch("[^\n]+") do
+							table.insert(apps, app_name)
+						end
+						space_apps[space_num] = apps
+						update_space_icons(space_num)
+					end
+				)
+			end
+		end
+	end)
+end
+
+refresh_spaces()
