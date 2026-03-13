@@ -16,6 +16,7 @@ local space_selected = {}
 local current_front_app = ""
 local space_spacers = {}
 
+local refresh_spaces
 local function update_space_icons(space_num)
 	local apps = space_apps[space_num]
 	local items = space_app_items[space_num]
@@ -80,8 +81,20 @@ for i = 1, 9 do
 		})
 	end
 
-	local space = sbar.add("space", "space." .. i, {
-		space = i,
+	local debounced_focus = 'kill $(cat /tmp/.sketchybar-space-pid 2>/dev/null) 2>/dev/null;'
+		.. ' (sleep 0.1 && yabai -m space --focus ' .. i .. ') &'
+		.. ' echo $! > /tmp/.sketchybar-space-pid'
+
+	local click_script = 'if [ "$BUTTON" = "right" ]; then'
+		.. ' yabai -m space ' .. i .. ' --destroy;'
+		.. ' elif [ "$MODIFIER" = "shift" ]; then'
+		.. ' LABEL="$(osascript -e \'return (text returned of (display dialog "Give a name to space ' .. i .. ':" default answer "" with icon note buttons {"Cancel", "Continue"} default button "Continue"))\' 2>/dev/null)";'
+		.. ' if [ -n "$LABEL" ]; then sketchybar --set space.' .. i .. ' icon.string="' .. i .. ' ($LABEL)";'
+		.. ' else sketchybar --set space.' .. i .. ' icon.string="' .. i .. '"; fi;'
+		.. ' else ' .. debounced_focus .. ' fi'
+
+	local space = sbar.add("item", "space." .. i, {
+		click_script = click_script,
 		icon = {
 			string = tostring(i),
 			padding_left = 10,
@@ -109,6 +122,7 @@ for i = 1, 9 do
 
 	for j = 1, MAX_APPS do
 		local app_item = sbar.add("item", "space." .. i .. ".app." .. j, {
+			click_script = debounced_focus,
 			icon = { drawing = false },
 			label = {
 				padding_left = 4,
@@ -131,6 +145,7 @@ for i = 1, 9 do
 	end
 
 	local bracket = sbar.add("bracket", "space.bracket." .. i, bracket_members, {
+		click_script = debounced_focus,
 		background = {
 			color = colors.bg1,
 			border_color = colors.bg2,
@@ -160,33 +175,10 @@ for i = 1, 9 do
 		})
 		brackets[i]:set({ background = { border_color = border_color } })
 		update_space_icons(i)
+		-- Refresh space visibility (only from space 1 to avoid redundant calls)
+		if i == 1 then refresh_spaces() end
 	end)
 
-	-- Handle mouse clicks
-	local function handle_click(env)
-		if env.BUTTON == "right" then
-			sbar.exec("yabai -m space " .. i .. " --destroy")
-		elseif env.MODIFIER == "shift" then
-			sbar.exec([[
-        osascript -e 'return (text returned of (display dialog "Give a name to space ]] .. i .. [[:" default answer "" with icon note buttons {"Cancel", "Continue"} default button "Continue"))'
-      ]], function(result, exit_code)
-				if exit_code and exit_code ~= 0 then
-					return
-				end
-				local label = result:gsub("%s+$", "")
-				if label ~= "" then
-					space:set({ icon = { string = i .. " (" .. label .. ")" } })
-				else
-					space:set({ icon = { string = tostring(i) } })
-				end
-			end)
-		else
-			sbar.exec("yabai -m space --focus " .. i)
-		end
-	end
-
-	space:subscribe("mouse.clicked", handle_click)
-	bracket:subscribe("mouse.clicked", handle_click)
 end
 
 -- Space creator item
@@ -234,7 +226,7 @@ space_creator:subscribe("windows_on_spaces_changed", function()
 end)
 
 -- Seed all spaces and manage spacer visibility on load
-local function refresh_spaces()
+refresh_spaces = function()
 	sbar.exec("yabai -m query --spaces | jq -r '.[].index'", function(result)
 		local active = {}
 		for space_num_str in result:gmatch("%d+") do
@@ -244,17 +236,32 @@ local function refresh_spaces()
 			end
 		end
 
-		-- Update spacer widths based on which spaces exist
-		for i = 2, 9 do
-			if space_spacers[i] then
-				space_spacers[i]:set({ width = active[i] and settings.group_paddings or 0 })
-			end
-		end
+		for i = 1, 9 do
+			local exists = active[i] or false
 
-		-- Seed window icons for active spaces
-		for space_num, _ in pairs(active) do
-			if spaces[space_num] then
-				query_space_apps(space_num)
+			-- Show/hide space items and brackets
+			if spaces[i] then
+				spaces[i]:set({ drawing = exists })
+			end
+			if brackets[i] then
+				brackets[i]:set({ background = { drawing = exists } })
+			end
+
+			-- Update spacer widths
+			if i > 1 and space_spacers[i] then
+				space_spacers[i]:set({ width = exists and settings.group_paddings or 0 })
+			end
+
+			-- Hide app items for non-existent spaces
+			if not exists and space_app_items[i] then
+				for j = 1, MAX_APPS do
+					space_app_items[i][j]:set({ drawing = false })
+				end
+			end
+
+			-- Seed window icons for active spaces
+			if exists and spaces[i] then
+				query_space_apps(i)
 			end
 		end
 	end)
