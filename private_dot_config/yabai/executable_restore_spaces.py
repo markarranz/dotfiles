@@ -3,6 +3,7 @@
 
 import fcntl
 import json
+import os
 import subprocess
 import sys
 import time
@@ -21,25 +22,22 @@ def log(message: str) -> None:
 def to_dict_list(data: object) -> list[dict[str, object]] | None:
     if not isinstance(data, list):
         return None
-    normalized: list[dict[str, object]] = []
-    for item in data:
-        if isinstance(item, dict):
-            converted: dict[str, object] = {}
-            for key, value in item.items():
-                if isinstance(key, str):
-                    converted[key] = value
-            normalized.append(converted)
-    return normalized
+    return [item for item in data if isinstance(item, dict)]
 
 
 def run_yabai_json(args: list[str]) -> list[dict[str, object]] | None:
-    result = subprocess.run(
-        ["yabai", "-m", *args],
-        capture_output=True,
-        text=True,
-        timeout=YABAI_TIMEOUT_SECONDS,
-    )
+    try:
+        result = subprocess.run(
+            ["yabai", "-m", *args],
+            capture_output=True,
+            text=True,
+            timeout=YABAI_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        log(f"restore_spaces: yabai timeout running: yabai -m {' '.join(args)}")
+        return None
     if result.returncode != 0:
+        log(f"restore_spaces: yabai -m {' '.join(args)} failed: {result.stderr.strip()}")
         return None
     try:
         data: object = json.loads(result.stdout)  # pyright: ignore[reportAny]
@@ -49,47 +47,38 @@ def run_yabai_json(args: list[str]) -> list[dict[str, object]] | None:
 
 
 def run_yabai_cmd(args: list[str]) -> bool:
-    result = subprocess.run(
-        ["yabai", "-m", *args],
-        capture_output=True,
-        text=True,
-        timeout=YABAI_TIMEOUT_SECONDS,
-    )
+    try:
+        result = subprocess.run(
+            ["yabai", "-m", *args],
+            capture_output=True,
+            text=True,
+            timeout=YABAI_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        log(f"restore_spaces: yabai timeout running: yabai -m {' '.join(args)}")
+        return False
+    if result.returncode != 0:
+        log(f"restore_spaces: yabai -m {' '.join(args)} failed: {result.stderr.strip()}")
     return result.returncode == 0
 
 
-def space_index(space: dict[str, object]) -> int:
-    value = space.get("index")
-    if isinstance(value, int):
-        return value
-    return 0
+def get_index(d: dict[str, object]) -> int:
+    value = d.get("index")
+    return value if isinstance(value, int) else 0
 
 
 def space_label(space: dict[str, object]) -> str:
     value = space.get("label")
-    if isinstance(value, str):
-        return value
-    return ""
+    return value if isinstance(value, str) else ""
 
 
 def display_frame_x(display: dict[str, object]) -> float:
     frame = display.get("frame")
     if isinstance(frame, dict):
-        frame_data: dict[str, object] = {}
-        for key, value in frame.items():
-            if isinstance(key, str):
-                frame_data[key] = value
-        x_value = frame_data.get("x")
-        if isinstance(x_value, (int, float)):
-            return float(x_value)
+        x = frame.get("x")
+        if isinstance(x, (int, float)):
+            return float(x)
     return 0.0
-
-
-def display_index(display: dict[str, object]) -> int:
-    value = display.get("index")
-    if isinstance(value, int):
-        return value
-    return 0
 
 
 def wait_for_yabai() -> tuple[
@@ -108,7 +97,7 @@ def wait_for_yabai() -> tuple[
 
 
 def is_already_labeled(spaces: list[dict[str, object]]) -> bool:
-    ordered = sorted(spaces, key=space_index)
+    ordered = sorted(spaces, key=get_index)
     labeled = [space for space in ordered if space_label(space)]
     labels = [space_label(space) for space in labeled]
     return len(labeled) == len(LABELS) and labels == LABELS
@@ -116,7 +105,7 @@ def is_already_labeled(spaces: list[dict[str, object]]) -> bool:
 
 def ordered_space_indices(displays: list[dict[str, object]]) -> list[int] | None:
     display_indices = [
-        display_index(display) for display in sorted(displays, key=display_frame_x)
+        get_index(display) for display in sorted(displays, key=display_frame_x)
     ]
     space_indices: list[int] = []
     for display_idx in display_indices:
@@ -125,57 +114,67 @@ def ordered_space_indices(displays: list[dict[str, object]]) -> list[int] | None
         )
         if display_spaces is None:
             return None
-        for space in sorted(display_spaces, key=space_index):
-            index = space_index(space)
-            if index > 0:
-                space_indices.append(index)
+        for space in sorted(display_spaces, key=get_index):
+            idx = get_index(space)
+            if idx > 0:
+                space_indices.append(idx)
     return space_indices
 
 
 def main() -> int:
-    with open(LOCKFILE, "w") as lock_handle:
+    with open(LOCKFILE, "a") as lock_handle:
         try:
             fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             log("restore_spaces: another instance is running, exiting")
             return 0
 
-        spaces, displays = wait_for_yabai()
-        if spaces is None or displays is None:
-            log("restore_spaces: timeout waiting for yabai after 30s")
-            return 1
-
-        log(
-            f"restore_spaces: yabai ready, {len(spaces)} spaces on {len(displays)} displays"
-        )
-
-        if is_already_labeled(spaces):
-            log("restore_spaces: spaces already correctly labeled, skipping")
-            return 0
-
-        current_count = len(spaces)
-        missing = max(0, len(LABELS) - current_count)
-        if missing > 0:
-            log(f"restore_spaces: creating {missing} missing spaces")
-            for _ in range(current_count + 1, len(LABELS) + 1):
-                if not run_yabai_cmd(["space", "--create"]):
-                    return 1
-
-        refreshed_displays = run_yabai_json(["query", "--displays"])
-        if refreshed_displays is None:
-            return 1
-        space_indices = ordered_space_indices(refreshed_displays)
-        if space_indices is None or len(space_indices) < len(LABELS):
-            return 1
-
-        labeled_pairs: list[str] = []
-        for label, space_index in zip(LABELS, space_indices[: len(LABELS)]):
-            if not run_yabai_cmd(["space", str(space_index), "--label", label]):
+        try:
+            spaces, displays = wait_for_yabai()
+            if spaces is None or displays is None:
+                log("restore_spaces: timeout waiting for yabai after 30s")
                 return 1
-            labeled_pairs.append(f"{label}={space_index}")
 
-        log(f"restore_spaces: labeled spaces: {', '.join(labeled_pairs)}")
-        return 0
+            log(
+                f"restore_spaces: yabai ready, {len(spaces)} spaces on {len(displays)} displays"
+            )
+
+            if is_already_labeled(spaces):
+                log("restore_spaces: spaces already correctly labeled, skipping")
+                return 0
+
+            current_count = len(spaces)
+            missing = max(0, len(LABELS) - current_count)
+            if missing > 0:
+                log(f"restore_spaces: creating {missing} missing spaces")
+                for _ in range(current_count + 1, len(LABELS) + 1):
+                    if not run_yabai_cmd(["space", "--create"]):
+                        log("restore_spaces: failed to create space")
+                        return 1
+
+            refreshed_displays = run_yabai_json(["query", "--displays"])
+            if refreshed_displays is None:
+                log("restore_spaces: failed to query displays after space creation")
+                return 1
+            space_indices = ordered_space_indices(refreshed_displays)
+            if space_indices is None or len(space_indices) < len(LABELS):
+                log("restore_spaces: not enough space indices for labeling")
+                return 1
+
+            labeled_pairs: list[str] = []
+            for label, idx in zip(LABELS, space_indices[: len(LABELS)]):
+                if not run_yabai_cmd(["space", str(idx), "--label", label]):
+                    log(f"restore_spaces: failed to label space {idx} as {label}")
+                    return 1
+                labeled_pairs.append(f"{label}={idx}")
+
+            log(f"restore_spaces: labeled spaces: {', '.join(labeled_pairs)}")
+            return 0
+        finally:
+            try:
+                os.unlink(LOCKFILE)
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":
