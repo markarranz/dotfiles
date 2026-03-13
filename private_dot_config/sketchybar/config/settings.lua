@@ -1,6 +1,6 @@
 return {
 	paddings = 3,
-	group_paddings = 5,
+	group_paddings = 8,
 
 	font = {
 		text = "SF Pro",
