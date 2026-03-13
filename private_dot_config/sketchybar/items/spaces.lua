@@ -146,7 +146,7 @@ for i = 1, 9 do
 	end)
 
 	-- Handle mouse clicks
-	space:subscribe("mouse.clicked", function(env)
+	local function handle_click(env)
 		if env.BUTTON == "right" then
 			sbar.exec("yabai -m space " .. i .. " --destroy")
 		elseif env.MODIFIER == "shift" then
@@ -163,7 +163,10 @@ for i = 1, 9 do
 		else
 			sbar.exec("yabai -m space --focus " .. i)
 		end
-	end)
+	end
+
+	space:subscribe("mouse.clicked", handle_click)
+	bracket:subscribe("mouse.clicked", handle_click)
 end
 
 -- Space creator item
