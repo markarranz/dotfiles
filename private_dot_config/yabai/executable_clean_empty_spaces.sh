@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -euo pipefail
 
-# Skip during display transitions (restore_spaces.sh holds the lock)
+# Skip during display transitions (restore_spaces.py holds the lock)
 LOCKFILE="/tmp/yabai_display_transition"
 if [[ -f "$LOCKFILE" ]]; then
   lock_age=$(( $(date +%s) - $(stat -f %m "$LOCKFILE") ))
@@ -17,5 +17,5 @@ yabai -m query --spaces --display |
   # wait for any native fullscreen apps to get added back to their original workspace
   sleep 2 &&
   yabai -m query --spaces |
-  jq -re 'map(select(."windows" == [] and ."has-focus" == false).index) | reverse | .[] ' |
+  jq -r 'map(select(."windows" == [] and ."has-focus" == false).index) | reverse | .[] ' |
     xargs -I % sh -c 'yabai -m space % --destroy'
