@@ -37,6 +37,69 @@ final class MediaMonitor {
             registerCameraListener(for: deviceID)
         }
 
+        registerDeviceListChangeListeners()
+        emitCurrentActiveState()
+    }
+
+    private func registerDeviceListChangeListeners() {
+        var audioAddr = AudioObjectPropertyAddress(
+            mSelector: kAudioHardwarePropertyDevices,
+            mScope: kAudioObjectPropertyScopeGlobal,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        AudioObjectAddPropertyListenerBlock(
+            AudioObjectID(kAudioObjectSystemObject),
+            &audioAddr,
+            DispatchQueue.main
+        ) { [weak self] _, _ in
+            self?.refreshAudioDevices()
+        }
+
+        var cameraAddr = CMIOObjectPropertyAddress(
+            mSelector: CMIOObjectPropertySelector(kCMIOHardwarePropertyDevices),
+            mScope: CMIOObjectPropertyScope(kCMIOObjectPropertyScopeGlobal),
+            mElement: CMIOObjectPropertyElement(kCMIOObjectPropertyElementMain)
+        )
+        CMIOObjectAddPropertyListenerBlock(
+            CMIOObjectID(kCMIOObjectSystemObject),
+            &cameraAddr,
+            DispatchQueue.main
+        ) { [weak self] _, _ in
+            self?.refreshCameraDevices()
+        }
+    }
+
+    private func refreshAudioDevices() {
+        let newDevices = discoverAudioInputDevices()
+        let added = newDevices.filter { !audioInputDeviceIDs.contains($0) }
+        let removed = audioInputDeviceIDs.filter { !newDevices.contains($0) }
+        audioInputDeviceIDs = newDevices
+
+        for deviceID in added {
+            log("New audio input device discovered: \(deviceID)")
+            registerAudioListener(for: deviceID)
+        }
+        if !removed.isEmpty {
+            log("Removed \(removed.count) audio input device(s)")
+        }
+
+        emitCurrentActiveState()
+    }
+
+    private func refreshCameraDevices() {
+        let newDevices = discoverCameraDevices()
+        let added = newDevices.filter { !cameraDeviceIDs.contains($0) }
+        let removed = cameraDeviceIDs.filter { !newDevices.contains($0) }
+        cameraDeviceIDs = newDevices
+
+        for deviceID in added {
+            log("New camera device discovered: \(deviceID)")
+            registerCameraListener(for: deviceID)
+        }
+        if !removed.isEmpty {
+            log("Removed \(removed.count) camera device(s)")
+        }
+
         emitCurrentActiveState()
     }
 
