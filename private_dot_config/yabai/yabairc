@@ -30,8 +30,9 @@ yabai -m signal --add event=application_hidden action="sketchybar --trigger wind
 yabai -m signal --add event=application_visible action="sketchybar --trigger windows_on_spaces_changed"
 
 # Restore spaces when displays are added or removed
-yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.sh &"
-yabai -m signal --add event=display_removed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.sh &"
+yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py &"
+yabai -m signal --add event=display_removed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py &"
+yabai -m signal --add event=system_woke action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py &"
 
 # ##### #
 # RULES #
@@ -107,26 +108,9 @@ yabai -m config \
 # SPACE SETTINGS #
 # ############## #
 
-# Ensure at least 3 spaces exist, then label them left-to-right across displays:
+# Ensure at least 3 spaces exist, labeled left-to-right across displays:
 #   left → chat, center → code, right → docs
-labels=(chat code docs)
-
-current_count=$(yabai -m query --spaces | jq length)
-for ((n = current_count + 1; n <= $#labels; n++)); do
-  yabai -m space --create
-done
-
-# Collect all space indices ordered by physical display position (left→right), then index
-spaces=($(yabai -m query --displays | jq -r '
-  sort_by(.frame.x) | .[].index' |
-  while read -r display; do
-    yabai -m query --spaces --display "$display" | jq -r 'sort_by(.index) | .[].index'
-  done
-))
-
-for ((i = 1; i <= $#labels; i++)); do
-  [[ -n "${spaces[$i]:-}" ]] && yabai -m space "${spaces[$i]}" --label "${labels[$i]}"
-done
+${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py
 
 yabai -m config \
   layout stack \
