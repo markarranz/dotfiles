@@ -71,3 +71,5 @@ sketchybar/
 - **zen mode**: `calendar.lua` click toggles most widgets on/off.
 - **C helper receives colors** from `sketchybarrc` Lua config — theme changes propagate automatically.
 - **SBarLua**: Must be installed to `~/.local/share/sketchybar_lua/` (see README).
+- **Color-code convention**: red=critical, orange=warning, yellow=caution, green=ok.
+- **Mic monitor**: Reads state from `/tmp/mic-monitor-state` (external daemon).

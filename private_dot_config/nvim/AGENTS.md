@@ -1,6 +1,6 @@
 # Neovim (LazyVim) — AGENTS.md
 
-LazyVim distribution with custom overrides layered on top. Base lives in `externally_modified/nvim/` (symlinked via chezmoi); customizations here.
+LazyVim distribution with custom overrides layered on top. Base lives in `externally_modified/nvim/` (symlinked via chezmoi); customizations here. Two-layer architecture: base distribution (unmanaged) + chezmoi-managed overrides.
 
 ## Structure
 
@@ -75,5 +75,6 @@ nvim/
 
 - **navigate.lua**: Detects multiplexer (tmux > kitty), uses geometric window detection, sets `IS_NVIM` kitty user var for passthrough. Handles floating windows, DCS passthrough in tmux.
 - **sqlls.lua**: Conditionally disables itself if `ssql-ls-full` is available (work environment).
-- **`zz_` prefix**: `zz_for_work.lua.tmpl` loads last to ensure work plugins don't conflict.
+- **`zz_` prefix**: `zz_for_work.lua.tmpl` loads last to ensure work plugins don't conflict. Work plugins: gopls (no gofumpt), goimports.
 - **Filetype detection**: Hyprland (`*.conf` under `hypr/`), Go templates (`.gotmpl`), Rofi (`.rasi`).
+- **LSP choices**: basedpyright (Python), ruff (formatter), bacon-ls (Rust background compilation).

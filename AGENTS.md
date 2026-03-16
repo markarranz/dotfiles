@@ -22,9 +22,8 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 ├── .chezmoiexternal.toml.tmpl  # External deps (Catppuccin themes, zsh/tmux plugins)
 ├── .chezmoiignore.tmpl         # OS-conditional file exclusion
 ├── install.sh                  # Cross-platform installer (Homebrew / pacman+yay)
-├── install-devcontainer.sh     # Devcontainer bootstrap script
+
 ├── dot_zshenv.tmpl             # Zsh entry point (XDG dirs, EDITOR, HISTFILE)
-├── dot_claude/                 # Claude Code IDE settings
 ├── dot_claude/                 # Claude Code IDE settings
 ├── dot_tuple/                  # Tuple.app triggers and tracked-room scripts
 ├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
@@ -43,7 +42,7 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 │   ├── borders/                # [macOS] JankyBorders (pink→sky gradient)
 │   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
 │   ├── git/                    # Git config, ignore, helper scripts
-│   ├── opencode/               # OpenCode local settings
+│   ├── Claude/                 # Claude Code local settings
 │   └── {bat,delta,lazygit,yazi,zathura,qt6ct,uwsm,systemd}/
 └── externally_modified/        # Git-tracked, NOT chezmoi-managed (symlinked in)
     ├── nvim/                   # LazyVim base distribution
@@ -67,14 +66,14 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 | Add shell function | `private_dot_config/zsh/functions.zsh` | Static (no template) |
 | PATH/exports | `private_dot_config/zsh/exports.zsh.tmpl` | OS + work conditionals |
 | Add git helper script | `private_dot_config/git/scripts/` | Shell scripts used by git tooling |
-| OpenCode settings | `private_dot_config/opencode/` | JSON config files |
+| Claude Code settings | `private_dot_config/Claude/` | JSON config files |
 | Kitty keybinding | `private_dot_config/kitty/kitty.conf` | Python kittens for complex behavior |
 | Hyprland keybinding | `private_dot_config/hypr/hyprland.conf` | Static config |
 | Hyprland hardware config | `private_dot_config/hypr/hardware.conf.tmpl` | Chassis-type conditional |
 | macOS hotkey | `private_dot_config/skhd/skhdrc.tmpl` | Template for work/personal |
 | SketchyBar widget | `private_dot_config/sketchybar/items/widgets/` | Lua scripts |
 | Tmux config | `private_dot_config/tmux/tmux.conf` | Static (no template) |
-│ Git identity switching │ `private_dot_config/git/config.tmpl` │ Conditional includes by directory │
+| Git identity switching | `private_dot_config/git/config.tmpl` | Conditional includes by directory |
 | Manually tracked config | `externally_modified/` | Symlinked via `symlink_*.tmpl` |
 
 ---
@@ -107,7 +106,7 @@ AI changes: `[ai] description`.
 ### Go Templates
 - `{{-` / `-}}` for whitespace control (always use dash form)
 - `.chezmoi.os`, `.chezmoi.hostname` for platform detection
-- `.chassisType`, `.forWork`, `.forDevcontainer` for custom data
+- `.chassisType`, `.forWork` for custom data
 - `output "cmd" "args"` for command execution, `env "VAR"` for env vars
 
 ### Lua (Neovim + SketchyBar)
@@ -139,7 +138,7 @@ AI changes: `[ai] description`.
 | `.chezmoi.hostname` | Machine hostname | Git config (`"digdug"` = work) |
 | `.chassisType` | `"laptop"`, `"desktop"` | Hyprland hardware, hyprlock |
 | `.forWork` | Boolean | Zsh (NVM), Kitty, Git, Neovim |
-| `.forDevcontainer` | Boolean | Zsh, chezmoiignore |
+
 
 ### File Naming
 | Prefix/Suffix | Meaning |
