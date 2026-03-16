@@ -73,7 +73,8 @@ end
 
 for i = 1, 9 do
 	if i > 1 then
-		space_spacers[i] = sbar.add("item", "space.spacer." .. i, {
+		space_spacers[i] = sbar.add("space", "space.spacer." .. i, {
+			space = i,
 			width = 0,
 			background = { drawing = false },
 			icon = { drawing = false },
@@ -93,7 +94,8 @@ for i = 1, 9 do
 		.. ' else sketchybar --set space.' .. i .. ' icon.string="' .. i .. '"; fi;'
 		.. ' else ' .. debounced_focus .. ' fi'
 
-	local space = sbar.add("item", "space." .. i, {
+	local space = sbar.add("space", "space." .. i, {
+		space = i,
 		click_script = click_script,
 		icon = {
 			string = tostring(i),
@@ -121,7 +123,8 @@ for i = 1, 9 do
 	local bracket_members = { "space." .. i }
 
 	for j = 1, MAX_APPS do
-		local app_item = sbar.add("item", "space." .. i .. ".app." .. j, {
+		local app_item = sbar.add("space", "space." .. i .. ".app." .. j, {
+			space = i,
 			click_script = debounced_focus,
 			icon = { drawing = false },
 			label = {
