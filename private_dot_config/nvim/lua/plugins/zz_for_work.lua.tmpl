@@ -24,15 +24,6 @@ return {
     },
   },
   {
-    "coder/claudecode.nvim",
-    opts = {
-      focus_after_send = true,
-      terminal = {
-        split_width_percentage = 0.50,
-      },
-    },
-  },
-  {
     "folke/snacks.nvim",
     opts = {
       dashboard = {
@@ -67,25 +58,6 @@ return {
           end
         end
       end
-    end,
-  },
-  {
-    "erichlf/devcontainer-cli.nvim",
-    dependencies = { "akinsho/toggleterm.nvim" },
-    config = function()
-      require("devcontainer-cli").setup({
-        interactive = false,
-        toplevel = true,
-        remove_existing_container = true,
-        dotfiles_repository = "https://github.com/markarranz/dotfiles.git",
-        dotfiles_branch = "main",
-        dotfiles_targetPath = "~/dotfiles",
-        dotfiles_install_command = "install-devcontainer.sh",
-        shell = "bash",
-        nvim_binary = "nvim",
-        log_level = "debug",
-        console_level = "info",
-      })
     end,
   },
 }
