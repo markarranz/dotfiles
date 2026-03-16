@@ -1,11 +1,11 @@
-{{- if and (eq .chezmoi.os "linux") (not .forDevcontainer) }}
+{{- if eq .chezmoi.os "linux" }}
 
 # Automatically start a uwsm managed Hyprland session when logging in to tty1:
 if uwsm check may-start; then
     exec uwsm start hyprland-uwsm.desktop
 fi
 
-{{- else if and (eq .chezmoi.os "darwin") (not .forDevcontainer) }}
+{{- else if eq .chezmoi.os "darwin" }}
 
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv zsh)"
