@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 # pyright: reportUnknownVariableType=false, reportUnknownMemberType=false, reportUnknownArgumentType=false
 
 import fcntl
@@ -10,6 +12,19 @@ import time
 
 LOCKFILE = "/tmp/yabai_display_transition"
 LABELS = ["chat", "code", "docs"]
+APP_SPACE_RULES: dict[str, str] = {
+    "Slack": "chat",
+    "zoom.us": "chat",
+    "Tuple": "chat",
+    "kitty": "code",
+    "Claude": "code",
+    "Cursor": "code",
+    "Codes": "code",
+    "Code": "code",
+    "Notion": "docs",
+    "Slab": "docs",
+    "Figma": "docs",
+}
 POLL_INTERVAL_SECONDS = 0.5
 POLL_TIMEOUT_SECONDS = 30
 YABAI_TIMEOUT_SECONDS = 5
@@ -121,6 +136,43 @@ def ordered_space_indices(displays: list[dict[str, object]]) -> list[int] | None
     return space_indices
 
 
+def redistribute_windows() -> None:
+    spaces = run_yabai_json(["query", "--spaces"])
+    if spaces is None:
+        return
+    index_to_label = {get_index(s): space_label(s) for s in spaces}
+    label_set = set(index_to_label.values())
+    if not all(label in label_set for label in LABELS):
+        log("restore_spaces: not all labeled spaces exist, skipping redistribution")
+        return
+
+    windows = run_yabai_json(["query", "--windows"])
+    if windows is None:
+        return
+
+    moved = 0
+    for window in windows:
+        app = window.get("app")
+        if not isinstance(app, str):
+            continue
+        target_label = APP_SPACE_RULES.get(app)
+        if target_label is None:
+            continue
+        window_space = window.get("space")
+        if not isinstance(window_space, int):
+            continue
+        if index_to_label.get(window_space) == target_label:
+            continue
+        window_id = window.get("id")
+        if not isinstance(window_id, int):
+            continue
+        if run_yabai_cmd(["window", str(window_id), "--space", target_label]):
+            moved += 1
+
+    if moved > 0:
+        log(f"restore_spaces: moved {moved} windows to their labeled spaces")
+
+
 def main() -> int:
     with open(LOCKFILE, "a") as lock_handle:
         try:
@@ -140,35 +192,36 @@ def main() -> int:
             )
 
             if is_already_labeled(spaces):
-                log("restore_spaces: spaces already correctly labeled, skipping")
-                return 0
+                log("restore_spaces: spaces already correctly labeled")
+            else:
+                current_count = len(spaces)
+                missing = max(0, len(LABELS) - current_count)
+                if missing > 0:
+                    log(f"restore_spaces: creating {missing} missing spaces")
+                    for _ in range(current_count + 1, len(LABELS) + 1):
+                        if not run_yabai_cmd(["space", "--create"]):
+                            log("restore_spaces: failed to create space")
+                            return 1
 
-            current_count = len(spaces)
-            missing = max(0, len(LABELS) - current_count)
-            if missing > 0:
-                log(f"restore_spaces: creating {missing} missing spaces")
-                for _ in range(current_count + 1, len(LABELS) + 1):
-                    if not run_yabai_cmd(["space", "--create"]):
-                        log("restore_spaces: failed to create space")
-                        return 1
-
-            refreshed_displays = run_yabai_json(["query", "--displays"])
-            if refreshed_displays is None:
-                log("restore_spaces: failed to query displays after space creation")
-                return 1
-            space_indices = ordered_space_indices(refreshed_displays)
-            if space_indices is None or len(space_indices) < len(LABELS):
-                log("restore_spaces: not enough space indices for labeling")
-                return 1
-
-            labeled_pairs: list[str] = []
-            for label, idx in zip(LABELS, space_indices[: len(LABELS)]):
-                if not run_yabai_cmd(["space", str(idx), "--label", label]):
-                    log(f"restore_spaces: failed to label space {idx} as {label}")
+                refreshed_displays = run_yabai_json(["query", "--displays"])
+                if refreshed_displays is None:
+                    log("restore_spaces: failed to query displays after space creation")
                     return 1
-                labeled_pairs.append(f"{label}={idx}")
+                space_indices = ordered_space_indices(refreshed_displays)
+                if space_indices is None or len(space_indices) < len(LABELS):
+                    log("restore_spaces: not enough space indices for labeling")
+                    return 1
 
-            log(f"restore_spaces: labeled spaces: {', '.join(labeled_pairs)}")
+                labeled_pairs: list[str] = []
+                for label, idx in zip(LABELS, space_indices[: len(LABELS)]):
+                    if not run_yabai_cmd(["space", str(idx), "--label", label]):
+                        log(f"restore_spaces: failed to label space {idx} as {label}")
+                        return 1
+                    labeled_pairs.append(f"{label}={idx}")
+
+                log(f"restore_spaces: labeled spaces: {', '.join(labeled_pairs)}")
+
+            redistribute_windows()
             return 0
         finally:
             try:
