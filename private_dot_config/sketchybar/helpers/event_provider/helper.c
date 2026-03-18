@@ -4,11 +4,7 @@
 struct cpu g_cpu;
 
 void handler(env env) {
-  // Environment variables passed from sketchybar can be accessed as seen below
   char* name = env_get_value_for_key(env, "NAME");
-  char* sender = env_get_value_for_key(env, "SENDER");
-  char* info = env_get_value_for_key(env, "INFO");
-  char* selected = env_get_value_for_key(env, "SELECTED");
 
   if ((strcmp(name, "cpu.percent") == 0)) {
     // CPU graph updates

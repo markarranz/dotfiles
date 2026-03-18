@@ -38,7 +38,7 @@ sketchybar/
 │       ├── volume.lua
 │       └── wifi.lua
 ├── lib/                  # Utility modules
-│   └── app_icons.lua     # App name to icon mapping
+│   └── icon_map.lua      # App name to icon mapping (auto-updated)
 └── helper/               # C helper for CPU monitoring
     ├── helper.c
     ├── cpu.h

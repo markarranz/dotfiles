@@ -1,7 +1,7 @@
 local colors = require("config.colors")
 local icons = require("config.icons")
 local settings = require("config.settings")
-local app_icons = require("lib.app_icons")
+local icon_map = require("lib.icon_map")
 
 local MAX_APPS = 8
 
@@ -17,6 +17,36 @@ local current_focused_window_id = 0
 local space_spacers = {}
 
 local refresh_spaces
+
+local function show_space(i)
+	if spaces[i] then
+		spaces[i]:set({ drawing = true })
+	end
+	if brackets[i] then
+		brackets[i]:set({ background = { drawing = true } })
+	end
+	if i > 1 and space_spacers[i] then
+		space_spacers[i]:set({ width = settings.group_paddings })
+	end
+end
+
+local function hide_space(i)
+	if spaces[i] then
+		spaces[i]:set({ drawing = false })
+	end
+	if brackets[i] then
+		brackets[i]:set({ background = { drawing = false } })
+	end
+	if i > 1 and space_spacers[i] then
+		space_spacers[i]:set({ width = 0 })
+	end
+	if space_app_items[i] then
+		for j = 1, MAX_APPS do
+			space_app_items[i][j]:set({ drawing = false })
+		end
+	end
+end
+
 local function update_space_icons(space_num)
 	local windows = space_windows[space_num]
 	local items = space_app_items[space_num]
@@ -30,7 +60,7 @@ local function update_space_icons(space_num)
 	for j = 1, MAX_APPS do
 		if has_windows and j <= #windows then
 			local win = windows[j]
-			local app_icon = app_icons(win.app)
+			local app_icon = icon_map[win.app] or ":default:"
 			local is_focused = win.id == current_focused_window_id
 			local is_last = j == #windows
 			local color = is_focused and colors.lavender or (selected and colors.white or colors.grey)
@@ -57,6 +87,12 @@ local function update_space_icons(space_num)
 	end)
 end
 
+local function update_all_space_icons()
+	for space_num, _ in pairs(space_windows) do
+		update_space_icons(space_num)
+	end
+end
+
 local function query_space_windows(space_num)
 	sbar.exec("yabai -m query --windows --space " .. space_num .. JQ_VISIBLE_APPS, function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
@@ -70,6 +106,7 @@ local function query_space_windows(space_num)
 			end
 		end
 		space_windows[space_num] = windows
+		show_space(space_num)
 		update_space_icons(space_num)
 	end)
 end
@@ -144,7 +181,7 @@ for i = 1, 9 do
 			padding_left = 3,
 			padding_right = 3,
 			drawing = false,
-			background = { color = 0x00000000 },
+			background = { color = colors.transparent },
 		})
 		app_items[j] = app_item
 		table.insert(bracket_members, "space." .. i .. ".app." .. j)
@@ -162,7 +199,6 @@ for i = 1, 9 do
 	space_app_items[i] = app_items
 	brackets[i] = bracket
 
-	-- Handle space selection highlighting
 	space:subscribe("space_change", function(env)
 		local selected = false
 		if env.INFO then
@@ -181,8 +217,6 @@ for i = 1, 9 do
 		})
 		brackets[i]:set({ background = { border_color = border_color } })
 		update_space_icons(i)
-		-- Refresh space visibility (only from space 1 to avoid redundant calls)
-		if i == 1 then refresh_spaces() end
 	end)
 
 end
@@ -209,31 +243,34 @@ local space_creator = sbar.add("item", "space_creator", {
 sbar.add("event", "windows_on_spaces_changed")
 sbar.add("event", "window_focused")
 
--- Update space labels with app icons
+-- Refresh space visibility on space changes. Using space_creator ("item" type)
+-- ensures a single callback per event, unlike per-space "space" type handlers.
+space_creator:subscribe("space_change", function()
+	refresh_spaces()
+end)
+
 space_creator:subscribe("space_windows_change", function(env)
 	local space_num = env.INFO and env.INFO.space
 	if not space_num or not spaces[space_num] then
 		return
 	end
-
 	query_space_windows(space_num)
 end)
 
 space_creator:subscribe("window_focused", function(env)
 	current_focused_window_id = tonumber(env.WINDOW_ID) or 0
-	for space_num, _ in pairs(space_windows) do
-		update_space_icons(space_num)
-	end
+	update_all_space_icons()
 end)
 
 space_creator:subscribe("front_app_switched", function()
-	sbar.exec("yabai -m query --windows --window | jq '.id'", function(result)
+	sbar.exec("yabai -m query --windows --window | jq '.id'", function(result, exit_code)
+		if exit_code and exit_code ~= 0 then
+			return
+		end
 		local id = tonumber(result:match("%d+"))
-		if id then
+		if id and id ~= current_focused_window_id then
 			current_focused_window_id = id
-			for space_num, _ in pairs(space_windows) do
-				update_space_icons(space_num)
-			end
+			update_all_space_icons()
 		end
 	end)
 end)
@@ -244,9 +281,11 @@ space_creator:subscribe("windows_on_spaces_changed", function()
 	end
 end)
 
--- Seed all spaces and manage spacer visibility on load
 refresh_spaces = function()
-	sbar.exec("yabai -m query --spaces | jq -r '.[].index'", function(result)
+	sbar.exec("yabai -m query --spaces | jq -r '.[].index'", function(result, exit_code)
+		if exit_code and exit_code ~= 0 then
+			return
+		end
 		local active = {}
 		for space_num_str in result:gmatch("%d+") do
 			local space_num = tonumber(space_num_str)
@@ -256,37 +295,20 @@ refresh_spaces = function()
 		end
 
 		for i = 1, 9 do
-			local exists = active[i] or false
-
-			-- Show/hide space items and brackets
-			if spaces[i] then
-				spaces[i]:set({ drawing = exists })
-			end
-			if brackets[i] then
-				brackets[i]:set({ background = { drawing = exists } })
-			end
-
-			-- Update spacer widths
-			if i > 1 and space_spacers[i] then
-				space_spacers[i]:set({ width = exists and settings.group_paddings or 0 })
-			end
-
-			-- Hide app items for non-existent spaces
-			if not exists and space_app_items[i] then
-				for j = 1, MAX_APPS do
-					space_app_items[i][j]:set({ drawing = false })
-				end
-			end
-
-			-- Seed window icons for active spaces
-			if exists and spaces[i] then
+			if active[i] then
+				show_space(i)
 				query_space_windows(i)
+			else
+				hide_space(i)
 			end
 		end
 	end)
 end
 
-sbar.exec("yabai -m query --windows --window | jq '.id'", function(result)
+sbar.exec("yabai -m query --windows --window | jq '.id'", function(result, exit_code)
+	if exit_code and exit_code ~= 0 then
+		return
+	end
 	current_focused_window_id = tonumber(result:match("%d+")) or 0
 	refresh_spaces()
 end)
