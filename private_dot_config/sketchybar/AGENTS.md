@@ -8,7 +8,6 @@ Lua-scripted macOS menu bar replacement using SBarLua. Adapted from FelixKratz/d
 sketchybar/
 ├── executable_sketchybarrc   # Entry point (Lua, loaded by SBarLua)
 ├── config/
-│   ├── init.lua              # Config loader
 │   ├── bar.lua               # Bar appearance (height, position, padding)
 │   ├── colors.lua            # Catppuccin Mocha color palette (hex 0xAARRGGBB)
 │   ├── default.lua           # Default item styling (font, padding, background)
@@ -29,7 +28,7 @@ sketchybar/
 │       ├── volume.lua        # Slider + audio device switching
 │       └── wifi.lua          # Connection status + IP display
 ├── lib/
-│   └── app_icons.lua         # App name → Nerd Font icon mapping
+│   └── icon_map.lua          # App name → icon mapping (auto-updated via chezmoiexternal)
 └── helper/
     ├── helper.c              # C helper: CPU monitoring via Mach messaging
     ├── cpu.h                 # CPU sampling header
@@ -46,7 +45,7 @@ sketchybar/
 | Change fonts/padding | `config/settings.lua` |
 | Add bar item (left/center) | `items/new_item.lua` + register in `items/init.lua` |
 | Modify bar appearance | `config/bar.lua` |
-| Change app icon mapping | `lib/app_icons.lua` (also auto-updated via chezmoiexternal) |
+| Change app icon mapping | `lib/icon_map.lua` (auto-updated via chezmoiexternal) |
 | Modify CPU helper | `helper/helper.c` + rebuild |
 
 ## Conventions
@@ -60,7 +59,7 @@ sketchybar/
 ## Anti-Patterns
 
 - **Don't hardcode colors** — always reference `config/colors.lua` values
-- **Don't add items without registering** in the appropriate `init.lua`
+- **Don't add items without registering** in `items/init.lua` or `items/widgets/init.lua`
 - **C helper is compiled at runtime** by SketchyBar — don't distribute binaries
 
 ## Notes
