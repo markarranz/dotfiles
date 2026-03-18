@@ -21,6 +21,9 @@ yabai -m signal --add event=application_activated action='
   [ -n "$space" ] && yabai -m space --focus "$space"
 '
 
+# Notify SketchyBar which window is focused (enables per-window icon highlighting)
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focused WINDOW_ID=\$YABAI_WINDOW_ID"
+
 # Re-query window order in SketchyBar when windows swap/move positions
 yabai -m signal --add event=window_moved action="sketchybar --trigger windows_on_spaces_changed"
 yabai -m signal --add event=window_resized action="sketchybar --trigger windows_on_spaces_changed"
