@@ -17,5 +17,5 @@ yabai -m query --spaces --display |
   # wait for any native fullscreen apps to get added back to their original workspace
   sleep 2 &&
   yabai -m query --spaces |
-  jq -r 'map(select(."windows" == [] and ."has-focus" == false).index) | reverse | .[] ' |
+  jq -r 'map(select(."windows" == [] and ."has-focus" == false and .label == "").index) | reverse | .[]' |
     xargs -I % sh -c 'yabai -m space % --destroy'
