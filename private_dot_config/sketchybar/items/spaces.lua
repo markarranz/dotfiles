@@ -5,34 +5,34 @@ local app_icons = require("lib.app_icons")
 
 local MAX_APPS = 8
 
-local JQ_VISIBLE_APPS = [[ | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[].app']]
+local JQ_VISIBLE_APPS = [[ | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"']]
 
 
 local spaces = {}
 local space_app_items = {}
 local brackets = {}
-local space_apps = {}
+local space_windows = {}
 local space_selected = {}
-local current_front_app = ""
+local current_focused_window_id = 0
 local space_spacers = {}
 
 local refresh_spaces
 local function update_space_icons(space_num)
-	local apps = space_apps[space_num]
+	local windows = space_windows[space_num]
 	local items = space_app_items[space_num]
 	if not spaces[space_num] or not items then
 		return
 	end
 
-	local has_apps = apps and #apps > 0
+	local has_windows = windows and #windows > 0
 	local selected = space_selected[space_num]
 
 	for j = 1, MAX_APPS do
-		if has_apps and j <= #apps then
-			local app_name = apps[j]
-			local app_icon = app_icons(app_name)
-			local is_focused = app_name == current_front_app
-			local is_last = j == #apps
+		if has_windows and j <= #windows then
+			local win = windows[j]
+			local app_icon = app_icons(win.app)
+			local is_focused = win.id == current_focused_window_id
+			local is_last = j == #windows
 			local color = is_focused and colors.lavender or (selected and colors.white or colors.grey)
 			items[j]:set({
 				drawing = true,
@@ -50,23 +50,26 @@ local function update_space_icons(space_num)
 	sbar.animate("sin", 10, function()
 		spaces[space_num]:set({
 			label = {
-				string = has_apps and "" or " —",
-				drawing = not has_apps,
+				string = has_windows and "" or " —",
+				drawing = not has_windows,
 			},
 		})
 	end)
 end
 
-local function query_space_apps(space_num)
+local function query_space_windows(space_num)
 	sbar.exec("yabai -m query --windows --space " .. space_num .. JQ_VISIBLE_APPS, function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
 			return
 		end
-		local apps = {}
-		for app_name in result:gmatch("[^\n]+") do
-			table.insert(apps, app_name)
+		local windows = {}
+		for line in result:gmatch("[^\n]+") do
+			local app, id = line:match("^(.-)\t(%d+)$")
+			if app and id then
+				table.insert(windows, { app = app, id = tonumber(id) })
+			end
 		end
-		space_apps[space_num] = apps
+		space_windows[space_num] = windows
 		update_space_icons(space_num)
 	end)
 end
@@ -202,8 +205,9 @@ local space_creator = sbar.add("item", "space_creator", {
 	click_script = "yabai -m space --create",
 })
 
--- Custom event for yabai window move/resize signals
+-- Custom events for yabai signals
 sbar.add("event", "windows_on_spaces_changed")
+sbar.add("event", "window_focused")
 
 -- Update space labels with app icons
 space_creator:subscribe("space_windows_change", function(env)
@@ -212,19 +216,31 @@ space_creator:subscribe("space_windows_change", function(env)
 		return
 	end
 
-	query_space_apps(space_num)
+	query_space_windows(space_num)
 end)
 
-space_creator:subscribe("front_app_switched", function(env)
-	current_front_app = env.INFO or ""
-	for space_num, _ in pairs(space_apps) do
+space_creator:subscribe("window_focused", function(env)
+	current_focused_window_id = tonumber(env.WINDOW_ID) or 0
+	for space_num, _ in pairs(space_windows) do
 		update_space_icons(space_num)
 	end
 end)
 
+space_creator:subscribe("front_app_switched", function()
+	sbar.exec("yabai -m query --windows --window | jq '.id'", function(result)
+		local id = tonumber(result:match("%d+"))
+		if id then
+			current_focused_window_id = id
+			for space_num, _ in pairs(space_windows) do
+				update_space_icons(space_num)
+			end
+		end
+	end)
+end)
+
 space_creator:subscribe("windows_on_spaces_changed", function()
-	for space_num, _ in pairs(space_apps) do
-		query_space_apps(space_num)
+	for space_num, _ in pairs(space_windows) do
+		query_space_windows(space_num)
 	end
 end)
 
@@ -264,10 +280,13 @@ refresh_spaces = function()
 
 			-- Seed window icons for active spaces
 			if exists and spaces[i] then
-				query_space_apps(i)
+				query_space_windows(i)
 			end
 		end
 	end)
 end
 
-refresh_spaces()
+sbar.exec("yabai -m query --windows --window | jq '.id'", function(result)
+	current_focused_window_id = tonumber(result:match("%d+")) or 0
+	refresh_spaces()
+end)
