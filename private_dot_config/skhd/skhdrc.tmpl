@@ -31,9 +31,9 @@ ctrl + alt - l   : yabai -m space --focus next || (yabai -m display --focus next
 cmd + alt - h   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m display --focus "$target"
 cmd + alt - l   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m display --focus "$target"
 
-# Move space to left/right display (coordinate-sorted) with CMD + ALT + SHIFT + [hl]:
-cmd + alt + shift - h : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m space --display "$target"
-cmd + alt + shift - l : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m space --display "$target"
+# Move window to left/right display (coordinate-sorted) with CMD + ALT + SHIFT + [hl]:
+cmd + alt + shift - h : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m window --display "$target" --focus
+cmd + alt + shift - l : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m window --display "$target" --focus
 
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270 # clockwise
@@ -58,8 +58,8 @@ cmd - 9 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "9" ]
 cmd - 0 : cur=$(yabai -m query --spaces --space | jq '.index'); [ "$cur" = "10" ] || yabai -m space --focus 10 || (yabai -m space --create; yabai -m space --focus last)
 
 # Move window to prev/next space with CTRL + ALT + SHIFT + [hl]:
-ctrl + alt + shift - h : yabai -m window --space prev --focus
-ctrl + alt + shift - l : yabai -m window --space next --focus
+ctrl + alt + shift - h : idx=$(yabai -m query --spaces --space prev | jq '.index') && yabai -m window --space prev && yabai -m space --focus "$idx"
+ctrl + alt + shift - l : idx=$(yabai -m query --spaces --space next | jq '.index') && yabai -m window --space next && yabai -m space --focus "$idx"
 
 # ############### #
 # WINDOW COMMANDS #
@@ -96,16 +96,16 @@ cmd + shift - k : yabai -m window --warp north
 cmd + shift - l : yabai -m window --warp east
 
 # Move window to space with CMD + SHIFT + [0-9]:
-cmd + shift - 1 : yabai -m window --space 1 --focus
-cmd + shift - 2 : yabai -m window --space 2 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 3 : yabai -m window --space 3 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 4 : yabai -m window --space 4 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 5 : yabai -m window --space 5 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 6 : yabai -m window --space 6 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 7 : yabai -m window --space 7 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 8 : yabai -m window --space 8 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 9 : yabai -m window --space 9 --focus  || (yabai -m space --create; yabai -m window --space last --focus)
-cmd + shift - 0 : yabai -m window --space 10 --focus || (yabai -m space --create; yabai -m window --space last --focus)
+cmd + shift - 1 : yabai -m window --space 1 && yabai -m space --focus 1
+cmd + shift - 2 : yabai -m window --space 2 && yabai -m space --focus 2  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 3 : yabai -m window --space 3 && yabai -m space --focus 3  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 4 : yabai -m window --space 4 && yabai -m space --focus 4  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 5 : yabai -m window --space 5 && yabai -m space --focus 5  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 6 : yabai -m window --space 6 && yabai -m space --focus 6  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 7 : yabai -m window --space 7 && yabai -m space --focus 7  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 8 : yabai -m window --space 8 && yabai -m space --focus 8  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 9 : yabai -m window --space 9 && yabai -m space --focus 9  || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
+cmd + shift - 0 : yabai -m window --space 10 && yabai -m space --focus 10 || (yabai -m space --create && yabai -m window --space last && yabai -m space --focus last)
 
 # ######################## #
 # BLACKLISTED APPLICATIONS #
