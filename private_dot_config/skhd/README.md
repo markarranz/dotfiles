@@ -29,7 +29,7 @@
 | `Ctrl+Alt+h` / `l`   | Previous / next space (wraps across displays) |
 | `Cmd+1-9, 0`          | Focus space (creates it if needed)    |
 | `Cmd+Alt+h` / `l`     | Focus left / right display            |
-| `Cmd+Alt+Shift+h / l` | Move space to left / right display    |
+| `Cmd+Alt+Shift+h / l` | Move window to left / right display   |
 | `Ctrl+Alt+Shift+h` / `l` | Move window to prev / next space      |
 | `Cmd+Alt+r`           | Rotate tree clockwise                 |
 | `Cmd+Alt+u`           | Rotate tree counter-clockwise         |

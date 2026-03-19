@@ -21,6 +21,9 @@ yabai -m signal --add event=application_activated action='
   [ -n "$space" ] && yabai -m space --focus "$space"
 '
 
+# Never let Tuple Host windows keep focus — bounce to the previous window
+yabai -m signal --add event=window_focused app="^Tuple$" title="^Host$" action='yabai -m window --focus recent'
+
 # Notify SketchyBar which window is focused (enables per-window icon highlighting)
 yabai -m signal --add event=window_focused action="sketchybar --trigger window_focused WINDOW_ID=\$YABAI_WINDOW_ID"
 
@@ -68,6 +71,7 @@ yabai -m rule --add app="^($(join_by '|' "${unmanaged_apps[@]}"))$" manage=off
 yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
 yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+yabai -m rule --add label="Tuple Host" app="^Tuple$" title="^Host$" manage=off
 
 # Space assignments:
 chat_apps=("Slack" "zoom.us" "Tuple")
