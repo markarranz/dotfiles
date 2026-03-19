@@ -5,7 +5,7 @@ trap cleanup SIGINT SIGTERM ERR EXIT
 
 usage() {
   cat <<EOF
-Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-l] repository
+Usage: $(basename "${BASH_SOURCE[0]}") [-h] [-v] [-l] repository [directory]
 
 Clone a bare git repo and set up environment for working comfortably and exclusively from worktrees.
 
@@ -16,6 +16,13 @@ Available options:
 -l, --location  Location of the bare repo contents (default: .bare)
 EOF
   exit
+}
+
+repo_name_from_url() {
+  local url="$1"
+  url="${url%%/}"
+  url="${url%.git}"
+  echo "${url##*/}"
 }
 
 cleanup() {
@@ -61,9 +68,10 @@ parse_params() {
 
   args=("$@")
 
-  # check required params and arguments
-  # [[ -z "${param-}" ]] && die "Missing required parameter: param"
-  [[ ${#args[@]} -eq 0 ]] && die "Missing script arguments"
+  [[ ${#args[@]} -eq 0 ]] && die "Missing repository argument"
+
+  repository="${args[0]}"
+  directory="${args[1]:-$(repo_name_from_url "$repository")}"
 
   return 0
 }
@@ -71,12 +79,18 @@ parse_params() {
 parse_params "$@"
 setup_colors
 
+[[ -e "$directory" ]] && die "${RED}fatal: destination path '$directory' already exists.${NOFORMAT}"
+
+msg "${YELLOW}Creating $directory...${NOFORMAT}"
+mkdir -p "$directory"
+cd "$directory"
+
 msg "${YELLOW}Cloning bare repository to $location...${NOFORMAT}"
-git clone --bare "${args[@]}" "$location"
-pushd "$location" >/dev/null
+git clone --bare "$repository" "$location"
+
 msg "${YELLOW}Adjusting origin fetch locations...${NOFORMAT}"
-git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
-popd >/dev/null
+git -C "$location" config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
 msg "${YELLOW}Setting .git file contents...${NOFORMAT}"
 echo "gitdir: ./$location" >.git
-msg "${GREEN}Success.${NOFORMAT}"
+msg "${GREEN}Cloned into '$directory'.${NOFORMAT}"
