@@ -1,4 +1,4 @@
-{{ if and (eq .chezmoi.os "linux") (not .forDevcontainer) -}}
+{{ if eq .chezmoi.os "linux" -}}
 
  [".config/hypr/themes/catppuccin/mocha.conf"]
 type = "file"
@@ -11,8 +11,6 @@ url = "https://raw.githubusercontent.com/catppuccin/qt5ct/refs/heads/main/themes
 refreshPeriod = "672h"  # every 28 days
 
 {{- end }}
-
-{{ if not .forDevcontainer -}}
 
 [".config/bat/themes/catppuccin_mocha.tmTheme"]
 type = "file"
@@ -28,8 +26,6 @@ refreshPeriod = "672h"  # every 28 days
 type = "file"
 url = "https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/mocha/catppuccin-mocha-blue.toml"
 refreshPeriod = "672h"  # every 28 days
-
-{{- end }}
 
 # Claude Code CLI zsh completions (community-maintained, auto-updated daily)
 # Remove when official support lands: https://github.com/anthropics/claude-code/issues/7738
