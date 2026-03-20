@@ -111,29 +111,75 @@ def wait_for_yabai() -> tuple[
     return None, None
 
 
-def is_already_labeled(spaces: list[dict[str, object]]) -> bool:
-    ordered = sorted(spaces, key=get_index)
-    labeled = [space for space in ordered if space_label(space)]
-    labels = [space_label(space) for space in labeled]
-    return len(labeled) == len(LABELS) and labels == LABELS
-
-
-def ordered_space_indices(displays: list[dict[str, object]]) -> list[int] | None:
-    display_indices = [
-        get_index(display) for display in sorted(displays, key=display_frame_x)
-    ]
-    space_indices: list[int] = []
-    for display_idx in display_indices:
+def target_spaces(
+    sorted_displays: list[dict[str, object]],
+) -> list[dict[str, object]] | None:
+    targets: list[dict[str, object]] = []
+    for i, display in enumerate(sorted_displays):
         display_spaces = run_yabai_json(
-            ["query", "--spaces", "--display", str(display_idx)]
+            ["query", "--spaces", "--display", str(get_index(display))]
         )
         if display_spaces is None:
             return None
-        for space in sorted(display_spaces, key=get_index):
-            idx = get_index(space)
-            if idx > 0:
-                space_indices.append(idx)
-    return space_indices
+        sorted_ds = sorted(display_spaces, key=get_index)
+        is_last = i == len(sorted_displays) - 1
+        if is_last:
+            for space in sorted_ds:
+                if len(targets) >= len(LABELS):
+                    break
+                targets.append(space)
+        else:
+            targets.append(sorted_ds[0])
+            if len(targets) >= len(LABELS):
+                break
+    return targets
+
+
+def is_correctly_placed(
+    sorted_displays: list[dict[str, object]],
+) -> bool:
+    targets = target_spaces(sorted_displays)
+    if targets is None or len(targets) < len(LABELS):
+        return False
+    for i, label in enumerate(LABELS):
+        if space_label(targets[i]) != label:
+            return False
+    return True
+
+
+def place_labels(
+    all_spaces: list[dict[str, object]],
+    sorted_displays: list[dict[str, object]],
+) -> bool:
+    # Clear stale labels
+    for space in all_spaces:
+        label = space_label(space)
+        if label in LABELS:
+            if not run_yabai_cmd(["space", str(get_index(space)), "--label", ""]):
+                return False
+
+    # Ensure enough spaces exist
+    if len(all_spaces) < len(LABELS):
+        for _ in range(len(LABELS) - len(all_spaces)):
+            if not run_yabai_cmd(["space", "--create"]):
+                return False
+
+    # Label spaces: one per display left to right, extras on last display
+    spaces = target_spaces(sorted_displays)
+    if spaces is None or len(spaces) < len(LABELS):
+        log("restore_spaces: not enough spaces for labeling")
+        return False
+
+    labeled_pairs: list[str] = []
+    for i, label in enumerate(LABELS):
+        idx = get_index(spaces[i])
+        display = spaces[i].get("display", "?")
+        if not run_yabai_cmd(["space", str(idx), "--label", label]):
+            return False
+        labeled_pairs.append(f"{label}={idx} (display {display})")
+
+    log(f"restore_spaces: labeled spaces: {', '.join(labeled_pairs)}")
+    return True
 
 
 def redistribute_windows() -> None:
@@ -187,39 +233,17 @@ def main() -> int:
                 log("restore_spaces: timeout waiting for yabai after 30s")
                 return 1
 
+            sorted_displays = sorted(displays, key=display_frame_x)
             log(
-                f"restore_spaces: yabai ready, {len(spaces)} spaces on {len(displays)} displays"
+                f"restore_spaces: yabai ready, {len(spaces)} spaces on {len(sorted_displays)} displays"
             )
 
-            if is_already_labeled(spaces):
-                log("restore_spaces: spaces already correctly labeled")
+            if is_correctly_placed(sorted_displays):
+                log("restore_spaces: spaces already correctly placed")
             else:
-                current_count = len(spaces)
-                missing = max(0, len(LABELS) - current_count)
-                if missing > 0:
-                    log(f"restore_spaces: creating {missing} missing spaces")
-                    for _ in range(current_count + 1, len(LABELS) + 1):
-                        if not run_yabai_cmd(["space", "--create"]):
-                            log("restore_spaces: failed to create space")
-                            return 1
-
-                refreshed_displays = run_yabai_json(["query", "--displays"])
-                if refreshed_displays is None:
-                    log("restore_spaces: failed to query displays after space creation")
+                if not place_labels(spaces, sorted_displays):
+                    log("restore_spaces: failed to place labels")
                     return 1
-                space_indices = ordered_space_indices(refreshed_displays)
-                if space_indices is None or len(space_indices) < len(LABELS):
-                    log("restore_spaces: not enough space indices for labeling")
-                    return 1
-
-                labeled_pairs: list[str] = []
-                for label, idx in zip(LABELS, space_indices[: len(LABELS)]):
-                    if not run_yabai_cmd(["space", str(idx), "--label", label]):
-                        log(f"restore_spaces: failed to label space {idx} as {label}")
-                        return 1
-                    labeled_pairs.append(f"{label}={idx}")
-
-                log(f"restore_spaces: labeled spaces: {', '.join(labeled_pairs)}")
 
             redistribute_windows()
             return 0
