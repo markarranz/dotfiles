@@ -16,17 +16,15 @@ sudo yabai --load-sa
 yabai -m signal --add event=space_changed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"
 
 # Focus the space where the activated app already has a window.
-# When Tuple activates (Host overlay catching focus), bounce to a non-Tuple
-# window on the Host's display instead — yabai can't track AXSystemDialog focus.
+# AXSystemDialog overlays (Tuple Host, Zoom HUD) live on a different display
+# than the app's real windows — skip them when choosing which space to focus,
+# and bounce focus to a real window on their display instead.
 yabai -m signal --add event=application_activated action='
   [ -f /tmp/yabai-moving ] && exit 0
   windows=$(yabai -m query --windows)
-  app=$(echo "$windows" | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).app // empty")
-  if [ "$app" = "Tuple" ]; then
-    target=$(echo "$windows" | jq -re "
-      ([.[] | select(.app == \"Tuple\" and .title == \"Host\")] | first | .display) as \$d |
-      [.[] | select(.display == \$d and .app != \"Tuple\" and .\"is-minimized\" == false and .\"is-hidden\" == false)] |
-      first | .id")
+  overlay=$(echo "$windows" | jq -re "first(.[] | select(.pid == $YABAI_PROCESS_ID and .subrole == \"AXSystemDialog\")) | .display" 2>/dev/null)
+  if [ -n "$overlay" ]; then
+    target=$(echo "$windows" | jq -re "[.[] | select(.display == $overlay and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false)] | first | .id")
     [ -n "$target" ] && yabai -m window --focus "$target"
   else
     space=$(echo "$windows" | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).space // empty")
