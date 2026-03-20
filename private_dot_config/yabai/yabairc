@@ -15,14 +15,21 @@ sudo yabai --load-sa
 
 yabai -m signal --add event=space_changed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"
 
-# Focus the space where the activated app already has a window
+# Focus the space where the activated app already has a window.
+# When Tuple activates (Host overlay catching focus), bounce to a non-Tuple
+# window on the Host's display instead — yabai can't track AXSystemDialog focus.
 yabai -m signal --add event=application_activated action='
-  space=$(yabai -m query --windows | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).space // empty" 2>/dev/null)
-  [ -n "$space" ] && yabai -m space --focus "$space"
+  app=$(yabai -m query --windows | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).app // empty" 2>/dev/null)
+  if [ "$app" = "Tuple" ]; then
+    host_display=$(yabai -m query --windows | jq -r "[.[] | select(.app == \"Tuple\" and .title == \"Host\")] | first | .display // empty")
+    [ -z "$host_display" ] && exit 0
+    target=$(yabai -m query --windows | jq -r "[.[] | select(.display == $host_display and .app != \"Tuple\" and .\"is-minimized\" == false and .\"is-hidden\" == false)] | first | .id // empty")
+    [ -n "$target" ] && yabai -m window --focus "$target"
+  else
+    space=$(yabai -m query --windows | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).space // empty" 2>/dev/null)
+    [ -n "$space" ] && yabai -m space --focus "$space"
+  fi
 '
-
-# Never let Tuple Host windows keep focus — bounce to the previous window
-yabai -m signal --add event=window_focused app="^Tuple$" title="^Host$" action='yabai -m window --focus recent'
 
 # Notify SketchyBar which window is focused (enables per-window icon highlighting)
 yabai -m signal --add event=window_focused action="sketchybar --trigger window_focused WINDOW_ID=\$YABAI_WINDOW_ID"
