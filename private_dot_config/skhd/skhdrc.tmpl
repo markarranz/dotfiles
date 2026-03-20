@@ -32,8 +32,9 @@ cmd + alt - h   : target=$(yabai -m query --displays | jq -re --argjson cur "$(y
 cmd + alt - l   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m display --focus "$target"
 
 # Move window to left/right display (coordinate-sorted) with CMD + ALT + SHIFT + [hl]:
-cmd + alt + shift - h : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m window --display "$target" --focus
-cmd + alt + shift - l : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m window --display "$target" --focus
+# Flag suppresses application_activated signal so focus follows the moved window.
+cmd + alt + shift - h : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && touch /tmp/yabai-moving && yabai -m window --display "$target" --focus; rm -f /tmp/yabai-moving
+cmd + alt + shift - l : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && touch /tmp/yabai-moving && yabai -m window --display "$target" --focus; rm -f /tmp/yabai-moving
 
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270 # clockwise
