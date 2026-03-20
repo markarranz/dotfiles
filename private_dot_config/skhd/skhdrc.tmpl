@@ -20,6 +20,9 @@ hyper - r : yabai --restart-service
 # mic mute toggle
 hyper - m : ~/.config/skhd/toggle-mic.sh
 
+# toggle Tuple dad jokes
+hyper - j : f=~/.tuple/.state/jokes-disabled; if [ -f "$f" ]; then rm "$f" && terminal-notifier -title "Tuple" -message "Dad jokes enabled" -activate net.kovidgoyal.kitty -sender net.kovidgoyal.kitty & else touch "$f" && terminal-notifier -title "Tuple" -message "Dad jokes disabled" -activate net.kovidgoyal.kitty -sender net.kovidgoyal.kitty & fi
+
 # ############## #
 # SPACE COMMANDS #
 # ############## #

@@ -14,7 +14,7 @@
 #   Tuple > Preferences > Audio > Input Device > "BH + Mic Input"
 #
 # To disable temporarily without removing the trigger:
-#   export TUPLE_DAD_JOKES_ENABLED=0
+#   touch ~/.tuple/.state/jokes-disabled    (hyper - j toggles this)
 set -uo pipefail
 
 BLACKHOLE_DEVICE="BlackHole 2ch"
@@ -23,11 +23,6 @@ API_URL="https://icanhazdadjoke.com/"
 TRACKED_ROOMS_FILE="$HOME/.tuple/tracked-rooms"
 STATE_DIR="$HOME/.tuple/.state"
 MY_ROOM_FILE="$STATE_DIR/my-room"
-
-# Allow opt-out without removing the trigger file
-if [[ "${TUPLE_DAD_JOKES_ENABLED:-1}" == "0" ]]; then
-  exit 0
-fi
 
 is_self="${TUPLE_TRIGGER_IS_SELF:-false}"
 room_name="${TUPLE_TRIGGER_ROOM_NAME:-}"
@@ -61,6 +56,11 @@ if [[ -n "$email_to_add" ]]; then
 fi
 
 # --- Decide whether to tell a joke ---
+
+# Allow opt-out without removing the trigger file (state tracking above still runs)
+if [[ -f "$STATE_DIR/jokes-disabled" ]]; then
+  exit 0
+fi
 
 # Only tell jokes in the room we're in
 if [[ ! -f "$MY_ROOM_FILE" ]]; then
