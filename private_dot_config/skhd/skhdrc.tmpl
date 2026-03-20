@@ -28,13 +28,13 @@ hyper - m : ~/.config/skhd/toggle-mic.sh
 cmd + alt - tab : yabai -m space --focus recent
 ctrl + alt - h   : yabai -m space --focus prev || (yabai -m display --focus prev && yabai -m space --focus last)
 ctrl + alt - l   : yabai -m space --focus next || (yabai -m display --focus next && yabai -m space --focus first)
-cmd + alt - h   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && yabai -m display --focus "$target"
-cmd + alt - l   : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && yabai -m display --focus "$target"
+cmd + alt - h   : target=$(~/.config/yabai/display_neighbor.sh prev) && yabai -m display --focus "$target"
+cmd + alt - l   : target=$(~/.config/yabai/display_neighbor.sh next) && yabai -m display --focus "$target"
 
 # Move window to left/right display (coordinate-sorted) with CMD + ALT + SHIFT + [hl]:
 # Flag suppresses application_activated signal so focus follows the moved window.
-cmd + alt + shift - h : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i > 0 then $s[$i - 1] else empty end') && touch /tmp/yabai-moving && yabai -m window --display "$target" --focus; rm -f /tmp/yabai-moving
-cmd + alt + shift - l : target=$(yabai -m query --displays | jq -re --argjson cur "$(yabai -m query --displays --display | jq '.index')" '[sort_by(.frame.x) | .[].index] as $s | ($s | index($cur)) as $i | if $i < ($s | length) - 1 then $s[$i + 1] else empty end') && touch /tmp/yabai-moving && yabai -m window --display "$target" --focus; rm -f /tmp/yabai-moving
+cmd + alt + shift - h : target=$(~/.config/yabai/display_neighbor.sh prev) && touch /tmp/yabai-moving && yabai -m window --display "$target" --focus; (sleep 0.5; rm -f /tmp/yabai-moving) &
+cmd + alt + shift - l : target=$(~/.config/yabai/display_neighbor.sh next) && touch /tmp/yabai-moving && yabai -m window --display "$target" --focus; (sleep 0.5; rm -f /tmp/yabai-moving) &
 
 # Rotate window tree:
 cmd + alt - r : yabai -m space --rotate 270 # clockwise
