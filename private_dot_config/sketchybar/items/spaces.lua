@@ -5,7 +5,7 @@ local icon_map = require("lib.icon_map")
 
 local MAX_APPS = 8
 
-local JQ_VISIBLE_APPS = [[ | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"']]
+local JQ_VISIBLE_APPS = [[ | jq -r '[.[] | select(.role == "AXWindow" and .subrole != "AXSystemDialog" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"']]
 
 
 local spaces = {}
