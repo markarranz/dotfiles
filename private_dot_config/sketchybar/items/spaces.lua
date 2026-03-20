@@ -80,7 +80,7 @@ local function update_space_icons(space_num)
 	sbar.animate("sin", 10, function()
 		spaces[space_num]:set({
 			label = {
-				string = has_windows and "" or " —",
+				string = "",
 				drawing = not has_windows,
 			},
 		})
@@ -144,7 +144,7 @@ for i = 1, 9 do
 			highlight_color = colors.red,
 		},
 		label = {
-			padding_right = 10,
+			padding_right = 2,
 			color = colors.grey,
 			highlight_color = colors.white,
 			font = {
