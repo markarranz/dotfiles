@@ -43,10 +43,11 @@ yabai -m signal --add event=window_deminimized action="sketchybar --trigger wind
 yabai -m signal --add event=application_hidden action="sketchybar --trigger windows_on_spaces_changed"
 yabai -m signal --add event=application_visible action="sketchybar --trigger windows_on_spaces_changed"
 
-# Restore spaces when displays are added or removed
-yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py &"
-yabai -m signal --add event=display_removed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py &"
-yabai -m signal --add event=system_woke action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py &"
+# Restore spaces when displays are added or removed (debounced so rapid
+# events like plugging in two monitors settle before labeling)
+yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
+yabai -m signal --add event=display_removed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
+yabai -m signal --add event=system_woke action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
 
 # ##### #
 # RULES #
