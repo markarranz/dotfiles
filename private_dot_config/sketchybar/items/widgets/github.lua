@@ -114,7 +114,8 @@ local function update_github()
 					item_icon = icons.git.commit
 				end
 
-				if title:lower():match("deprecat") or title:lower():match("break") or title:lower():match("broke") then
+				local t = title:lower()
+			if t:match("deprecat") or t:match("breaking change") or t:match("broke%s+ci") or t:match("broke%s+build") or t:match("broke%s+deploy") then
 					color = colors.red
 					item_icon = "􀁞"
 					github_bell:set({ icon = { color = colors.red } })
