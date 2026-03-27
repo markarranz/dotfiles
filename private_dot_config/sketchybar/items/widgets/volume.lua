@@ -72,11 +72,42 @@ local function get_volume_icon(volume)
 	end
 end
 
-local last_volume = 0
+local function query_slider_width(callback)
+	sbar.exec("sketchybar --query volume | jq -r '.slider.width'", function(width_str)
+		callback(tonumber(width_str) or 0)
+	end)
+end
+
+local function query_slider_percentage(callback)
+	sbar.exec("sketchybar --query volume | jq -r '.slider.percentage'", function(pct_str)
+		callback(tonumber(pct_str) or 0)
+	end)
+end
+
+local function animate_slider_width(width)
+	sbar.animate("tanh", 30, function()
+		volume_slider:set({ slider = { width = width } })
+	end)
+end
+
+local function animate_slider_for_volume_change(expected_volume)
+	query_slider_width(function(width)
+		if width == 0 then
+			animate_slider_width(SLIDER_WIDTH)
+		end
+
+		sbar.exec("sleep 2", function()
+			query_slider_percentage(function(pct)
+				if pct == expected_volume then
+					animate_slider_width(0)
+				end
+			end)
+		end)
+	end)
+end
 
 volume_slider:subscribe("volume_change", function(env)
 	local volume = tonumber(env.INFO) or 0
-	last_volume = volume
 
 	volume_icon:set({
 		label = { string = get_volume_icon(volume) },
@@ -86,27 +117,7 @@ volume_slider:subscribe("volume_change", function(env)
 		slider = { percentage = volume },
 	})
 
-	-- Show slider when volume changes
-	sbar.exec("sketchybar --query volume | jq -r '.slider.width'", function(width_str)
-		local initial_width = tonumber(width_str) or 0
-		if initial_width == 0 then
-			sbar.animate("tanh", 30, function()
-				volume_slider:set({ slider = { width = SLIDER_WIDTH } })
-			end)
-		end
-
-		-- Hide slider after 2 seconds
-		sbar.exec("sleep 2", function()
-			sbar.exec("sketchybar --query volume | jq -r '.slider.percentage'", function(pct_str)
-				local final_pct = tonumber(pct_str) or 0
-				if final_pct == volume then
-					sbar.animate("tanh", 30, function()
-						volume_slider:set({ slider = { width = 0 } })
-					end)
-				end
-			end)
-		end)
-	end)
+	animate_slider_for_volume_change(volume)
 end)
 
 volume_slider:subscribe("mouse.clicked", function(env)
@@ -165,13 +176,9 @@ local function toggle_devices()
 end
 
 local function toggle_detail()
-	sbar.exec("sketchybar --query volume | jq -r '.slider.width'", function(width_str)
-		local initial_width = tonumber(width_str) or 0
-		local new_width = initial_width == 0 and SLIDER_WIDTH or 0
-
-		sbar.animate("tanh", 30, function()
-			volume_slider:set({ slider = { width = new_width } })
-		end)
+	query_slider_width(function(width)
+		local new_width = width == 0 and SLIDER_WIDTH or 0
+		animate_slider_width(new_width)
 	end)
 end
 

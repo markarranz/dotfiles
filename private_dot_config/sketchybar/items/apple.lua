@@ -1,6 +1,7 @@
 local colors = require("config.colors")
 local icons = require("config.icons")
 local settings = require("config.settings")
+local item_utils = require("helpers.item_utils")
 
 local popup_toggle = "sketchybar --set $NAME popup.drawing=toggle"
 
@@ -20,35 +21,12 @@ local apple_logo = sbar.add("item", "apple.logo", {
 	popup = { height = 35 },
 })
 
-local apple_prefs = sbar.add("item", "apple.prefs", {
-	position = "popup." .. apple_logo.name,
-	icon = icons.preferences,
-	label = "Preferences",
-})
+local popup_actions = {
+	{ name = "apple.prefs", icon = icons.preferences, label = "Preferences", command = "open -a 'System Preferences'" },
+	{ name = "apple.activity", icon = icons.activity, label = "Activity", command = "open -a 'Activity Monitor'" },
+	{ name = "apple.lock", icon = icons.lock, label = "Lock Screen", command = "pmset displaysleepnow" },
+}
 
-apple_prefs:subscribe("mouse.clicked", function(env)
-	sbar.exec("open -a 'System Preferences'")
-	apple_logo:set({ popup = { drawing = false } })
-end)
-
-local apple_activity = sbar.add("item", "apple.activity", {
-	position = "popup." .. apple_logo.name,
-	icon = icons.activity,
-	label = "Activity",
-})
-
-apple_activity:subscribe("mouse.clicked", function(env)
-	sbar.exec("open -a 'Activity Monitor'")
-	apple_logo:set({ popup = { drawing = false } })
-end)
-
-local apple_lock = sbar.add("item", "apple.lock", {
-	position = "popup." .. apple_logo.name,
-	icon = icons.lock,
-	label = "Lock Screen",
-})
-
-apple_lock:subscribe("mouse.clicked", function(env)
-	sbar.exec("pmset displaysleepnow")
-	apple_logo:set({ popup = { drawing = false } })
-end)
+for _, action in ipairs(popup_actions) do
+	item_utils.create_popup_action(apple_logo, action.name, action.icon, action.label, action.command)
+end

@@ -13,7 +13,9 @@ sudo yabai --load-sa
 # SIGNALS #
 # ####### #
 
-yabai -m signal --add event=space_changed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh"
+yabai -m signal --add event=space_changed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/clean_empty_spaces.sh; sketchybar --trigger spaces_refresh"
+yabai -m signal --add event=space_created action="sketchybar --trigger spaces_refresh"
+yabai -m signal --add event=space_destroyed action="sketchybar --trigger spaces_refresh"
 
 # Focus the space where the activated app already has a window.
 # AXSystemDialog overlays (Tuple Host, Zoom HUD) live on a different display
