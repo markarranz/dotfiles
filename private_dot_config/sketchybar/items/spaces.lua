@@ -18,28 +18,61 @@ local space_spacers = {}
 
 local refresh_spaces
 
-local function show_space(i)
+local function set_space_drawing(i, drawing)
 	if spaces[i] then
-		spaces[i]:set({ drawing = true })
-	end
-	if brackets[i] then
-		brackets[i]:set({ background = { drawing = true } })
-	end
-	if i > 1 and space_spacers[i] then
-		space_spacers[i]:set({ width = settings.group_paddings })
+		spaces[i]:set({ drawing = drawing })
 	end
 end
 
-local function hide_space(i)
-	if spaces[i] then
-		spaces[i]:set({ drawing = false })
-	end
+local function set_bracket_drawing(i, drawing)
 	if brackets[i] then
-		brackets[i]:set({ background = { drawing = false } })
+		brackets[i]:set({ background = { drawing = drawing } })
 	end
+end
+
+local function set_spacer_width(i, width)
 	if i > 1 and space_spacers[i] then
-		space_spacers[i]:set({ width = 0 })
+		space_spacers[i]:set({ width = width })
 	end
+end
+
+local function set_space_selected_state(i, selected)
+	if not spaces[i] or not brackets[i] then
+		return
+	end
+
+	local border_color = selected and colors.grey or colors.bg2
+	spaces[i]:set({
+		icon = { highlight = selected },
+		label = { highlight = selected },
+	})
+	brackets[i]:set({ background = { border_color = border_color } })
+end
+
+local function is_space_selected(env, space_num)
+	if not env.INFO then
+		return false
+	end
+
+	for _, selected_space in pairs(env.INFO) do
+		if selected_space == space_num then
+			return true
+		end
+	end
+
+	return false
+end
+
+local function show_space(i)
+	set_space_drawing(i, true)
+	set_bracket_drawing(i, true)
+	set_spacer_width(i, settings.group_paddings)
+end
+
+local function hide_space(i)
+	set_space_drawing(i, false)
+	set_bracket_drawing(i, false)
+	set_spacer_width(i, 0)
 	if space_app_items[i] then
 		for j = 1, MAX_APPS do
 			space_app_items[i][j]:set({ drawing = false })
@@ -200,22 +233,9 @@ for i = 1, 9 do
 	brackets[i] = bracket
 
 	space:subscribe("space_change", function(env)
-		local selected = false
-		if env.INFO then
-			for _, space_id in pairs(env.INFO) do
-				if space_id == i then
-					selected = true
-					break
-				end
-			end
-		end
+		local selected = is_space_selected(env, i)
 		space_selected[i] = selected
-		local border_color = selected and colors.grey or colors.bg2
-		space:set({
-			icon = { highlight = selected },
-			label = { highlight = selected },
-		})
-		brackets[i]:set({ background = { border_color = border_color } })
+		set_space_selected_state(i, selected)
 		update_space_icons(i)
 	end)
 
@@ -242,6 +262,7 @@ local space_creator = sbar.add("item", "space_creator", {
 -- Custom events for yabai signals
 sbar.add("event", "windows_on_spaces_changed")
 sbar.add("event", "window_focused")
+sbar.add("event", "spaces_refresh")
 
 -- Refresh space visibility on space changes. Using space_creator ("item" type)
 -- ensures a single callback per event, unlike per-space "space" type handlers.
@@ -281,6 +302,10 @@ space_creator:subscribe("windows_on_spaces_changed", function()
 	end
 end)
 
+space_creator:subscribe("spaces_refresh", function()
+	refresh_spaces()
+end)
+
 refresh_spaces = function()
 	sbar.exec("yabai -m query --spaces | jq -r '.[].index'", function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
@@ -306,9 +331,8 @@ refresh_spaces = function()
 end
 
 sbar.exec("yabai -m query --windows --window | jq '.id'", function(result, exit_code)
-	if exit_code and exit_code ~= 0 then
-		return
+	if not (exit_code and exit_code ~= 0) then
+		current_focused_window_id = tonumber(result:match("%d+")) or 0
 	end
-	current_focused_window_id = tonumber(result:match("%d+")) or 0
 	refresh_spaces()
 end)
