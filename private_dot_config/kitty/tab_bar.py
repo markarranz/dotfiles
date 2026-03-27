@@ -21,6 +21,13 @@ POWERLINE_SYMBOLS = {
 }
 
 
+def stack_split_suffix(tab: TabBarData) -> str:
+    if tab.layout_name != "stack":
+        return ""
+    groups = getattr(tab, "num_window_groups", 0)
+    return f" {groups}" if groups > 1 else ""
+
+
 def draw_tab(
     draw_data: DrawData,
     screen: Screen,
@@ -47,7 +54,9 @@ def draw_tab(
     )
 
     icon = LAYOUT_ICONS.get(tab.layout_name, "") if tab.is_active else ""
-    icon_space = wcswidth(icon) + 1 if icon else 0
+    icon_suffix = stack_split_suffix(tab) if icon else ""
+    icon_text = f"{icon}{icon_suffix}" if icon else ""
+    icon_space = wcswidth(icon_text) + 1 if icon_text else 0
 
     start_draw = 2
     if screen.cursor.x == 0:
@@ -64,9 +73,9 @@ def draw_tab(
         if extra > 0 and extra + 1 < screen.cursor.x:
             screen.cursor.x -= extra + 1
             screen.draw("\u2026")
-        if icon:
+        if icon_text:
             screen.draw(" ")
-            screen.draw(icon)
+            screen.draw(icon_text)
 
     if not needs_soft_separator:
         screen.draw(" ")
