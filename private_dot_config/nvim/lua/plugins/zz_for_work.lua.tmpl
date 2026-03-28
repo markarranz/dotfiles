@@ -1,4 +1,4 @@
-{{ if .forWork -}}
+{{- if .forWork }}
 return {
   {
     "neovim/nvim-lspconfig",
@@ -59,6 +59,10 @@ return {
         end
       end
     end,
+  },
+  {
+    dir = "~/Code/personal/codetour.nvim",
+    event = "VeryLazy",
   },
 }
 {{- end }}
