@@ -16,7 +16,7 @@ externally_modified/
 
 **/__pycache__
 
-{{ if ne .chezmoi.os "linux" -}}
+{{- if ne .chezmoi.os "linux" }}
 
 # Ignore linux specific configs:
 .config/chromium-flags.conf
@@ -34,7 +34,7 @@ externally_modified/
 .config/uwsm/
 .config/walker/
 
-{{ else if ne .chezmoi.os "darwin" -}}
+{{- else if ne .chezmoi.os "darwin" }}
 
 # Ignore macos specific configs:
 .config/borders/
@@ -42,6 +42,9 @@ externally_modified/
 .config/sketchybar/
 .config/skhd/
 .config/yabai/
-.tuple/
 
+{{- end }}
+
+{{- if not .forWork }}
+.tuple/
 {{- end }}
