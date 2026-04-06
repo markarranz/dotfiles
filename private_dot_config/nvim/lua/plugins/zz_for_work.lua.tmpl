@@ -44,11 +44,15 @@ return {
     "mfussenegger/nvim-lint",
     optional = true,
     opts = function()
+      local linter = require("lint").linters.golangcilint
+
+      -- Use the repo's custom-built golangci-lint with plugins baked in.
+      linter.cmd = "core-golangci-lint"
+
       -- Fix golangci-lint in go.work workspaces: GOMOD=/dev/null in workspace mode
       -- causes nvim-lint to pass a single file path instead of the package directory,
       -- resulting in "undefined" errors for cross-file symbols.
-      local linter = require("lint").linters.golangcilint
-      if linter and linter.args then
+      if linter.args then
         for i, arg in ipairs(linter.args) do
           if type(arg) == "function" then
             linter.args[i] = function()
