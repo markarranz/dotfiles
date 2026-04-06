@@ -25,6 +25,14 @@ vim.api.nvim_create_autocmd("TermOpen", {
 	end,
 })
 
+-- <C-Space> in terminal mode: exit to normal mode and open which-key
+vim.keymap.set("t", "<C-Space>", function()
+	vim.cmd("stopinsert")
+	vim.schedule(function()
+		require("which-key").show({ keys = " ", loop = true })
+	end)
+end)
+
 -- resizing splits
 vim.keymap.set("n", "<A-h>", function()
 	nav.resize("left")
