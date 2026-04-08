@@ -16,5 +16,6 @@
 .codex
 .cursor
 
+**/.claude/settings.local.json
 
 # vim: ft=gitignore
