@@ -19,7 +19,20 @@ return {
     optional = true,
     opts = {
       formatters_by_ft = {
-        go = { "goimports", "gofmt" },
+        go = { "core_golangci_lint" },
+      },
+      formatters = {
+        core_golangci_lint = {
+          command = "core-golangci-lint",
+          args = { "run", "--fix", "$DIRNAME" },
+          stdin = false,
+          cwd = require("conform.util").root_file({
+            ".golangci.yml",
+            ".golangci.yaml",
+            "go.mod",
+          }),
+          exit_codes = { 0, 1 },
+        },
       },
     },
   },
