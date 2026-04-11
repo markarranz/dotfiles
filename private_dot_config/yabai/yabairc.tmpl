@@ -87,7 +87,7 @@ yabai -m rule --add label="Tuple Host" app="^Tuple$" title="^Host$" manage=off
 # Space assignments:
 chat_apps=("Slack" "zoom.us" "Tuple")
 code_apps=("kitty" "Claude" "Cursor" "Codes" "Code")
-docs_apps=("Notion" "Slab" "Figma")
+docs_apps=("Notion" "Slab" "Figma" "Firefox"{{- if .forWork }} "Google Chrome"{{- end }})
 
 yabai -m rule --add label="chat" app="^($(join_by '|' "${chat_apps[@]}"))$" space=chat
 yabai -m rule --add label="code" app="^($(join_by '|' "${code_apps[@]}"))$" space=code
