@@ -24,6 +24,10 @@ APP_SPACE_RULES: dict[str, str] = {
     "Notion": "docs",
     "Slab": "docs",
     "Figma": "docs",
+    "Firefox": "docs",
+{{- if .forWork }}
+    "Google Chrome": "docs",
+{{- end }}
 }
 POLL_INTERVAL_SECONDS = 0.5
 POLL_TIMEOUT_SECONDS = 30
