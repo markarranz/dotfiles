@@ -69,6 +69,35 @@ chpwd() { l }
 
 # Tool inits
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)" || _zwarn "direnv"
+
+STARSHIP_CONFIG_DEFAULT="$XDG_CONFIG_HOME/starship/starship.toml"
+STARSHIP_CONFIG_BARE_REPO_ROOT="$XDG_CONFIG_HOME/starship/starship-bare-repo-root.toml"
+
+_is_bare_repo_manager_dir() {
+  local git_dir is_inside_work_tree is_bare_repository
+
+  git_dir=$(git rev-parse --git-dir 2>/dev/null) || return 1
+  is_inside_work_tree=$(git rev-parse --is-inside-work-tree 2>/dev/null) || return 1
+  is_bare_repository=$(git rev-parse --is-bare-repository 2>/dev/null) || return 1
+
+  [[ "$is_inside_work_tree" == "false" ]] &&
+    [[ "$is_bare_repository" == "true" ]] &&
+    [[ "${git_dir:A}" == "$PWD/.bare" ]]
+}
+
+_update_starship_config_for_pwd() {
+  if _is_bare_repo_manager_dir; then
+    export STARSHIP_CONFIG="$STARSHIP_CONFIG_BARE_REPO_ROOT"
+  else
+    export STARSHIP_CONFIG="$STARSHIP_CONFIG_DEFAULT"
+  fi
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd _update_starship_config_for_pwd
+add-zsh-hook precmd _update_starship_config_for_pwd
+_update_starship_config_for_pwd
+
 (( $+commands[starship] )) && eval "$(starship init zsh)" || _zwarn "starship"
 
 {{- if .forWork }}
