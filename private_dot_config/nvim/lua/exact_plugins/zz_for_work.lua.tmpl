@@ -24,7 +24,7 @@ return {
       formatters = {
         core_golangci_lint = {
           command = "core-golangci-lint",
-          args = { "run", "--fix", "$DIRNAME" },
+          args = { "fmt", "$DIRNAME" },
           stdin = false,
           cwd = require("conform.util").root_file({
             ".golangci.yml",
