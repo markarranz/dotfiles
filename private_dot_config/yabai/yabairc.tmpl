@@ -18,19 +18,25 @@ yabai -m signal --add event=space_created action="sketchybar --trigger spaces_re
 yabai -m signal --add event=space_destroyed action="sketchybar --trigger spaces_refresh"
 
 # Focus the space where the activated app already has a window.
-# AXSystemDialog overlays (Tuple Host, Zoom HUD) live on a different display
-# than the app's real windows — skip them when choosing which space to focus,
-# and bounce focus to a real window on their display instead.
+# AXSystemDialog overlays (Tuple Host, Zoom HUD) appear on an arbitrary
+# display; when the activation is caused by the overlay itself, bounce focus
+# to a real window on the overlay's display instead of following to its space.
 yabai -m signal --add event=application_activated action='
   [ -f /tmp/yabai-moving ] && exit 0
   windows=$(yabai -m query --windows)
-  overlay=$(echo "$windows" | jq -re "first(.[] | select(.pid == $YABAI_PROCESS_ID and .subrole == \"AXSystemDialog\")) | .display" 2>/dev/null)
-  if [ -n "$overlay" ]; then
-    target=$(echo "$windows" | jq -re "[.[] | select(.display == $overlay and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false)] | first | .id")
+  active=$(echo "$windows" | jq -c "
+    [.[] | select(.pid == $YABAI_PROCESS_ID)] |
+    (map(select(.\"has-focus\" == true)) + .) | first
+  ")
+  [ "$active" = "null" ] && exit 0
+  if [ "$(echo "$active" | jq -r .subrole)" = "AXSystemDialog" ] \
+     && [ "$(echo "$active" | jq -r ".\"has-focus\"")" = "true" ]; then
+    display=$(echo "$active" | jq -r .display)
+    target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id")
     [ -n "$target" ] && yabai -m window --focus "$target"
   else
-    space=$(echo "$windows" | jq -r "first(.[] | select(.pid == $YABAI_PROCESS_ID)).space // empty")
-    [ -n "$space" ] && yabai -m space --focus "$space"
+    space=$(echo "$active" | jq -r .space)
+    [ -n "$space" ] && [ "$space" != "null" ] && yabai -m space --focus "$space"
   fi
 '
 
