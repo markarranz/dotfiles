@@ -17,10 +17,12 @@ yabai -m signal --add event=space_changed action="${XDG_CONFIG_HOME:-$HOME/.conf
 yabai -m signal --add event=space_created action="sketchybar --trigger spaces_refresh"
 yabai -m signal --add event=space_destroyed action="sketchybar --trigger spaces_refresh"
 
-# Focus the space where the activated app already has a window.
-# AXSystemDialog overlays (Tuple Host, Zoom HUD) appear on an arbitrary
-# display; when the activation is caused by the overlay itself, bounce focus
-# to a real window on the overlay's display instead of following to its space.
+# Focus the space of the activated app's focused window. When an
+# AXSystemDialog is itself the focused window (Tuple Host, Zoom HUD, and
+# other transient overlays), following its space would strand focus on the
+# overlay — bounce to a real window on the same display instead. The
+# has-focus gate is what protects legitimate AXSystemDialog windows like a
+# popped-out Zoom meeting chat, which we want to treat as normal.
 yabai -m signal --add event=application_activated action='
   [ -f /tmp/yabai-moving ] && exit 0
   windows=$(yabai -m query --windows)
@@ -28,7 +30,7 @@ yabai -m signal --add event=application_activated action='
     [.[] | select(.pid == $YABAI_PROCESS_ID)] |
     (map(select(.\"has-focus\" == true)) + .) | first
   ")
-  [ "$active" = "null" ] && exit 0
+  { [ -z "$active" ] || [ "$active" = "null" ]; } && exit 0
   if [ "$(echo "$active" | jq -r .subrole)" = "AXSystemDialog" ] \
      && [ "$(echo "$active" | jq -r ".\"has-focus\"")" = "true" ]; then
     display=$(echo "$active" | jq -r .display)
