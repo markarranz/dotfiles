@@ -30,11 +30,11 @@ local function lualine_tooling()
 	end
 
 	if #lsps > 0 then
-		table.insert(segments, "󰒋 LSP: " .. table.concat(lsps, ", "))
+		table.insert(segments, "󰒋 " .. table.concat(lsps, ", "))
 	end
 
 	if #formatters > 0 then
-		table.insert(segments, "󰏫 FMT: " .. table.concat(formatters, ", "))
+		table.insert(segments, "󰏫 " .. table.concat(formatters, ", "))
 	end
 
 	return #segments > 0 and table.concat(segments, " · ") or ""
