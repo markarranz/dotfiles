@@ -435,6 +435,10 @@ fi
 
 {{- if eq .chezmoi.os "darwin" }}
 
+# Prefer GNU sed interactively (BSD sed -i requires an explicit extension arg);
+# scripts invoking `sed` directly still get BSD sed.
+(( $+commands[gsed] )) && alias sed='gsed'
+
 #
 # Brew aliases (from oh-my-zsh brew plugin)
 #
