@@ -49,6 +49,21 @@ V='\e[38;2;127;132;156m'   # Overlay
 L='\e[38;2;180;190;254m'   # Lavender
 X='\e[0m'                   # Reset
 
+# --- Voice mode (settings.local.json overrides settings.json) ---
+voice_indicator=""
+for sf in "$HOME/.claude/settings.local.json" "$HOME/.claude/settings.json"; do
+    [ -f "$sf" ] || continue
+    v=$(jq -r 'if .voice then "\(.voice.enabled // false)\t\(.voice.mode // "")" else empty end' "$sf" 2>/dev/null)
+    [ -z "$v" ] && continue
+    v_enabled=${v%%$'\t'*}
+    v_mode=${v#*$'\t'}
+    if [ "$v_enabled" = "true" ]; then
+        voice_indicator="󰍬"
+        [ "$v_mode" = "tap" ] && voice_indicator="󰍬·"
+    fi
+    break
+done
+
 # --- Worktree detection ---
 worktree_name=""
 display_dir=""
@@ -121,6 +136,10 @@ s="${M}${model}${X}"
 
 if [ -n "$output_style" ] && [ "$output_style" != "default" ]; then
     s="${s} ${P}[${output_style}]${X}"
+fi
+
+if [ -n "$voice_indicator" ]; then
+    s="${s} ${R}${voice_indicator}${X}"
 fi
 
 s="${s} ${T}in${X} ${O}${display_dir}${X}"
