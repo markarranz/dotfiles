@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export PATH="/opt/homebrew/bin:$PATH"
 
 mru_file="${XDG_STATE_HOME:-$HOME/.local/state}/kitty-tab-mru"
 mkdir -p "$(dirname "$mru_file")"
@@ -29,7 +30,7 @@ done <<<"$tab_list"
 selected=$(echo "$sorted" |
   sed '/^$/d' |
   column -t -s'|' |
-  fzf --no-multi --prompt="Tab > " --layout=reverse --border=rounded --height=100% --margin=30%,35% --padding=1)
+  fzf --no-multi --prompt="Tab > " --layout=reverse --border=rounded)
 
 tab_id=$(echo "$selected" | awk '{print $1}')
 

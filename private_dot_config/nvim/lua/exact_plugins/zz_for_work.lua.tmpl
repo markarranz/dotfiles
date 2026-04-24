@@ -59,8 +59,8 @@ return {
     opts = function()
       local linter = require("lint").linters.golangcilint
 
-      -- Use the repo's custom-built golangci-lint with plugins baked in.
       linter.cmd = "core-golangci-lint"
+      linter.exit_codes = { 0, 1, 3 }
 
       -- Fix golangci-lint in go.work workspaces: GOMOD=/dev/null in workspace mode
       -- causes nvim-lint to pass a single file path instead of the package directory,
