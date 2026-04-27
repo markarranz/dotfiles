@@ -86,6 +86,7 @@ COMMON_TOOLS=(
   yazi
   zoxide
   zsh
+  zsh-completions
 )
 
 # --- macOS (Homebrew) ---
