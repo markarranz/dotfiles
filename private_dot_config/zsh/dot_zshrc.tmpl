@@ -24,8 +24,6 @@ setopt PUSHD_MINUS          # swap +/- so cd -N is more intuitive
 fpath=("$HOME/.local/share/zsh/completions" $fpath)
 {{- if eq .chezmoi.os "darwin" }}
 [[ -d /opt/homebrew/share/zsh-completions ]] && fpath=(/opt/homebrew/share/zsh-completions $fpath)
-{{- else if eq .chezmoi.os "linux" }}
-[[ -d /usr/share/zsh/site-functions ]] && fpath=(/usr/share/zsh/site-functions $fpath)
 {{- end }}
 autoload -Uz compinit
 compinit
