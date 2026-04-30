@@ -75,6 +75,7 @@ COMMON_TOOLS=(
   git
   git-delta
   jq
+  lazygit
   neovim
   pre-commit
   ripgrep
@@ -146,6 +147,8 @@ PACMAN_PACKAGES=(
   # PDF viewer
   zathura
   zathura-pdf-mupdf
+  # Utilities
+  openbsd-netcat
 )
 
 AUR_PACKAGES=(
