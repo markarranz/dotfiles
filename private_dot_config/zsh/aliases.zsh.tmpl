@@ -30,8 +30,7 @@ alias -g .....='../../../..'
 
 (( $+commands[zoxide] )) && alias cd=z
 
-# Load multiple config files for lazygit
-alias lazygit="lazygit --use-config-file=\"$HOME/.config/lazygit/config.yml,$HOME/.config/lazygit/theme.yml\""
+# LG_CONFIG_FILE in .zshenv handles config file selection — alias no longer needed.
 
 #
 # Git aliases (from oh-my-zsh git plugin)

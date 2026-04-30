@@ -16,6 +16,9 @@ fi
 
 export ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
+# Lazygit reads this regardless of how it's invoked (alias-less subshells, nvim :terminal, etc.)
+export LG_CONFIG_FILE="${XDG_CONFIG_HOME}/lazygit/config.yml,${XDG_CONFIG_HOME}/lazygit/theme.yml"
+
 export HISTFILE="${XDG_DATA_HOME}/zsh_history"  # History filepath
 export HISTSIZE=1000000                         # Maximum events for internal history
 export SAVEHIST=1000000                         # Maximum events in history file

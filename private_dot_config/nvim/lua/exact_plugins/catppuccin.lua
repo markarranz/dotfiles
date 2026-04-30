@@ -5,6 +5,7 @@ return {
 			custom_highlights = function(colors)
 				return {
 					WinSeparator = { fg = colors.flamingo },
+					LazygitInactiveBorder = { fg = colors.overlay1 },
 				}
 			end,
 		},
