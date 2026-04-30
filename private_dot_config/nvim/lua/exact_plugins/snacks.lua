@@ -1,6 +1,16 @@
 return {
 	"folke/snacks.nvim",
 	opts = {
+		lazygit = {
+			-- Catppuccin doesn't set DiagnosticError.fg directly, so snacks' default
+			-- mapping falls back to #ff0000. Point at a highlight with a real fg.
+			theme = {
+				unstagedChangesColor = { fg = "ErrorMsg" },
+				-- FloatBorder fg is mantle (#11111b) — too dark. Use a custom highlight
+				-- defined in catppuccin.lua (overlay1 = #7f849c).
+				inactiveBorderColor = { fg = "LazygitInactiveBorder" },
+			},
+		},
 		terminal = {
 			win = {
 				keys = {
