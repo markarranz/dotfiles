@@ -96,6 +96,8 @@ BREW_FORMULAE=(
   nvm
   switchaudio-osx
   terminal-notifier
+  # EPUB Reader
+  bookokrat
 )
 
 BREW_CASKS=(
@@ -147,6 +149,8 @@ PACMAN_PACKAGES=(
   # PDF viewer
   zathura
   zathura-pdf-mupdf
+  # EPUB reader
+  bookokrat-bin
   # Utilities
   openbsd-netcat
 )
