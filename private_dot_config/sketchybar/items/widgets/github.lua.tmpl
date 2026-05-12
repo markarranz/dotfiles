@@ -2,7 +2,12 @@ local colors = require("config.colors")
 local icons = require("config.icons")
 local settings = require("config.settings")
 
--- Register custom event
+{{- if and (hasKey . "githubNotifyRepo") .githubNotifyRepo }}
+local gh_notifications_endpoint = "repos/{{ .githubNotifyRepo }}/notifications"
+{{- else }}
+local gh_notifications_endpoint = "notifications"
+{{- end }}
+
 sbar.add("event", "github.update")
 
 local github_bell = sbar.add("item", "github.bell", {
@@ -49,11 +54,11 @@ local max_popup_items = 20
 
 local function update_github()
 	-- Get accurate total count: --jq runs per page, so sum the per-page lengths
-	sbar.exec("gh api notifications --paginate --jq length 2>/dev/null | awk '{s+=$1} END{print s+0}'", function(count_result)
+	sbar.exec("gh api " .. gh_notifications_endpoint .. " --paginate --jq length 2>/dev/null | awk '{s+=$1} END{print s+0}'", function(count_result)
 		local count = tonumber(count_result) or 0
 
 		-- Get first page of notifications for popup display
-		sbar.exec("gh api notifications 2>/dev/null", function(result)
+		sbar.exec("gh api " .. gh_notifications_endpoint .. " 2>/dev/null", function(result)
 			sbar.exec("sketchybar --remove '/github.notification\\..*/' 2>/dev/null")
 
 			local notifications = {}

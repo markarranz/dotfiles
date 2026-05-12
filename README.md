@@ -138,7 +138,7 @@ These tools are specific to a macOS desktop environment.
 
 Before applying, you may want to:
 
-1. **Review the chezmoi templates** -- files ending in `.tmpl` contain conditional logic based on OS and hostname. You will likely need to adjust hostname checks (e.g. `WORKMACHINE`) and monitor configurations to match your hardware.
+1. **Review the chezmoi templates** -- files ending in `.tmpl` contain conditional logic based on OS. Run `chezmoi init` to set machine-specific values (work mode, chassis type). You may also need to adjust monitor configurations to match your hardware.
 2. **Swap out personal details** -- the git config references a specific GitHub username and email. Update `private_dot_config/git/config.tmpl` with your own.
 3. **Adjust keybindings** -- keybindings are tailored to personal preference. Review the skhd, Hyprland, and Kanata configs to make sure they work for your keyboard and workflow.
 
