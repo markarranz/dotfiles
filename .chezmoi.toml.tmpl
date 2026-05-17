@@ -13,6 +13,14 @@
 {{-   $chassisType = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "if ((Get-CimInstance -Class Win32_Battery | Measure-Object).Count -gt 0) { Write-Output 'laptop' } else { Write-Output 'desktop' }") | trim }}
 {{- end -}}
 
+{{- $forWork := promptBoolOnce . "forWork" "Is this a work machine" }}
+
+{{- $githubNotifyRepo := "" }}
+{{- if $forWork }}
+{{-   $githubNotifyRepo = promptStringOnce . "githubNotifyRepo" "GitHub repo for notifications (owner/repo)" }}
+{{- end }}
+
 [data]
 chassisType = {{ $chassisType | quote }}
-forWork = {{ if eq .chezmoi.hostname "digdug" -}} true {{- else -}} false {{- end }}
+forWork = {{ $forWork }}
+githubNotifyRepo = {{ $githubNotifyRepo | quote }}
