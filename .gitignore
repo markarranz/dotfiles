@@ -7,3 +7,12 @@
 
 # Python bytecode cache
 **/__pycache__/
+
+# Local agent and memory state
+.envrc
+.claude/
+.omc/
+.remember/
+.sisyphus/
+mempalace.yaml
+externally_modified/karabiner/karabiner.json
