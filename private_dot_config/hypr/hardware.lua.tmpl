@@ -1,0 +1,94 @@
+{{- if eq .chassisType "laptop" }}
+hl.monitor({
+    output = "eDP-1",
+    mode = "2880x1800@59.99000",
+    position = "0x0",
+    scale = 1.5,
+})
+
+hl.config({
+    general = {
+        gaps_in = 0,
+        gaps_out = 0,
+    },
+
+    decoration = {
+        blur = {
+            enabled = false,
+        },
+
+        shadow = {
+            enabled = false,
+        },
+    },
+
+    input = {
+        kb_model = "apple",
+
+        touchpad = {
+            natural_scroll = true,
+            scroll_factor = 0.8,
+        },
+    },
+})
+
+hl.gesture({
+    fingers = 4,
+    direction = "horizontal",
+    action = "workspace",
+})
+
+hl.bind("XF86PowerOff", hl.dsp.exec_cmd("loginctl lock-session"), { locked = true })
+
+hl.bind("XF86LaunchA", hl.dsp.exec_cmd("grimblast copy area"), { description = "Copy selected screenshot" })
+hl.bind("SHIFT + XF86LaunchA", hl.dsp.exec_cmd("grimblast save area"), { description = "Save selected screenshot" })
+hl.bind("SUPER + XF86LaunchA", hl.dsp.exec_cmd("grimblast copysave area"), { description = "Copy and save selected screenshot" })
+hl.bind("ALT + XF86LaunchA", hl.dsp.exec_cmd("grimblast edit area"), { description = "Edit selected screenshot" })
+
+hl.bind("XF86LaunchB", hl.dsp.exec_cmd("grimblast copy output"), { description = "Copy output screenshot" })
+hl.bind("SHIFT + XF86LaunchB", hl.dsp.exec_cmd("grimblast save output"), { description = "Save output screenshot" })
+hl.bind("SUPER + XF86LaunchB", hl.dsp.exec_cmd("grimblast copysave output"), { description = "Copy and save output screenshot" })
+hl.bind("ALT + XF86LaunchB", hl.dsp.exec_cmd("grimblast edit output"), { description = "Edit output screenshot" })
+{{- else if eq .chassisType "desktop" }}
+hl.monitor({
+    output = "DP-1",
+    mode = "3840x1600@174.97",
+    position = "0x0",
+    scale = 1,
+    bitdepth = 10,
+    cm = "auto",
+})
+
+hl.config({
+    general = {
+        gaps_in = 5,
+        gaps_out = 5,
+    },
+})
+
+hl.bind("Print", hl.dsp.exec_cmd("grimblast copy area"), { description = "Copy selected screenshot" })
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast save area"), { description = "Save selected screenshot" })
+hl.bind("SUPER + Print", hl.dsp.exec_cmd("grimblast copysave area"), { description = "Copy and save selected screenshot" })
+hl.bind("CTRL + Print", hl.dsp.exec_cmd("grimblast edit area"), { description = "Edit selected screenshot" })
+
+hl.window_rule({
+    name = "float-stl",
+    match = { class = "yad" },
+    float = true,
+})
+
+hl.window_rule({
+    name = "ignore-bakkesmod",
+    match = { initial_title = "BakkesModInjectorCpp" },
+    workspace = "special silent",
+    no_initial_focus = true,
+    suppress_event = "activatefocus",
+})
+{{- else }}
+hl.monitor({
+    output = "",
+    mode = "preferred",
+    position = "auto",
+    scale = "auto",
+})
+{{- end }}
