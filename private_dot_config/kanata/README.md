@@ -28,6 +28,11 @@ This configuration implements **home-row mods** -- the home row keys gain modifi
 - **Tap time:** 150 ms -- if the key is released within this window, it counts as a tap
 - **Hold time:** 200 ms -- the modifier activates after this delay
 
+## Layers
+
+- `base` -- home-row mods enabled
+- `plain` -- passthrough layer for games and any app that should see normal keys only
+
 ## Systemd Service
 
 Kanata runs as a user service via systemd. To enable:
@@ -36,4 +41,20 @@ Kanata runs as a user service via systemd. To enable:
 systemctl --user enable --now kanata.service
 ```
 
-The service auto-restarts on failure with a 3-second delay.
+The service auto-restarts on failure with a 3-second delay and exposes a local TCP control port on `127.0.0.1:10000` for `hyprkan`.
+
+## hyprkan
+
+[hyprkan](https://github.com/haithium/hyprkan) watches the focused window and switches Kanata layers automatically. The Linux setup here uses:
+
+- `~/.config/kanata/apps.json` -- app rules
+- `~/.config/systemd/user/hyprkan.service` -- user service
+- `~/.local/share/hyprkan/hyprkan.py` -- pinned upstream script
+
+The default rules switch to the `plain` layer for common gaming windows such as `steam_app_*`, `gamescope`, `heroic`, `lutris`, and `prismlauncher`, then fall back to `base` everywhere else.
+
+To discover extra classes or titles for games you use, run:
+
+```sh
+python3 ~/.local/share/hyprkan/hyprkan.py --current-window-info
+```

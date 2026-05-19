@@ -1,0 +1,13 @@
+[
+  {
+    "class": "(steam_app_|gamescope|heroic|lutris|prismlauncher)",
+    "layer": "plain"
+  },
+  {
+    "title": "Minecraft",
+    "layer": "plain"
+  },
+  {
+    "layer": "base"
+  }
+]
