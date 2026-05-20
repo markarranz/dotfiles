@@ -95,7 +95,9 @@ shellcheck script.sh            # Lint shell scripts
 
 ### Git Commits
 Format: `[<scope>] <description>` — lowercase, imperative, <72 chars.
-AI changes: `[ai] description`.
+Use the functional repo scope, even for AI-authored changes.
+Examples: `[nvim] ...`, `[kitty] ...`, `[zsh] ...`, `[sketchybar] ...`.
+Do not use `[ai]` unless the user explicitly asks for it.
 
 ### Shell Scripts
 - `set -euo pipefail` always
