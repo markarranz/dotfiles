@@ -8,12 +8,13 @@ local function move(dir)
 		nav.move_cursor(dir)
 	end
 end
+local nav_modes = { "n", "x", "s", "o", "i", "c", "t" }
 
 -- moving between splits (and across mux panes at edges)
-vim.keymap.set("n", "<C-h>", move("left"))
-vim.keymap.set("n", "<C-j>", move("down"))
-vim.keymap.set("n", "<C-k>", move("up"))
-vim.keymap.set("n", "<C-l>", move("right"))
+vim.keymap.set(nav_modes, "<C-h>", move("left"))
+vim.keymap.set(nav_modes, "<C-j>", move("down"))
+vim.keymap.set(nav_modes, "<C-k>", move("up"))
+vim.keymap.set(nav_modes, "<C-l>", move("right"))
 vim.keymap.set("n", "<C-\\>", nav.move_cursor_previous)
 
 -- buffer-local terminal keymaps (higher priority than global)

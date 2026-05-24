@@ -4,7 +4,11 @@
 
 # semicolon - keycode 0x29
 cmd - 0x29         : open -a kitty --args -1=yes
+{{- if .forWork }}
+cmd + shift - 0x29 : kitty @ --to unix:$(ls /tmp/mykitty-* 2>/dev/null | head -1) launch --type=os-window --cwd "$HOME/Code/work/core"
+{{- else }}
 cmd + shift - 0x29 : kitty @ --to unix:$(ls /tmp/mykitty-* 2>/dev/null | head -1) launch --type=os-window --cwd ~
+{{- end }}
 
 {{ $browser := "Firefox" -}}
 {{- if .forWork }}

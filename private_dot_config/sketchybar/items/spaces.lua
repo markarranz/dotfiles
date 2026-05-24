@@ -1,7 +1,7 @@
 local colors = require("config.colors")
 local icons = require("config.icons")
 local settings = require("config.settings")
-local icon_map = require("lib.icon_map")
+local app_icons = require("lib.app_icons")
 
 local MAX_APPS = 8
 
@@ -93,7 +93,7 @@ local function update_space_icons(space_num)
 	for j = 1, MAX_APPS do
 		if has_windows and j <= #windows then
 			local win = windows[j]
-			local app_icon = icon_map[win.app] or ":default:"
+			local app_icon = app_icons(win.app)
 			local is_focused = win.id == current_focused_window_id
 			local is_last = j == #windows
 			local color = is_focused and colors.lavender or (selected and colors.white or colors.grey)

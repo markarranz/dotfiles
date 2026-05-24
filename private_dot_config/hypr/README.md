@@ -18,7 +18,7 @@
 
 ## Overview
 
-The main config is static, with hardware-specific settings sourced from `hardware.conf.tmpl` (adapts to chassis type):
+The main config now uses native Hyprland Lua (`hyprland.lua`), with hardware-specific settings split into `hardware.lua.tmpl` (adapts to chassis type):
 
 | Setting | Laptop | Desktop |
 |---------|--------|---------|
@@ -37,14 +37,15 @@ The main config is static, with hardware-specific settings sourced from `hardwar
 
 | File | Purpose |
 |------|---------|
-| `hyprland.conf` | Main compositor config (static: keybindings, rules, appearance) |
-| `hardware.conf.tmpl` | Hardware-specific overrides (monitor, gaps, blur, touchpad, screenshots) |
+| `hyprland.lua` | Main compositor config (Lua: keybindings, rules, appearance, autostart) |
+| `hardware.lua.tmpl` | Hardware-specific overrides (monitor, gaps, blur, touchpad, screenshots) |
 | `hyprlock.conf.tmpl` | Lock screen appearance (background image, clock, input field) |
 | `hypridle.conf` | Idle timers: dim at 2.5 min, lock at 5 min, screen off at 5.5 min, suspend at 10 min |
 | `hyprpaper.conf` | Wallpaper assignment |
 | `hyprsunset.conf` | Color temperature schedule (6000 K daytime, 4000 K evening) |
 | `scripts/kbbacklight` | Keyboard backlight brightness control script |
-| `themes/` | Catppuccin Mocha theme files (external submodule) |
+| `theme.lua` | Catppuccin colors used by `hyprland.lua` |
+| `themes/` | Catppuccin Mocha theme files still used by hyprlock |
 
 ### Autostarted Programs
 
