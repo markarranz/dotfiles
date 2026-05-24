@@ -25,3 +25,7 @@
 (deflayer base
   @a @s @d @f @j @k @l @;
 )
+
+(deflayer plain
+  a s d f j k l ;
+)

@@ -314,6 +314,21 @@ setup_common() {
       chezmoi init --apply --source "$(cd "$(dirname "$0")" && pwd)"
     fi
     success "Dotfiles applied"
+
+    if [[ "$PLATFORM" == "linux" ]]; then
+      info "Reloading user systemd units..."
+      systemctl --user daemon-reload 2>/dev/null || true
+
+      if [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/kanata.service" ]]; then
+        info "Enabling Kanata user service..."
+        systemctl --user enable kanata.service 2>/dev/null || true
+      fi
+
+      if [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/hyprkan.service" ]]; then
+        info "Enabling hyprkan user service..."
+        systemctl --user enable hyprkan.service 2>/dev/null || true
+      fi
+    fi
   else
     warn "Skipping chezmoi apply — run 'chezmoi apply' when ready"
   fi

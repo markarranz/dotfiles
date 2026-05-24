@@ -68,8 +68,8 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 | Add git helper script | `private_dot_config/git/scripts/` | Shell scripts used by git tooling |
 | Claude Code settings | `private_dot_config/Claude/` | JSON config files |
 | Kitty keybinding | `private_dot_config/kitty/kitty.conf` | Python kittens for complex behavior |
-| Hyprland keybinding | `private_dot_config/hypr/hyprland.conf` | Static config |
-| Hyprland hardware config | `private_dot_config/hypr/hardware.conf.tmpl` | Chassis-type conditional |
+| Hyprland keybinding | `private_dot_config/hypr/hyprland.lua` | Lua config |
+| Hyprland hardware config | `private_dot_config/hypr/hardware.lua.tmpl` | Chassis-type conditional |
 | macOS hotkey | `private_dot_config/skhd/skhdrc.tmpl` | Template for work/personal |
 | SketchyBar widget | `private_dot_config/sketchybar/items/widgets/` | Lua scripts |
 | Tmux config | `private_dot_config/tmux/tmux.conf` | Static (no template) |
@@ -95,7 +95,9 @@ shellcheck script.sh            # Lint shell scripts
 
 ### Git Commits
 Format: `[<scope>] <description>` — lowercase, imperative, <72 chars.
-AI changes: `[ai] description`.
+Use the functional repo scope, even for AI-authored changes.
+Examples: `[nvim] ...`, `[kitty] ...`, `[zsh] ...`, `[sketchybar] ...`.
+Do not use `[ai]` unless the user explicitly asks for it.
 
 ### Shell Scripts
 - `set -euo pipefail` always

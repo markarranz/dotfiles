@@ -1,0 +1,14 @@
+[Unit]
+Description=Kanata app-aware layer switcher
+After=graphical-session.target kanata.service
+Wants=kanata.service
+
+[Service]
+Environment=PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/bin
+Type=simple
+ExecStart=/usr/bin/env python3 %h/.local/share/hyprkan/hyprkan.py -p 10000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target
