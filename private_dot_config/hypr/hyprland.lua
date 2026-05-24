@@ -10,74 +10,74 @@ local browser = "firefox"
 local focus_or_launch = home .. "/.config/hypr/scripts/focus-or-launch"
 
 local function bind(keys, dispatcher, description, opts)
-    opts = opts or {}
+	opts = opts or {}
 
-    if description then
-        opts.description = description
-    end
+	if description then
+		opts.description = description
+	end
 
-    return hl.bind(keys, dispatcher, opts)
+	return hl.bind(keys, dispatcher, opts)
 end
 
 hl.on("hyprland.start", function()
-    hl.exec_cmd("uwsm app -- ashell")
-    hl.exec_cmd("uwsm app -- walker --gapplication-service")
-    hl.exec_cmd("uwsm app -- kitty --single-instance")
+	hl.exec_cmd("uwsm app -- ashell")
+	hl.exec_cmd("uwsm app -- walker --gapplication-service")
+	hl.exec_cmd("uwsm app -- kitty --single-instance")
 end)
 
 hl.config({
-    general = {
-        border_size = 3,
-        resize_on_border = true,
+	general = {
+		border_size = 3,
+		resize_on_border = true,
 
-        col = {
-            active_border = {
-                colors = { colors.pink, colors.sky },
-                angle = 45,
-            },
-            inactive_border = colors.mantle,
-        },
+		col = {
+			active_border = {
+				colors = { colors.pink, colors.sky },
+				angle = 45,
+			},
+			inactive_border = colors.mantle,
+		},
 
-        layout = "dwindle",
+		layout = "dwindle",
 
-        snap = {
-            enabled = true,
-        },
-    },
+		snap = {
+			enabled = true,
+		},
+	},
 
-    decoration = {
-        rounding = 5,
+	decoration = {
+		rounding = 5,
 
-        blur = {
-            enabled = true,
-            size = 3,
-            passes = 1,
-            vibrancy = 0.1696,
-        },
-    },
+		blur = {
+			enabled = true,
+			size = 3,
+			passes = 1,
+			vibrancy = 0.1696,
+		},
+	},
 
-    animations = {
-        enabled = true,
-    },
+	animations = {
+		enabled = true,
+	},
 
-    misc = {
-        disable_hyprland_logo = true,
-    },
+	misc = {
+		disable_hyprland_logo = true,
+	},
 
-    render = {
-        direct_scanout = 2,
-    },
+	render = {
+		direct_scanout = 2,
+	},
 
-    debug = {
-        full_cm_proto = true,
-    },
+	debug = {
+		full_cm_proto = true,
+	},
 
-    input = {
-        kb_layout = "us",
-        kb_options = "caps:escape_shifted_capslock",
-        follow_mouse = 1,
-        sensitivity = 0,
-    },
+	input = {
+		kb_layout = "us",
+		kb_options = "caps:escape_shifted_capslock",
+		follow_mouse = 1,
+		sensitivity = 0,
+	},
 })
 
 hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
@@ -105,13 +105,13 @@ hl.animation({ leaf = "workspacesOut", enabled = true, speed = 1.94, bezier = "a
 hl.animation({ leaf = "zoomFactor", enabled = true, speed = 7, bezier = "quick" })
 
 hl.config({
-    dwindle = {
-        preserve_split = true,
-    },
+	dwindle = {
+		preserve_split = true,
+	},
 
-    master = {
-        new_status = "master",
-    },
+	master = {
+		new_status = "master",
+	},
 })
 
 require("hardware")
@@ -119,23 +119,19 @@ require("hardware")
 local main_mod = "SUPER"
 
 bind(
-    main_mod .. " + semicolon",
-    hl.dsp.exec_cmd(focus_or_launch .. " kitty uwsm app -- " .. terminal),
-    "Focus terminal"
+	main_mod .. " + semicolon",
+	hl.dsp.exec_cmd(focus_or_launch .. " kitty uwsm app -- " .. terminal),
+	"Focus terminal"
 )
 bind(main_mod .. " + SHIFT + semicolon", hl.dsp.exec_cmd("uwsm app -- " .. terminal), "New terminal window")
 bind(main_mod .. " + Space", hl.dsp.exec_cmd(menu), "Open app launcher")
 bind(
-    main_mod .. " + E",
-    hl.dsp.exec_cmd(focus_or_launch .. " org.gnome.Nautilus uwsm app -- " .. file_manager),
-    "Focus file manager"
+	main_mod .. " + E",
+	hl.dsp.exec_cmd(focus_or_launch .. " org.gnome.Nautilus uwsm app -- " .. file_manager),
+	"Focus file manager"
 )
 bind(main_mod .. " + SHIFT + E", hl.dsp.exec_cmd("uwsm app -- " .. file_manager), "New file manager window")
-bind(
-    main_mod .. " + B",
-    hl.dsp.exec_cmd(focus_or_launch .. " firefox uwsm app -- " .. browser),
-    "Focus browser"
-)
+bind(main_mod .. " + B", hl.dsp.exec_cmd(focus_or_launch .. " firefox uwsm app -- " .. browser), "Focus browser")
 bind(main_mod .. " + SHIFT + B", hl.dsp.exec_cmd("uwsm app -- " .. browser), "New browser window")
 bind(main_mod .. " + Q", hl.dsp.window.close(), "Close window")
 bind(main_mod .. " + M", hl.dsp.exec_cmd("uwsm stop"), "Terminate session")
@@ -160,10 +156,10 @@ bind(main_mod .. " + ALT + H", hl.dsp.focus({ workspace = "-1" }))
 bind(main_mod .. " + ALT + L", hl.dsp.focus({ workspace = "+1" }))
 
 for i = 1, 10 do
-    local key = i % 10
+	local key = i % 10
 
-    bind(main_mod .. " + " .. key, hl.dsp.focus({ workspace = i }))
-    bind(main_mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+	bind(main_mod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+	bind(main_mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
 bind(main_mod .. " + S", hl.dsp.workspace.toggle_special("magic"))
@@ -178,35 +174,50 @@ bind(main_mod .. " + mouse:273", hl.dsp.window.resize(), nil, { mouse = true })
 bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +5%"), nil, { locked = true, repeating = true })
 bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), nil, { locked = true, repeating = true })
 bind("SHIFT + XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +1%"), nil, { locked = true, repeating = true })
-bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 1%-"), nil, { locked = true, repeating = true })
-
 bind(
-    "XF86KbdBrightnessUp",
-    hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set +10%"),
-    nil,
-    { locked = true, repeating = true }
-)
-bind(
-    "XF86KbdBrightnessDown",
-    hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set 10%-"),
-    nil,
-    { locked = true, repeating = true }
-)
-bind(
-    "SHIFT + XF86KbdBrightnessUp",
-    hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set +5%"),
-    nil,
-    { locked = true, repeating = true }
-)
-bind(
-    "SHIFT + XF86KbdBrightnessDown",
-    hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set 5%-"),
-    nil,
-    { locked = true, repeating = true }
+	"SHIFT + XF86MonBrightnessDown",
+	hl.dsp.exec_cmd("brightnessctl set 1%-"),
+	nil,
+	{ locked = true, repeating = true }
 )
 
-bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), nil, { locked = true, repeating = true })
-bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), nil, { locked = true, repeating = true })
+bind(
+	"XF86KbdBrightnessUp",
+	hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set +10%"),
+	nil,
+	{ locked = true, repeating = true }
+)
+bind(
+	"XF86KbdBrightnessDown",
+	hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set 10%-"),
+	nil,
+	{ locked = true, repeating = true }
+)
+bind(
+	"SHIFT + XF86KbdBrightnessUp",
+	hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set +5%"),
+	nil,
+	{ locked = true, repeating = true }
+)
+bind(
+	"SHIFT + XF86KbdBrightnessDown",
+	hl.dsp.exec_cmd("brightnessctl --device='smc::kbd_backlight' set 5%-"),
+	nil,
+	{ locked = true, repeating = true }
+)
+
+bind(
+	"XF86AudioRaiseVolume",
+	hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),
+	nil,
+	{ locked = true, repeating = true }
+)
+bind(
+	"XF86AudioLowerVolume",
+	hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),
+	nil,
+	{ locked = true, repeating = true }
+)
 bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), nil, { locked = true })
 bind("SHIFT + XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), nil, { locked = true })
 
@@ -215,28 +226,44 @@ bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), nil, { locked = 
 bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), nil, { locked = true })
 bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), nil, { locked = true })
 
+-------------------
+---- MAKO BINDS ----
+-------------------
+
+-- Dismiss current notification
+bind("SUPER + N", hl.dsp.exec_cmd("makoctl dismiss"))
+
+-- Restore last notification
+bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("makoctl restore"))
+
+-- Dismiss all notifications
+bind("SUPER + CTRL + N", hl.dsp.exec_cmd("makoctl dismiss --all"))
+
+-- Invoke default notification action
+bind("SUPER + ALT + N", hl.dsp.exec_cmd("makoctl invoke"))
+
 hl.window_rule({
-    name = "suppress-maximize-events",
-    match = { class = ".*" },
-    suppress_event = "maximize",
+	name = "suppress-maximize-events",
+	match = { class = ".*" },
+	suppress_event = "maximize",
 })
 
 hl.window_rule({
-    name = "fix-xwayland-drags",
-    match = {
-        class = "^$",
-        title = "^$",
-        xwayland = true,
-        float = true,
-        fullscreen = false,
-        pin = false,
-    },
-    no_focus = true,
+	name = "fix-xwayland-drags",
+	match = {
+		class = "^$",
+		title = "^$",
+		xwayland = true,
+		float = true,
+		fullscreen = false,
+		pin = false,
+	},
+	no_focus = true,
 })
 
 hl.window_rule({
-    name = "float-bitwarden",
-    match = { class = "Bitwarden" },
-    float = true,
-    size = "900 600",
+	name = "float-bitwarden",
+	match = { class = "Bitwarden" },
+	float = true,
+	size = "900 600",
 })
