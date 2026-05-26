@@ -1,68 +1,64 @@
 #!/usr/bin/env bash
-# Tuple dad-joke-greeter: room-joined trigger
+# Dad Joke Greeter — room-joined trigger
 #
-# Tracks room membership for rooms listed in ~/.tuple/tracked-rooms and
-# tells a dad joke when someone joins the room we're in — but only when
-# 2+ people are present.
+# Fetches a random dad joke and speaks it aloud when someone joins the
+# room you're in. Audio is routed to both your speakers and BlackHole 2ch
+# so remote Tuple participants hear the joke too.
 #
-# State layout:
-#   ~/.tuple/tracked-rooms              — rooms to track (one name per line)
-#   ~/.tuple/.state/my-room             — room we're currently in
-#   ~/.tuple/.state/rooms/<room>/members — one email per line per room
-#
-# PREREQUISITE (one-time): Set Tuple's audio input to "BH + Mic Input"
-#   Tuple > Preferences > Audio > Input Device > "BH + Mic Input"
-#
-# To disable temporarily without removing the trigger:
-#   touch ~/.tuple/.state/jokes-disabled    (hyper - j toggles this)
+# See README.md for audio setup instructions.
 set -uo pipefail
 
+# Audio device for the virtual loopback into Tuple
 BLACKHOLE_DEVICE="BlackHole 2ch"
-SPEAKER_DEVICE="MacBook Pro Speakers"
+
 API_URL="https://icanhazdadjoke.com/"
-TRACKED_ROOMS_FILE="$HOME/.tuple/tracked-rooms"
-STATE_DIR="$HOME/.tuple/.state"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+STATE_DIR="$HOME/.tuple/.state/dad-joke-greeter"
 MY_ROOM_FILE="$STATE_DIR/my-room"
+LOCAL_TRACKED_ROOMS_FILE="$SCRIPT_DIR/tracked-rooms"
+LOCAL_DISABLED_FILE="$SCRIPT_DIR/.disabled"
+
+# Optional: touch .disabled next to this trigger to disable it.
+[[ ! -f "$LOCAL_DISABLED_FILE" ]] || exit 0
 
 is_self="${TUPLE_TRIGGER_IS_SELF:-false}"
 room_name="${TUPLE_TRIGGER_ROOM_NAME:-}"
-joiner_email="${TUPLE_TRIGGER_EMAIL:-}"
-my_email="${TUPLE_TRIGGER_CURRENT_USER_EMAIL:-}"
 
-# Only proceed for tracked rooms
-if [[ ! -f "$TRACKED_ROOMS_FILE" ]] || ! grep -qxF "$room_name" "$TRACKED_ROOMS_FILE"; then
+# If a tracked-rooms file exists, only trigger for rooms listed in it.
+tracked_rooms_file=""
+if [[ -f "$LOCAL_TRACKED_ROOMS_FILE" ]]; then
+  tracked_rooms_file="$LOCAL_TRACKED_ROOMS_FILE"
+fi
+
+if [[ -n "$tracked_rooms_file" ]] && ! grep -qxF "$room_name" "$tracked_rooms_file"; then
   exit 0
 fi
 
-# Sanitize room name for use as a directory name
-safe_room="$(printf '%s' "$room_name" | tr -cd '[:alnum:] _-' | tr ' ' '_')"
-ROOM_DIR="$STATE_DIR/rooms/$safe_room"
-MEMBERS_FILE="$ROOM_DIR/members"
+mkdir -p "$STATE_DIR"
 
-mkdir -p "$ROOM_DIR"
+speak_to_default_and_blackhole() {
+  local text="$1"
+  local default_pid blackhole_pid say_status=0
 
-# --- Track membership ---
+  say -- "$text" 2>> "$STATE_DIR/say-errors.log" &
+  default_pid=$!
+  say -a "$BLACKHOLE_DEVICE" -- "$text" 2>> "$STATE_DIR/say-errors.log" &
+  blackhole_pid=$!
 
-email_to_add=""
+  wait "$default_pid" || say_status=$?
+  wait "$blackhole_pid" || say_status=$?
+
+  return "$say_status"
+}
+
 if [[ "$is_self" == "true" ]]; then
+  # Record that we're in this room
   printf '%s' "$room_name" > "$MY_ROOM_FILE"
-  email_to_add="$my_email"
-else
-  email_to_add="$joiner_email"
-fi
-
-if [[ -n "$email_to_add" ]]; then
-  grep -qxF "$email_to_add" "$MEMBERS_FILE" 2>/dev/null || printf '%s\n' "$email_to_add" >> "$MEMBERS_FILE"
-fi
-
-# --- Decide whether to tell a joke ---
-
-# Allow opt-out without removing the trigger file (state tracking above still runs)
-if [[ -f "$STATE_DIR/jokes-disabled" ]]; then
+  # Don't tell a joke when joining alone — wait for someone else
   exit 0
 fi
 
-# Only tell jokes in the room we're in
+# Someone else joined — only greet if we're in that same room
 if [[ ! -f "$MY_ROOM_FILE" ]]; then
   exit 0
 fi
@@ -71,21 +67,11 @@ if [[ "$my_room" != "$room_name" ]]; then
   exit 0
 fi
 
-# Only tell a joke when there are at least 2 people in the room
-member_count=0
-if [[ -f "$MEMBERS_FILE" ]]; then
-  member_count=$(wc -l < "$MEMBERS_FILE" | tr -d ' ')
-fi
-if [[ "$member_count" -lt 2 ]]; then
-  exit 0
-fi
-
-# --- Fetch and tell the joke ---
-
+# Fetch a random joke
 joke=$(
-  curl -sfS --connect-timeout 3 --max-time 3 \
+  curl -sfS --connect-timeout 3 --max-time 5 \
     -H "Accept: application/json" \
-    -H "User-Agent: TupleDadJokeGreeter/1.0" \
+    -H "User-Agent: TupleDadJokeGreeter/1.0 (https://github.com/tupleapp/community-triggers)" \
     "$API_URL" | jq -r '.joke // empty'
 )
 
@@ -94,26 +80,17 @@ if [[ -z "$joke" ]]; then
   exit 1
 fi
 
-# Sanitize joiner name to printable letters and spaces only (prevent injection)
+# Sanitize joiner name (strip control characters only)
 raw_joiner="${TUPLE_TRIGGER_FULL_NAME:-someone}"
-joiner="$(printf '%s' "$raw_joiner" | tr -cd '[:alpha:] ')"
+joiner="$(printf '%s' "$raw_joiner" | tr -d '[:cntrl:]')"
 joiner="${joiner:-someone}"
 
-if [[ "$is_self" == "true" ]]; then
-  greeting="Hi everyone. Here is a dad joke."
-else
-  greeting="${joiner} just joined. Here is a dad joke."
-fi
-
+greeting="${joiner} just joined. Here is a dad joke."
 full_text="${greeting} ${joke}"
 
-# Let the joiner settle in before the joke
-sleep 2.5
-
-# Play to local speakers and BlackHole (Tuple's audio input) in parallel.
-# Both use || true so a missing audio device never fails the trigger.
-say -a "$SPEAKER_DEVICE" -- "$full_text" || true &
-say -a "$BLACKHOLE_DEVICE" -- "$full_text" || true &
-wait
+# Play to local speakers and BlackHole in parallel so both you and remote
+# participants hear the joke. Tuple should use an input aggregate containing
+# your microphone and BlackHole.
+speak_to_default_and_blackhole "$full_text"
 
 echo "$(date -Iseconds) [dad-joke-greeter] Told joke to ${joiner}: ${joke}"
