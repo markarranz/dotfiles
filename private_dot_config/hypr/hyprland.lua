@@ -1,4 +1,4 @@
-local colors = require("theme")
+local colors = require("themes.catppuccin-mocha")
 
 local home = os.getenv("HOME") or ""
 local runtime_dir = os.getenv("XDG_RUNTIME_DIR") or "/run/user/1000"

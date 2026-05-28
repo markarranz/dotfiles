@@ -8,7 +8,7 @@ Dynamic tiling Wayland compositor with companion utilities (hyprlock, hypridle, 
 hypr/
 ├── hyprland.lua          # Main compositor config (keybinds, rules, autostart)
 ├── hardware.lua.tmpl     # Monitor/input config (laptop vs desktop conditional)
-├── theme.lua             # Catppuccin color palette used by Hyprland Lua config
+├── themes/catppuccin-mocha.lua # External Catppuccin palette used by Hyprland Lua config
 ├── hypridle.conf         # Idle timeouts → lock → suspend chain
 ├── hyprlock.conf.tmpl    # Lock screen appearance (chassis-conditional layout)
 ├── hyprpaper.conf        # Wallpaper config
@@ -31,7 +31,7 @@ hypr/
 ## Conventions
 
 - **Config language**: Hyprland Lua (`hyprland.lua`) — use `hl.config`, `hl.bind`, `hl.window_rule`, `hl.monitor`
-- **Require split**: `hyprland.lua` requires `theme.lua` and `hardware.lua`
+- **Require split**: `hyprland.lua` requires `themes.catppuccin-mocha` and `hardware.lua`
 - **Hardware split**: All monitor/input/touchpad config lives in `hardware.lua.tmpl` — never in `hyprland.lua`
 - **Template variables**: `.chassisType` (laptop vs desktop), `.chezmoi.os` (always linux here)
 - **Autostart**: `hl.on("hyprland.start", ...)` for daemons (ashell, walker, kitty)

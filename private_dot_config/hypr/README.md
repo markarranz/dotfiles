@@ -44,8 +44,7 @@ The main config now uses native Hyprland Lua (`hyprland.lua`), with hardware-spe
 | `hyprpaper.conf` | Wallpaper assignment |
 | `hyprsunset.conf` | Color temperature schedule (6000 K daytime, 4000 K evening) |
 | `scripts/kbbacklight` | Keyboard backlight brightness control script |
-| `theme.lua` | Catppuccin colors used by `hyprland.lua` |
-| `themes/` | Catppuccin Mocha theme files still used by hyprlock |
+| `themes/catppuccin-mocha.lua` | External Catppuccin palette used by `hyprland.lua` |
 
 ### Autostarted Programs
 
