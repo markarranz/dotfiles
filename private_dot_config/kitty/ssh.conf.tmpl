@@ -1,0 +1,10 @@
+copy --symlink-strategy keep-path .zshenv .config/zsh .config/nvim
+{{- if .forWork }}
+
+# Work dev pods. The dev-profile installs pod-portable shell config,
+# Neovim config, and editor tooling, so do not copy host dotfiles into pods.
+# Ordered after the global copy above; since kitty 0.28.0 a matching hostname
+# block resets config to defaults.
+hostname cook-*
+    shell_integration enabled
+{{- end }}
