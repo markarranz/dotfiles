@@ -29,6 +29,7 @@ hl.config({
 	general = {
 		border_size = 3,
 		resize_on_border = true,
+		allow_tearing = true,
 
 		col = {
 			active_border = {
@@ -266,4 +267,10 @@ hl.window_rule({
 	match = { class = "Bitwarden" },
 	float = true,
 	size = "900 600",
+})
+
+hl.window_rule({
+	name = "tearing-gamescope",
+	match = { class = "^(gamescope)$" },
+	immediate = true,
 })
