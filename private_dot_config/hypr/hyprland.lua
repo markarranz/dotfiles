@@ -23,6 +23,7 @@ hl.on("hyprland.start", function()
 	hl.exec_cmd("uwsm app -- ashell")
 	hl.exec_cmd("uwsm app -- walker --gapplication-service")
 	hl.exec_cmd("uwsm app -- kitty --single-instance")
+	hl.exec_cmd("uwsm app -- " .. home .. "/.config/hypr/scripts/discord-game-mode")
 end)
 
 hl.config({
@@ -273,4 +274,10 @@ hl.window_rule({
 	name = "tearing-gamescope",
 	match = { class = "^(gamescope)$" },
 	immediate = true,
+})
+
+hl.window_rule({
+	name = "gamescope-workspace",
+	match = { class = "^(gamescope)$" },
+	workspace = "10",
 })

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Listens on Hyprland's event socket and shuffles Discord onto special:magic
+# while a gamescope-wrapped game is open. When the last gamescope window
+# closes, Discord goes back to workspace 1.
+
+socket="${XDG_RUNTIME_DIR}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.socket2.sock"
+
+move_discord_to() {
+	local target="$1"
+	hyprctl clients -j |
+		jq -r '.[] | select(.class | test("^(discord|vesktop|webcord)$"; "i")) | .address' |
+		while read -r addr; do
+			[[ -n "$addr" ]] && hyprctl dispatch movetoworkspacesilent "$target,address:$addr" >/dev/null
+		done
+}
+
+any_gamescope_open() {
+	hyprctl clients -j | jq -e 'any(.[]; .class == "gamescope")' >/dev/null
+}
+
+nc -U "$socket" | while IFS= read -r line; do
+	case "$line" in
+	openwindow*,gamescope,*)
+		move_discord_to "special:magic"
+		;;
+	openwindow*,discord,* | openwindow*,vesktop,* | openwindow*,webcord,*)
+		if any_gamescope_open; then
+			move_discord_to "special:magic"
+		fi
+		;;
+	closewindow*)
+		# brief delay so the closed window is gone from hyprctl state
+		sleep 0.2
+		if ! any_gamescope_open; then
+			move_discord_to "1"
+		fi
+		;;
+	esac
+done
