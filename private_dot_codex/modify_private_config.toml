@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+import os
+import re
+import sys
+
+
+def split_lines(text):
+    if not text.strip():
+        return []
+    return text.splitlines()
+
+
+def is_section(line):
+    return re.match(r"^\s*\[[^\]]+\]\s*$", line) is not None
+
+
+def find_section(lines, section):
+    if section is None:
+        start = 0
+        end = next((idx for idx, line in enumerate(lines) if is_section(line)), len(lines))
+        return start, end
+
+    header = f"[{section}]"
+    for idx, line in enumerate(lines):
+        if line.strip() == header:
+            end = idx + 1
+            while end < len(lines) and not is_section(lines[end]):
+                end += 1
+            return idx + 1, end
+
+    if lines and lines[-1].strip():
+        lines.append("")
+    lines.append(header)
+    return len(lines), len(lines)
+
+
+def find_existing_section(lines, section):
+    header = f"[{section}]"
+    for idx, line in enumerate(lines):
+        if line.strip() == header:
+            end = idx + 1
+            while end < len(lines) and not is_section(lines[end]):
+                end += 1
+            return idx, end
+    return None
+
+
+def remove_section(lines, section):
+    match = find_existing_section(lines, section)
+    if match is None:
+        return
+
+    start, end = match
+    del lines[start:end]
+
+
+def set_value(lines, section, key, value):
+    start, end = find_section(lines, section)
+    pattern = re.compile(rf"^\s*{re.escape(key)}\s*=")
+
+    for idx in range(start, end):
+        if pattern.match(lines[idx]):
+            lines[idx] = f"{key} = {value}"
+            return
+
+    lines.insert(end, f"{key} = {value}")
+
+
+def quote(value):
+    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def array(values):
+    return "[" + ", ".join(quote(value) for value in values) + "]"
+
+
+MANAGED_PLUGINS = {
+    "browser-use@openai-bundled": "true",
+    "circleci@openai-curated": "false",
+    "documents@openai-primary-runtime": "false",
+    "github@openai-curated": "true",
+    "google-drive@openai-curated": "false",
+    "presentations@openai-primary-runtime": "false",
+    "slack@openai-curated": "false",
+    "spreadsheets@openai-primary-runtime": "false",
+}
+
+
+home = os.environ["HOME"]
+lines = split_lines(sys.stdin.read())
+
+set_value(lines, None, "cli_auth_credentials_store", quote("keyring"))
+set_value(lines, None, "web_search", quote("live"))
+set_value(lines, None, "sandbox_mode", quote("workspace-write"))
+
+set_value(lines, "sandbox_workspace_write", "writable_roots", array([f"{home}/.mempalace"]))
+
+set_value(lines, "features", "hooks", "true")
+set_value(lines, "features", "multi_agent", "true")
+
+set_value(lines, "tui", "notifications", "true")
+set_value(
+    lines,
+    "tui",
+    "status_line",
+    array(
+        [
+            "model-with-reasoning",
+            "current-dir",
+            "project-name",
+            "git-branch",
+            "context-remaining",
+            "pull-request-number",
+            "branch-changes",
+            "run-state",
+        ]
+    ),
+)
+set_value(lines, "tui", "status_line_use_colors", "true")
+
+for plugin, enabled in MANAGED_PLUGINS.items():
+    set_value(lines, f'plugins."{plugin}"', "enabled", enabled)
+
+remove_section(lines, "mcp_servers.circleci.env")
+remove_section(lines, "mcp_servers.circleci")
+
+sys.stdout.write("\n".join(lines).rstrip() + "\n")

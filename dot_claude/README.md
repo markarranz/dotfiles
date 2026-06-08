@@ -15,6 +15,8 @@ A chezmoi [modify_ script](https://www.chezmoi.io/reference/source-state-attribu
 
 **Managed keys:**
 - `statusLine` — custom bash status line (see below)
+- `enabledPlugins` — default plugin policy; broad workflow helpers stay enabled, heavier task-specific plugins stay disabled until needed
+- `hooks` — local hook wiring when corresponding local hook files exist
 
 ### Status Line (`status-line.sh`)
 
@@ -28,4 +30,3 @@ A custom bash script that renders a rich status line showing:
 - Context window usage percentage (color-coded: green < 60%, yellow 60-80%, red > 80%)
 
 All colors use the Catppuccin Mocha palette.
-

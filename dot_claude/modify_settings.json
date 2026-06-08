@@ -1,23 +1,137 @@
-#!/bin/bash
-# Chezmoi modify_ script for ~/.claude/settings.json
-#
-# Manages: statusLine (chezmoi owns this)
-# Preserves: enabledPlugins, and anything else Claude Code writes
-# Preserves: enabledPlugins, and anything else Claude Code writes
+#!/usr/bin/env python3
+import json
+import os
+import sys
 
-current=$(cat)
 
-# If the file doesn't exist yet, start with empty object
-if [ -z "$current" ]; then
-  current='{}'
-fi
+def read_current():
+    data = sys.stdin.read().strip()
+    if not data:
+        return {}
+    return json.loads(data)
 
-managed='{
-  "statusLine": {
+
+def hook(command, timeout=None):
+    value = {
+        "type": "command",
+        "command": command,
+    }
+    if timeout is not None:
+        value["timeout"] = timeout
+    return value
+
+
+def remove_managed_hooks(hooks, managed_commands):
+    for event in list(hooks.keys()):
+        entries = hooks.get(event)
+        if not isinstance(entries, list):
+            continue
+
+        kept_entries = []
+        for entry in entries:
+            entry_hooks = entry.get("hooks") if isinstance(entry, dict) else None
+            if not isinstance(entry_hooks, list):
+                kept_entries.append(entry)
+                continue
+
+            kept_hooks = [
+                item
+                for item in entry_hooks
+                if not (isinstance(item, dict) and item.get("command") in managed_commands)
+            ]
+            if kept_hooks:
+                next_entry = dict(entry)
+                next_entry["hooks"] = kept_hooks
+                kept_entries.append(next_entry)
+
+        if kept_entries:
+            hooks[event] = kept_entries
+        else:
+            del hooks[event]
+
+
+def append_hook(hooks, event, command, timeout=None):
+    hooks.setdefault(event, []).append({"hooks": [hook(command, timeout)]})
+
+
+MANAGED_ENABLED_PLUGINS = {
+    "agent-sdk-dev@claude-plugins-official": False,
+    "caveman@caveman": False,
+    "code-simplifier@claude-plugins-official": True,
+    "commit-commands@claude-plugins-official": True,
+    "context7@claude-plugins-official": False,
+    "explanatory-output-style@claude-plugins-official": False,
+    "feature-dev@claude-plugins-official": False,
+    "gopls-lsp@claude-plugins-official": True,
+    "kotlin-lsp@claude-plugins-official": False,
+    "learning-output-style@claude-plugins-official": False,
+    "lua-lsp@claude-plugins-official": True,
+    "playground@claude-plugins-official": False,
+    "playwright@claude-plugins-official": False,
+    "pr-review-toolkit@claude-plugins-official": False,
+    "ralph-loop@claude-plugins-official": False,
+    "remember@claude-plugins-official": False,
+    "superpowers@claude-plugins-official": True,
+    "typescript-lsp@claude-plugins-official": True,
+    "stripe@claude-plugins-official": False,
+}
+
+
+home = os.environ["HOME"]
+settings = read_current()
+settings["statusLine"] = {
     "type": "command",
-    "command": "bash ~/.claude/status-line.sh"
-  }
-}'
+    "command": "bash ~/.claude/status-line.sh",
+}
 
-# Deep merge: current * managed (managed keys win, rest preserved)
-echo "$current" | jq --argjson managed "$managed" '. * $managed'
+enabled_plugins = settings.get("enabledPlugins")
+if not isinstance(enabled_plugins, dict):
+    enabled_plugins = {}
+enabled_plugins.update(MANAGED_ENABLED_PLUGINS)
+settings["enabledPlugins"] = enabled_plugins
+
+hooks = settings.get("hooks")
+if not isinstance(hooks, dict):
+    hooks = {}
+
+agent_tracker = f"{home}/.claude/hooks/agent-control-state-tracker.local.py"
+session_start = f"{home}/.claude/hooks/session-start.local.sh"
+mempalace_hook = f"{home}/.mempalace/mempalace-hook.sh"
+
+managed_commands = {
+    f"python3 {home}/.claude/hooks/agent-control-state-tracker.py",
+    f"python3 {agent_tracker}",
+    f"{home}/.claude/hooks/session-start-methodology.sh",
+    session_start,
+    f"{mempalace_hook} session-start",
+    f"{mempalace_hook} precompact",
+    f"{mempalace_hook} stop",
+}
+remove_managed_hooks(hooks, managed_commands)
+
+if os.path.exists(session_start):
+    append_hook(hooks, "SessionStart", session_start)
+
+if os.path.exists(agent_tracker):
+    for event in (
+        "Notification",
+        "PostToolUse",
+        "PreToolUse",
+        "SessionEnd",
+        "Stop",
+        "UserPromptSubmit",
+    ):
+        append_hook(hooks, event, f"python3 {agent_tracker}", 5)
+    append_hook(hooks, "SessionStart", f"python3 {agent_tracker}", 5)
+
+if os.path.exists(mempalace_hook):
+    append_hook(hooks, "SessionStart", f"{mempalace_hook} session-start", 30)
+    append_hook(hooks, "PreCompact", f"{mempalace_hook} precompact", 30)
+    append_hook(hooks, "Stop", f"{mempalace_hook} stop", 30)
+
+if hooks:
+    settings["hooks"] = hooks
+elif "hooks" in settings:
+    del settings["hooks"]
+
+print(json.dumps(settings, indent=2))
