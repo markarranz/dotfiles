@@ -107,12 +107,12 @@ set_value(
         [
             "model-with-reasoning",
             "current-dir",
-            "project-name",
             "git-branch",
             "context-remaining",
             "pull-request-number",
             "branch-changes",
             "run-state",
+            "thread-title",
         ]
     ),
 )
