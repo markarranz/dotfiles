@@ -1,4 +1,8 @@
 {{- if .forWork }}
 map kitty_mod+s>d goto_session "$HOME/Code/work/default.kitty-session"
+map kitty_mod+t launch --type=tab --cwd "$HOME/Code/work/core"
+{{- if eq .chezmoi.os "darwin" }}
+map cmd+t launch --type=tab --cwd "$HOME/Code/work/core"
+{{- end }}
 map kitty_mod+alt+enter launch --cwd "$HOME/Code/work/core"
 {{- end }}
