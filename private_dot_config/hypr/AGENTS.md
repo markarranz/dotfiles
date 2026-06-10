@@ -34,7 +34,7 @@ hypr/
 - **Require split**: `hyprland.lua` requires `themes.catppuccin-mocha` and `hardware.lua`
 - **Hardware split**: All monitor/input/touchpad config lives in `hardware.lua.tmpl` — never in `hyprland.lua`
 - **Template variables**: `.chassisType` (laptop vs desktop), `.chezmoi.os` (always linux here)
-- **Autostart**: `hl.on("hyprland.start", ...)` for daemons (ashell, walker, kitty)
+- **Autostart**: `hl.on("hyprland.start", ...)` for daemons (waybar, walker, kitty)
 - **Default programs**: `$terminal=kitty --single-instance`, `$menu=walker`, `$browser=firefox`
 
 ## Anti-Patterns
@@ -45,7 +45,7 @@ hypr/
 
 ## Notes
 
-- **Integration chain**: Hyprland → Ashell (status bar) → Walker (app launcher) via Unix socket.
+- **Integration chain**: Hyprland → Waybar (status bar) → Walker (app launcher) via Unix socket.
 - **Home-row mods**: Kanata runs at OS level before Hyprland sees keys — same layout as macOS Karabiner.
 - **Lock screen**: `hyprlock.conf.tmpl` varies layout by chassis (laptop shows battery, desktop doesn't).
 - **Idle chain**: `hypridle.conf` → dim after N min → lock → suspend. Inhibited during audio/fullscreen.

@@ -79,7 +79,7 @@ These tools are specific to a Linux (Wayland/Hyprland) desktop environment.
 | Tool | Description |
 |------|-------------|
 | [**Hyprland**](https://hyprland.org/) | A dynamic tiling Wayland compositor (window manager) with smooth animations, rounded corners, and a highly scriptable configuration. It manages window placement, workspaces, keybindings, and multi-monitor setups. Also includes companion utilities: [hyprlock](https://github.com/hyprwm/hyprlock) (lock screen), [hypridle](https://github.com/hyprwm/hypridle) (idle management), [hyprpaper](https://github.com/hyprwm/hyprpaper) (wallpaper), and [hyprsunset](https://github.com/hyprwm/hyprsunset) (blue light filter). |
-| [**Ashell**](https://github.com/MalpenZibo/ashell) | A status bar and notification panel for Hyprland. Displays workspaces, the focused window title, system info, a tray, clock, and more along the top of the screen. |
+| [**Waybar**](https://github.com/Alexays/Waybar) | A status bar for Hyprland with a floating, rounded-pill look. Recreates the macOS SketchyBar layout with workspaces, window title, CPU, updates, network, volume, battery, tray, and clock. Catppuccin Mocha theme via GTK CSS. Power menu via [wlogout](https://github.com/ArtsyMacaw/wlogout). |
 | [**Kanata**](https://github.com/jtroo/kanata) | A software keyboard remapper that runs as a background service. Used here to implement home-row mods -- holding `a`, `s`, `d`, `f` (and their right-hand counterparts) produces Ctrl, Alt, Meta, and Shift, while tapping them types the normal letter. |
 | [**Qt6ct**](https://github.com/trialuser02/qt6ct) | A configuration tool for Qt 6 application appearance on non-KDE desktops. Used here to apply the Catppuccin Frappe theme to Qt-based applications so they match the rest of the desktop. |
 | Chromium & Electron flags | Configuration files (`chromium-flags.conf`, `electron-flags.conf`) that enable native Wayland support for Chromium-based browsers and Electron apps, preventing them from falling back to XWayland. |
@@ -108,7 +108,8 @@ These tools are specific to a macOS desktop environment.
 ├── dot_zshenv.tmpl             # Zsh environment entry point (XDG dirs, etc.)
 ├── dot_claude/                 # Claude Code IDE settings
 ├── private_dot_config/         # ~/.config/ directory contents
-│   ├── ashell/                 # [Linux] Ashell status bar
+│   ├── waybar/                 # [Linux] Waybar status bar
+│   ├── wlogout/                # [Linux] wlogout power menu
 │   ├── bat/                    # bat syntax highlighter
 │   ├── borders/                # [macOS] JankyBorders
 │   ├── elephant/               # [Linux] Elephant data provider (Walker backend)

@@ -37,7 +37,8 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 │   ├── yabai/                  # [macOS] yabai tiling WM
 │   ├── skhd/                   # [macOS] skhd hotkey daemon
 │   ├── kanata/                 # [Linux] Kanata keyboard remapper (home-row mods)
-│   ├── ashell/                 # [Linux] Ashell status bar (TOML config)
+│   ├── waybar/                 # [Linux] Waybar status bar (JSONC + GTK CSS)
+│   ├── wlogout/                # [Linux] wlogout power menu (layout + CSS)
 │   ├── borders/                # [macOS] JankyBorders (pink→sky gradient)
 │   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
 │   ├── git/                    # Git config, ignore, helper scripts
@@ -71,6 +72,7 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 | Hyprland hardware config | `private_dot_config/hypr/hardware.lua.tmpl` | Chassis-type conditional |
 | macOS hotkey | `private_dot_config/skhd/skhdrc.tmpl` | Template for work/personal |
 | SketchyBar widget | `private_dot_config/sketchybar/items/widgets/` | Lua scripts |
+| Waybar module/style | `private_dot_config/waybar/` | JSONC config + GTK CSS; scripts in `scripts/` |
 | Tmux config | `private_dot_config/tmux/tmux.conf` | Static (no template) |
 | Git identity switching | `private_dot_config/git/config.tmpl` | Conditional includes by directory |
 | Manually tracked config | `externally_modified/` | Symlinked via `symlink_*.tmpl` |
@@ -119,7 +121,8 @@ Do not use `[ai]` unless the user explicitly asks for it.
 | Format | Tools |
 |--------|-------|
 | Lua | Neovim, SketchyBar |
-| TOML | Starship, ashell, bat |
+| TOML | Starship, bat |
+| JSONC + GTK CSS | Waybar |
 | YAML | lazygit, yazi |
 | Shell | yabai, skhd, borders, tmux |
 | Python | Kitty kittens |
@@ -173,7 +176,7 @@ Kitty ↔ Neovim ↔ Tmux     Ctrl+hjkl seamless navigation (navigate.lua/naviga
 Zsh → SketchyBar           brew() wrapper triggers bar update (macOS)
 yabai → SketchyBar          42px top padding reserved; workspace state queries
 skhd → yabai                Hotkeys send yabai commands
-Hyprland → Ashell → Walker  Status bar + app launcher (Unix socket)
+Hyprland → Waybar → Walker  Status bar + app launcher (Unix socket)
 Kanata → Hyprland           OS-level key remap before compositor sees keys
 Karabiner → skhd            OS-level key remap before hotkey daemon
 ```

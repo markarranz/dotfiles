@@ -48,5 +48,5 @@ The main config now uses native Hyprland Lua (`hyprland.lua`), with hardware-spe
 
 ### Autostarted Programs
 
-- **ashell** -- status bar / system panel
+- **waybar** -- status bar (Catppuccin Mocha, floating rounded pills)
 - **walker** -- application launcher daemon (listens on a Unix socket)
