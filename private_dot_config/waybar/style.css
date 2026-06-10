@@ -1,3 +1,18 @@
+/* Catppuccin Mocha */
+@define-color base    #1e1e2e;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+@define-color text    #cdd6f4;
+@define-color subtext #9399b2;
+@define-color blue    #89b4fa;
+@define-color sky     #89dceb;
+@define-color green   #a6e3a1;
+@define-color yellow  #f9e2af;
+@define-color peach   #fab387;
+@define-color red     #f38ba8;
+@define-color mauve   #cba6f7;
+
 * {
   font-family: "JetBrainsMono Nerd Font", sans-serif;
   font-size: 13px;
@@ -7,16 +22,75 @@
 
 window#waybar {
   background: transparent;
-  color: #cdd6f4;
+  color: @text;
 }
 
+/* Each module section is a rounded, bordered pill row */
 .modules-left, .modules-center, .modules-right {
-  background: #1e1e2e;
-  border: 2px solid rgba(69, 71, 90, 0.6);
+  background: @base;
+  border: 2px solid alpha(@surface1, 0.6);
   border-radius: 10px;
-  padding: 0 6px;
+  padding: 2px 8px;
 }
 
-#clock, #window {
+/* Common module padding */
+#custom-power, #custom-layout, #custom-cpu, #custom-updates,
+#network, #custom-mic, #wireplumber, #battery, #clock, #window, #tray {
   padding: 0 8px;
+  color: @text;
 }
+
+/* Arch power button */
+#custom-power {
+  color: @sky;
+  font-size: 16px;
+  padding-left: 10px;
+}
+
+/* Workspaces */
+#workspaces button {
+  color: @subtext;
+  padding: 0 6px;
+  border-radius: 8px;
+}
+#workspaces button.active {
+  color: @text;
+  background: alpha(@surface2, 0.4);
+}
+#workspaces button.urgent {
+  color: @red;
+}
+
+/* Layout indicator */
+#custom-layout.master { color: @yellow; }
+#custom-layout.dwindle { color: @text; }
+
+/* CPU thresholds */
+#custom-cpu.warning  { color: @yellow; }
+#custom-cpu.critical { color: @red; }
+
+/* Updates thresholds (mirrors brew widget colors) */
+#custom-updates.none     { color: @green; }
+#custom-updates.low      { color: @text; }
+#custom-updates.medium   { color: @yellow; }
+#custom-updates.high     { color: @peach; }
+#custom-updates.critical { color: @red; }
+
+/* Status group: the rounded "bracket" background */
+#status {
+  background: alpha(@surface1, 0.38);
+  border: 2px solid alpha(@surface1, 0.6);
+  border-radius: 9px;
+  padding: 0 4px;
+  margin: 2px 0;
+}
+
+#custom-mic.active { color: @green; }
+#custom-mic.muted  { color: @red; }
+
+/* Battery states */
+#battery.warning  { color: @peach; }
+#battery.critical { color: @red; }
+#battery.charging { color: @green; }
+
+#clock { color: @text; padding-right: 10px; }
