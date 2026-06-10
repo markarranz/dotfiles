@@ -172,7 +172,7 @@ Insert these objects after the `"clock"` block (before the closing `}`), each pr
   "battery": {
     "states": { "warning": 25, "critical": 10 },
     "format": "{icon}",
-    "format-charging": "",
+    "format-charging": "",
     "format-icons": ["", "", "", "", ""],
     "tooltip-format": "{capacity}% — {time}"
   },
