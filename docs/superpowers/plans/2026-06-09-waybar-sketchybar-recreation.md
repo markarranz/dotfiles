@@ -174,7 +174,7 @@ Insert these objects after the `"clock"` block (before the closing `}`), each pr
     "format": "{icon}",
     "format-charging": "",
     "format-icons": ["", "", "", "", ""],
-    "tooltip-format": "{capacity}% — {timeTo}"
+    "tooltip-format": "{capacity}% — {time}"
   },
 
   "tray": {
@@ -268,6 +268,7 @@ button {
   border-radius: 12px;
   border: 2px solid #45475a;
   margin: 8px;
+  padding: 20px 32px;
   font-size: 16px;
 }
 
