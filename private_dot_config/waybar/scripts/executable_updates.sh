@@ -27,6 +27,5 @@ if [ "$total" -eq 0 ]; then
   exit 0
 fi
 
-tooltip=$(printf '%s\n%s' "$repo" "$aur" | grep . | head -n40 \
-  | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
+tooltip=$( { printf '%s\n%s' "$repo" "$aur" | grep . | head -n40 | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}'; } || true)
 printf '{"text":"%s %s","tooltip":"%s","class":"%s"}\n' "$icon_pending" "$total" "$tooltip" "$class"

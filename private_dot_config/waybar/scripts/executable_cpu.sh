@@ -20,15 +20,15 @@ if [ "$dtotal" -gt 0 ]; then
   usage=$(( (100 * (dtotal - didle)) / dtotal ))
 fi
 
-top_proc=$(ps -eo comm,pcpu --sort=-pcpu --no-headers | head -n1 | awk '{print $1}')
+procs=$(ps -eo comm,pcpu --sort=-pcpu --no-headers)
+top_proc=$(printf '%s\n' "$procs" | awk 'NR==1{print $1}')
 
 class="normal"
 if [ "$usage" -ge 85 ]; then class="critical"
 elif [ "$usage" -ge 60 ]; then class="warning"
 fi
 
-tooltip=$(ps -eo comm,pcpu --sort=-pcpu --no-headers | head -n5 \
-  | awk '{printf "%s  %s%%\\n", $1, $2}')
+tooltip=$(printf '%s\n' "$procs" | awk 'NR<=5{printf "%s  %s%%\\n", $1, $2}')
 
 printf '{"text":"%s %s%%  %s","tooltip":"%s","class":"%s"}\n' \
   "$icon" "$usage" "$top_proc" "$tooltip" "$class"
