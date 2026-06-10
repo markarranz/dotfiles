@@ -144,8 +144,11 @@ PACMAN_PACKAGES=(
   brightnessctl
   nautilus
   nm-connection-editor
+  pacman-contrib
   playerctl
   qt6ct
+  waybar
+  wlogout
   # PDF viewer
   zathura
   zathura-pdf-mupdf
@@ -156,7 +159,6 @@ PACMAN_PACKAGES=(
 )
 
 AUR_PACKAGES=(
-  ashell
   elephant-all
   kanata
   pwvucontrol
