@@ -1,0 +1,25 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 36,
+  "margin-top": 6,
+  "margin-left": 8,
+  "margin-right": 8,
+  "spacing": 4,
+
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["hyprland/window"],
+  "modules-right": ["clock"],
+
+  "hyprland/window": {
+    "format": "{title}",
+    "max-length": 100,
+    "separate-outputs": true
+  },
+
+  "clock": {
+    "interval": 10,
+    "format": "{:%a, %d %b %I:%M %p}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>"
+  }
+}
