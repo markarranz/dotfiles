@@ -20,7 +20,7 @@ local function bind(keys, dispatcher, description, opts)
 end
 
 hl.on("hyprland.start", function()
-	hl.exec_cmd("uwsm app -- ashell")
+	hl.exec_cmd("uwsm app -- waybar")
 	hl.exec_cmd("uwsm app -- walker --gapplication-service")
 	hl.exec_cmd("uwsm app -- kitty --single-instance")
 	hl.exec_cmd("uwsm app -- " .. home .. "/.config/hypr/scripts/discord-game-mode")
@@ -228,21 +228,6 @@ bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), nil, { locked = 
 bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), nil, { locked = true })
 bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), nil, { locked = true })
 
--------------------
----- MAKO BINDS ----
--------------------
-
--- Dismiss current notification
-bind("SUPER + N", hl.dsp.exec_cmd("makoctl dismiss"))
-
--- Restore last notification
-bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("makoctl restore"))
-
--- Dismiss all notifications
-bind("SUPER + CTRL + N", hl.dsp.exec_cmd("makoctl dismiss --all"))
-
--- Invoke default notification action
-bind("SUPER + ALT + N", hl.dsp.exec_cmd("makoctl invoke"))
 
 hl.window_rule({
 	name = "suppress-maximize-events",
