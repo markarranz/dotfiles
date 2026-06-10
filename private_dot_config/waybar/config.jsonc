@@ -9,7 +9,7 @@
 
   "modules-left": ["custom/power", "hyprland/workspaces", "custom/layout"],
   "modules-center": ["hyprland/window"],
-  "modules-right": ["group/status", "battery", "tray", "clock"],
+  "modules-right": ["custom/cpu", "custom/updates", "group/status", "battery", "tray", "clock"],
 
   "hyprland/window": {
     "format": "{title}",
@@ -64,5 +64,35 @@
   "tray": {
     "icon-size": 16,
     "spacing": 8
+  },
+
+  "custom/cpu": {
+    "return-type": "json",
+    "interval": 3,
+    "exec": "~/.config/waybar/scripts/cpu.sh",
+    "tooltip": true
+  },
+
+  "custom/updates": {
+    "return-type": "json",
+    "interval": 1800,
+    "exec": "~/.config/waybar/scripts/updates.sh",
+    "tooltip": true,
+    "on-click": "kitty --single-instance -e zsh -c 'yay; echo; read \"?Press ENTER to close window...\"'"
+  },
+
+  "custom/mic": {
+    "return-type": "json",
+    "interval": 3,
+    "exec": "~/.config/waybar/scripts/mic.sh",
+    "tooltip": true
+  },
+
+  "custom/layout": {
+    "return-type": "json",
+    "interval": 5,
+    "exec": "~/.config/waybar/scripts/layout.sh",
+    "on-click": "~/.config/waybar/scripts/layout.sh toggle",
+    "tooltip": true
   }
 }
