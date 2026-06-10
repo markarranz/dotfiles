@@ -7,7 +7,7 @@
   "margin-right": 8,
   "spacing": 4,
 
-  "modules-left": ["hyprland/workspaces"],
+  "modules-left": ["custom/power", "hyprland/workspaces", "custom/layout"],
   "modules-center": ["hyprland/window"],
   "modules-right": ["group/status", "battery", "tray", "clock"],
 
@@ -26,6 +26,12 @@
   "group/status": {
     "orientation": "horizontal",
     "modules": ["network", "custom/mic", "wireplumber"]
+  },
+
+  "custom/power": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "wlogout -p layer-shell"
   },
 
   "network": {
