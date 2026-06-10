@@ -9,7 +9,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["hyprland/window"],
-  "modules-right": ["clock"],
+  "modules-right": ["group/status", "battery", "tray", "clock"],
 
   "hyprland/window": {
     "format": "{title}",
@@ -21,5 +21,42 @@
     "interval": 10,
     "format": "{:%a, %d %b %I:%M %p}",
     "tooltip-format": "<tt><small>{calendar}</small></tt>"
+  },
+
+  "group/status": {
+    "orientation": "horizontal",
+    "modules": ["network", "custom/mic", "wireplumber"]
+  },
+
+  "network": {
+    "format-wifi": "  {essid}",
+    "format-ethernet": " {ipaddr}",
+    "format-disconnected": " ",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "nm-connection-editor"
+  },
+
+  "wireplumber": {
+    "format": "{icon}  {volume}%",
+    "format-muted": " muted",
+    "format-icons": ["", "", ""],
+    "scroll-step": 5,
+    "on-click": "pwvucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+  },
+
+  "battery": {
+    "states": { "warning": 25, "critical": 10 },
+    "format": "{icon}",
+    "format-charging": "",
+    "format-icons": ["", "", "", "", ""],
+    "tooltip-format": "{capacity}% — {timeTo}"
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8
   }
 }
