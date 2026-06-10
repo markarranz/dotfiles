@@ -12,6 +12,23 @@
 
 **Commit convention:** `[waybar] <imperative>` (or `[hypr]`/`[install]` for those files). No `Co-Authored-By` trailer (repo override).
 
+**Glyph encoding (IMPORTANT):** The Write/Edit tooling silently strips literal Nerd Font / Private-Use-Area glyphs to empty strings (this is why Group A's first pass produced empty icons). **Never paste a literal glyph.** Instead:
+- In JSON (`config.jsonc`): use `\uXXXX` escapes — jsoncpp decodes them. (The committed config currently holds real glyph bytes authored via a Bash heredoc, which also works; either form is fine.)
+- In bash scripts: use ANSI-C quoting `$'\uXXXX'` — pure-ASCII source, real glyph at runtime (requires bash, which the scripts use).
+- In CSS: use `\fXXXX` escapes in `content:` if ever needed.
+- Verify after authoring by decoding the bytes (`python3` `ord()`); don't eyeball, since stripped glyphs look like empty strings.
+
+Codepoints used (all BMP, present in JetBrainsMono Nerd Font):
+
+| Element | Codepoint | Element | Codepoint |
+|---------|-----------|---------|-----------|
+| Arch power | U+F303 | Battery empty->full | U+F244 F243 F242 F241 F240 |
+| WiFi | U+F1EB | Battery charging | U+F0E7 |
+| Ethernet | U+F0E8 | CPU | U+F2DB |
+| Net disconnected | U+F127 | Updates ok / pending | U+F00C / U+F019 |
+| Volume low / high | U+F027 / U+F028 | Mic on / off | U+F130 / U+F131 |
+| Volume muted | U+F026 | Layout master / dwindle | U+F0DB / U+F009 |
+
 ---
 
 ## File Structure
