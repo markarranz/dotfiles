@@ -132,9 +132,9 @@ yabai -m config \
 ${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py
 
 # Space assignments:
-chat_apps=("Slack" "zoom.us" "Tuple")
+chat_apps=("Slack" "Tuple")
 code_apps=("kitty" "Claude" "Cursor" "Codes" "Code")
-docs_apps=("Notion" "Slab" "Figma" "Arc" "Brave Browser" "Dia" "Firefox" "Google Chrome" "Microsoft Edge" "Safari" "Zen")
+docs_apps=("zoom.us" "Notion" "Slab" "Figma" "Arc" "Brave Browser" "Dia" "Firefox" "Google Chrome" "Microsoft Edge" "Safari" "Zen")
 
 yabai -m rule --add label="chat" app="^($(join_by '|' "${chat_apps[@]}"))$" space=chat
 yabai -m rule --add label="code" app="^($(join_by '|' "${code_apps[@]}"))$" space=code
