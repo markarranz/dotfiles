@@ -25,20 +25,23 @@ yabai -m signal --add event=space_destroyed action="sketchybar --trigger spaces_
 # popped-out Zoom meeting chat, which we want to treat as normal.
 yabai -m signal --add event=application_activated action='
   [ -f /tmp/yabai-moving ] && exit 0
-  windows=$(yabai -m query --windows)
+  windows=$(yabai -m query --windows 2>/dev/null) || exit 0
   active=$(echo "$windows" | jq -c "
     [.[] | select(.pid == $YABAI_PROCESS_ID)] |
     (map(select(.\"has-focus\" == true)) + .) | first
-  ")
+  " 2>/dev/null)
   { [ -z "$active" ] || [ "$active" = "null" ]; } && exit 0
-  if [ "$(echo "$active" | jq -r .subrole)" = "AXSystemDialog" ] \
-     && [ "$(echo "$active" | jq -r ".\"has-focus\"")" = "true" ]; then
-    display=$(echo "$active" | jq -r .display)
-    target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id")
-    [ -n "$target" ] && yabai -m window --focus "$target"
+  if [ "$(echo "$active" | jq -r .subrole 2>/dev/null)" = "AXSystemDialog" ] \
+     && [ "$(echo "$active" | jq -r ".\"has-focus\"" 2>/dev/null)" = "true" ]; then
+    display=$(echo "$active" | jq -r .display 2>/dev/null)
+    target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id" 2>/dev/null) || exit 0
+    [ -n "$target" ] && yabai -m window --focus "$target" 2>/dev/null
   else
-    space=$(echo "$active" | jq -r .space)
-    [ -n "$space" ] && [ "$space" != "null" ] && yabai -m space --focus "$space"
+    space=$(echo "$active" | jq -r .space 2>/dev/null)
+    if [ -n "$space" ] && [ "$space" != "null" ]; then
+      current_space=$(yabai -m query --spaces --space 2>/dev/null | jq -r .index 2>/dev/null) || exit 0
+      [ "$current_space" != "$space" ] && yabai -m space --focus "$space" 2>/dev/null
+    fi
   fi
 '
 
@@ -53,10 +56,12 @@ yabai -m signal --add event=window_deminimized action="sketchybar --trigger wind
 yabai -m signal --add event=application_hidden action="sketchybar --trigger windows_on_spaces_changed"
 yabai -m signal --add event=application_visible action="sketchybar --trigger windows_on_spaces_changed"
 
-# Restore spaces when displays are added or removed (debounced so rapid
-# events like plugging in two monitors settle before labeling)
+# Restore spaces when displays are added, removed, moved, resized, or restored
+# after wake. Debounce rapid monitor events before labeling.
 yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
 yabai -m signal --add event=display_removed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
+yabai -m signal --add event=display_moved action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
+yabai -m signal --add event=display_resized action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
 yabai -m signal --add event=system_woke action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
 
 # ##### #
@@ -92,15 +97,6 @@ yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 yabai -m rule --add label="Tuple Host" app="^Tuple$" title="^Host$" manage=off
 
-# Space assignments:
-chat_apps=("Slack" "zoom.us" "Tuple")
-code_apps=("kitty" "Claude" "Cursor" "Codes" "Code")
-docs_apps=("Notion" "Slab" "Figma" "Firefox"{{- if .forWork }} "Google Chrome"{{- end }})
-
-yabai -m rule --add label="chat" app="^($(join_by '|' "${chat_apps[@]}"))$" space=chat
-yabai -m rule --add label="code" app="^($(join_by '|' "${code_apps[@]}"))$" space=code
-yabai -m rule --add label="docs" app="^($(join_by '|' "${docs_apps[@]}"))$" space=docs
-
 # ############### #
 # GLOBAL SETTINGS #
 # ############### #
@@ -110,7 +106,7 @@ yabai -m config \
   external_bar all:42:0 \
   menubar_opacity 1.0 \
   mouse_follows_focus off \
-  focus_follows_mouse on \
+  focus_follows_mouse autofocus \
   display_arrangement_order horizontal \
   window_origin_display focused \
   window_placement second_child \
@@ -132,8 +128,17 @@ yabai -m config \
 # ############## #
 
 # Ensure at least 3 spaces exist, labeled left-to-right across displays:
-#   left → chat, center → code, right → docs
+#   left/landscape → chat, center/portrait → code, right/built-in → docs
 ${XDG_CONFIG_HOME:-$HOME/.config}/yabai/restore_spaces.py
+
+# Space assignments:
+chat_apps=("Slack" "zoom.us" "Tuple")
+code_apps=("kitty" "Claude" "Cursor" "Codes" "Code")
+docs_apps=("Notion" "Slab" "Figma" "Arc" "Brave Browser" "Dia" "Firefox" "Google Chrome" "Microsoft Edge" "Safari" "Zen")
+
+yabai -m rule --add label="chat" app="^($(join_by '|' "${chat_apps[@]}"))$" space=chat
+yabai -m rule --add label="code" app="^($(join_by '|' "${code_apps[@]}"))$" space=code
+yabai -m rule --add label="docs" app="^($(join_by '|' "${docs_apps[@]}"))$" space=docs
 
 yabai -m config \
   layout stack \
