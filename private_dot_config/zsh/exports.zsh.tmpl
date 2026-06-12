@@ -56,6 +56,13 @@ fi
 
 {{- end }}
 
+{{- if eq .chezmoi.os "darwin" }}
+
+# homebrew settings:
+export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
+
+{{- end }}
+
 #######
 # ALL #
 #######

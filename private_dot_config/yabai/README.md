@@ -31,4 +31,4 @@ These apps are excluded from tiling: 1Password, Activity Monitor, App Store, Cal
 
 `clean_empty_spaces.sh` runs on space change events to automatically remove empty, unfocused spaces, keeping the workspace list clean. It skips cleanup during display transitions (see below).
 
-`restore_spaces.py` runs on `display_added`, `display_removed`, and `system_woke` events to preserve spaces when monitors are plugged/unplugged or after wake-from-sleep. It uses Python 3 with `fcntl.flock()` for kernel-managed locking (auto-releases on any process death), then recreates and labels any missing spaces (chat, code, docs) across the current displays.
+`restore_spaces.py` runs on display add/remove, display move/resize, and wake events to preserve spaces when monitors are plugged/unplugged, rearranged, rotated, or restored after wake-from-sleep. It uses Python 3 with `fcntl.flock()` for kernel-managed locking (auto-releases on any process death), then recreates and labels any missing spaces across the current displays: chat on the left/landscape display, code on the center/portrait display, and docs on the right/built-in display.

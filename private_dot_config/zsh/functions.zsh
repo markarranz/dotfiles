@@ -4,7 +4,20 @@ function mkcd() {
 
 # Wrapper function to trigger SketchyBar after specific brew commands
 function brew() {
-  local target_cmds=("update" "upgrade" "outdated")
+  local target_cmds=(
+    "autoremove"
+    "cleanup"
+    "install"
+    "outdated"
+    "pin"
+    "reinstall"
+    "tap"
+    "uninstall"
+    "unpin"
+    "untap"
+    "update"
+    "upgrade"
+  )
   local subcommand="$1"
 
   command brew "$@"

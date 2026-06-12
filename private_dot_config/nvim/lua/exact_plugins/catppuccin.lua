@@ -16,7 +16,11 @@ return {
 		opts = {
 			tint = -45,
 			saturation = 0.6,
-			highlight_ignore_patterns = { "WinSeparator" },
+			highlight_ignore_patterns = {
+				"WinSeparator",
+				"Status.*",
+				"lualine_.*",
+			},
 		},
 		config = function(_, opts)
 			local tint = require("tint")

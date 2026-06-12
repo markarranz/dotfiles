@@ -22,7 +22,10 @@ local layout = sbar.add("item", "yabai_layout", {
 })
 
 local function update_layout()
-	sbar.exec("yabai -m query --spaces --space | jq -r '.type'", function(result)
+	sbar.exec("yabai -m query --spaces --space 2>/dev/null | jq -r '.type' 2>/dev/null", function(result, exit_code)
+		if exit_code and exit_code ~= 0 then
+			return
+		end
 		local layout_type = result:gsub("%s+$", "")
 		local icon = layout_type == "stack" and icons.yabai.stack or icons.yabai.grid
 		local color = layout_type == "stack" and colors.yellow or colors.white
@@ -34,7 +37,7 @@ layout:subscribe("space_change", update_layout)
 layout:subscribe("front_app_switched", update_layout)
 layout:subscribe("yabai_layout_change", update_layout)
 layout:subscribe("mouse.clicked", function()
-	sbar.exec('yabai -m space --layout "$([ "$(yabai -m query --spaces --space | jq -r \'.type\')" = bsp ] && echo stack || echo bsp)"')
+	sbar.exec('yabai -m space --layout "$([ "$(yabai -m query --spaces --space 2>/dev/null | jq -r \'.type\' 2>/dev/null)" = bsp ] && echo stack || echo bsp)" 2>/dev/null')
 	update_layout()
 end)
 
