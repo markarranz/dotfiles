@@ -5,7 +5,7 @@ local app_icons = require("lib.app_icons")
 
 local MAX_APPS = 8
 
-local JQ_VISIBLE_APPS = [[ | jq -r '[.[] | select(.role == "AXWindow" and .subrole != "AXSystemDialog" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"']]
+local JQ_VISIBLE_APPS = [[ 2>/dev/null | jq -r '[.[] | select(.role == "AXWindow" and .subrole != "AXSystemDialog" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"' 2>/dev/null]]
 
 
 local spaces = {}
@@ -17,6 +17,9 @@ local current_focused_window_id = 0
 local space_spacers = {}
 
 local refresh_spaces
+local query_space_windows
+local spaces_refresh_scheduled = false
+local window_refresh_scheduled = false
 
 local function set_space_drawing(i, drawing)
 	if spaces[i] then
@@ -126,7 +129,37 @@ local function update_all_space_icons()
 	end
 end
 
-local function query_space_windows(space_num)
+local function refresh_space_windows()
+	for space_num, _ in pairs(space_windows) do
+		query_space_windows(space_num)
+	end
+end
+
+local function schedule_spaces_refresh()
+	if spaces_refresh_scheduled then
+		return
+	end
+
+	spaces_refresh_scheduled = true
+	sbar.exec("sleep 0.2", function()
+		spaces_refresh_scheduled = false
+		refresh_spaces()
+	end)
+end
+
+local function schedule_window_refresh()
+	if window_refresh_scheduled then
+		return
+	end
+
+	window_refresh_scheduled = true
+	sbar.exec("sleep 0.2", function()
+		window_refresh_scheduled = false
+		refresh_space_windows()
+	end)
+end
+
+query_space_windows = function(space_num)
 	sbar.exec("yabai -m query --windows --space " .. space_num .. JQ_VISIBLE_APPS, function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
 			return
@@ -267,7 +300,7 @@ sbar.add("event", "spaces_refresh")
 -- Refresh space visibility on space changes. Using space_creator ("item" type)
 -- ensures a single callback per event, unlike per-space "space" type handlers.
 space_creator:subscribe("space_change", function()
-	refresh_spaces()
+	schedule_spaces_refresh()
 end)
 
 space_creator:subscribe("space_windows_change", function(env)
@@ -284,7 +317,7 @@ space_creator:subscribe("window_focused", function(env)
 end)
 
 space_creator:subscribe("front_app_switched", function()
-	sbar.exec("yabai -m query --windows --window | jq '.id'", function(result, exit_code)
+	sbar.exec("yabai -m query --windows --window 2>/dev/null | jq '.id' 2>/dev/null", function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
 			return
 		end
@@ -297,18 +330,19 @@ space_creator:subscribe("front_app_switched", function()
 end)
 
 space_creator:subscribe("windows_on_spaces_changed", function()
-	for space_num, _ in pairs(space_windows) do
-		query_space_windows(space_num)
-	end
+	schedule_window_refresh()
 end)
 
 space_creator:subscribe("spaces_refresh", function()
-	refresh_spaces()
+	schedule_spaces_refresh()
 end)
 
 refresh_spaces = function()
-	sbar.exec("yabai -m query --spaces | jq -r '.[].index'", function(result, exit_code)
+	sbar.exec("yabai -m query --spaces 2>/dev/null | jq -r '.[].index' 2>/dev/null", function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
+			return
+		end
+		if not result:match("%d") then
 			return
 		end
 		local active = {}
@@ -330,7 +364,7 @@ refresh_spaces = function()
 	end)
 end
 
-sbar.exec("yabai -m query --windows --window | jq '.id'", function(result, exit_code)
+sbar.exec("yabai -m query --windows --window 2>/dev/null | jq '.id' 2>/dev/null", function(result, exit_code)
 	if not (exit_code and exit_code ~= 0) then
 		current_focused_window_id = tonumber(result:match("%d+")) or 0
 	end

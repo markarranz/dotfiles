@@ -14,7 +14,6 @@ LOCKFILE = "/tmp/yabai_display_transition"
 LABELS = ["chat", "code", "docs"]
 APP_SPACE_RULES: dict[str, str] = {
     "Slack": "chat",
-    "zoom.us": "chat",
     "Tuple": "chat",
     "kitty": "code",
     "Claude": "code",
@@ -22,12 +21,17 @@ APP_SPACE_RULES: dict[str, str] = {
     "Codes": "code",
     "Code": "code",
     "Notion": "docs",
+    "zoom.us": "docs",
     "Slab": "docs",
     "Figma": "docs",
+    "Arc": "docs",
+    "Brave Browser": "docs",
+    "Dia": "docs",
     "Firefox": "docs",
-{{- if .forWork }}
     "Google Chrome": "docs",
-{{- end }}
+    "Microsoft Edge": "docs",
+    "Safari": "docs",
+    "Zen": "docs",
 }
 POLL_INTERVAL_SECONDS = 0.5
 POLL_TIMEOUT_SECONDS = 30

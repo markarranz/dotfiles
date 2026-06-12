@@ -67,6 +67,9 @@ return {
 	{
 		"nvim-lualine/lualine.nvim",
 		opts = function(_, opts)
+			opts.options = opts.options or {}
+			opts.options.theme = require("catppuccin.utils.lualine")("mocha")
+
 			-- Show relative filepath
 			local c = opts.sections.lualine_c
 			c[#c - 1] = { "filename", path = 1 }

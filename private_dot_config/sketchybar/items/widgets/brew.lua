@@ -15,14 +15,21 @@ local brew = sbar.add("item", "brew", {
 	padding_right = 10,
 })
 
--- Homebrew crashes in SketchyBar's minimal env (Hardware::CPU.cores fails).
--- Pre-set HOMEBREW_DOWNLOAD_CONCURRENCY to bypass CPU detection at startup.
-local brew_env = 'eval "$(/opt/homebrew/bin/brew shellenv)" && export HOMEBREW_DOWNLOAD_CONCURRENCY=4'
-local brew_cmd = brew_env .. ' && brew outdated 2>/dev/null | wc -l | tr -d " "'
-local brew_update_cmd = brew_env .. ' && brew update >/dev/null 2>&1 && brew outdated 2>/dev/null | wc -l | tr -d " "'
+local home = os.getenv("HOME")
+local brew_cmd = home .. "/.config/sketchybar/helpers/brew-count.sh"
 
 local function apply_count(count_str)
-	local count = tonumber(count_str) or 0
+	local result = tostring(count_str or ""):match("^%s*(.-)%s*$")
+	local count = tonumber(result)
+
+	if not count then
+		brew:set({
+			label = { string = "!" },
+			icon = { color = colors.red },
+		})
+		return
+	end
+
 	local color = colors.red
 	local label = tostring(count)
 
@@ -43,13 +50,17 @@ local function apply_count(count_str)
 	})
 end
 
-brew:subscribe({ "routine", "brew_update" }, function(env)
-	sbar.exec(brew_update_cmd, apply_count)
+brew:subscribe("routine", function(env)
+	sbar.exec(brew_cmd, apply_count)
+end)
+
+brew:subscribe("brew_update", function(env)
+	sbar.exec(brew_cmd, apply_count)
 end)
 
 brew:subscribe("system_woke", function(env)
-	sbar.exec("sleep 10 && " .. brew_update_cmd, apply_count)
+	sbar.exec("sleep 10 && " .. brew_cmd, apply_count)
 end)
 
--- Initial update (fast — just check local index, no brew update)
+-- Initial update
 sbar.exec(brew_cmd, apply_count)
