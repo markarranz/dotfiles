@@ -21,7 +21,8 @@ setopt PUSHD_IGNORE_DUPS    # don't push duplicate directories
 setopt PUSHD_MINUS          # swap +/- so cd -N is more intuitive
 
 # Completion system
-fpath=("$HOME/.local/share/zsh/completions" $fpath)
+mkdir -p "$ZSH_COMPLETIONS_DIR"
+fpath=("$ZSH_COMPLETIONS_DIR" $fpath)
 {{- if eq .chezmoi.os "darwin" }}
 [[ -d /opt/homebrew/share/zsh-completions ]] && fpath=(/opt/homebrew/share/zsh-completions $fpath)
 {{- end }}
