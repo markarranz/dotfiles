@@ -1,0 +1,12 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+# Mask mako so D-Bus can't activate it and race ashell for ownership of
+# org.freedesktop.Notifications — ashell's Notifications module is the
+# notification daemon on this setup. Masking works even before mako is
+# installed (it just creates the override symlink to /dev/null).
+# run_once_: chezmoi runs this exactly once per content hash.
+set -euo pipefail
+
+systemctl --user mask mako.service
+systemctl --user stop mako.service 2>/dev/null || true
+{{- end }}
