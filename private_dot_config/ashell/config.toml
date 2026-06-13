@@ -6,10 +6,10 @@ app_launcher_cmd = "nc -U /run/user/1000/walker/walker.sock"
 [modules]
 left = [["appLauncher", "Updates", "Workspaces"]]
 center = ["WindowTitle"]
-right = ["SystemInfo", ["Tray", "Clock", "Privacy", "Settings"]]
+right = ["SystemInfo", ["Tray", "Tempo", "Privacy", "Notifications", "Settings"]]
 
 [updates]
-check_cmd = "checkupdates; yay -Sy"
+check_cmd = "checkupdates; yay -Qua"
 update_cmd = 'kitty --single-instance -e zsh -c "yay; echo; read \"?Press ENTER to close window...\""'
 
 [workspaces]
@@ -23,8 +23,13 @@ command = "nc -U /run/user/1000/walker/walker.sock"
 [window_title]
 truncate_title_after_length = 100
 
-[clock]
-format = "%a, %d %b %I:%M %p"
+[tempo]
+clock_format = "%a, %d %b %I:%M %p"
+
+[notifications]
+show_timestamps = true
+show_bodies = true
+grouped = true
 
 [settings]
 lock_cmd = "playerctl --all-players pause; hyprlock --immediate-render &"
