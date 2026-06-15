@@ -111,6 +111,16 @@ export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && \. "$NVM_DIR/nvm.sh" || _zwarn "nvm"
 [[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion" || _zwarn "nvm bash_completion"
 
+{{- $devCompletionsDir := dig "devCompletionsDir" "" . }}
+{{- if $devCompletionsDir }}
+
+# internal tools' shell completions
+for _c in "{{ $devCompletionsDir }}"/*-completions.zsh(N); do
+  source "$_c"
+done
+unset _c
+{{- end }}
+
 {{- end }}
 
 

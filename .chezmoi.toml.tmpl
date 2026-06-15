@@ -16,11 +16,14 @@
 {{- $forWork := promptBoolOnce . "forWork" "Is this a work machine" }}
 
 {{- $githubNotifyRepo := "" }}
+{{- $devCompletionsDir := "" }}
 {{- if $forWork }}
 {{-   $githubNotifyRepo = promptStringOnce . "githubNotifyRepo" "GitHub repo for notifications (owner/repo)" }}
+{{-   $devCompletionsDir = promptStringOnce . "devCompletionsDir" "Absolute path to internal tool shell-completions dir (blank to skip)" }}
 {{- end }}
 
 [data]
 chassisType = {{ $chassisType | quote }}
 forWork = {{ $forWork }}
 githubNotifyRepo = {{ $githubNotifyRepo | quote }}
+devCompletionsDir = {{ $devCompletionsDir | quote }}
