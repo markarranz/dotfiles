@@ -17,6 +17,10 @@ vim.keymap.set(nav_modes, "<C-k>", move("up"))
 vim.keymap.set(nav_modes, "<C-l>", move("right"))
 vim.keymap.set("n", "<C-\\>", nav.move_cursor_previous)
 
+vim.keymap.set("n", "<leader>ub", "<cmd>Gitsigns toggle_current_line_blame<cr>", {
+	desc = "Enable/Disable Blame Virtual Text",
+})
+
 -- buffer-local terminal keymaps (higher priority than global)
 vim.api.nvim_create_autocmd("TermOpen", {
 	callback = function(ev)
