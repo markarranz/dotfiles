@@ -18,11 +18,12 @@ yabai -m signal --add event=space_created action="sketchybar --trigger spaces_re
 yabai -m signal --add event=space_destroyed action="sketchybar --trigger spaces_refresh"
 
 # Focus the space of the activated app's focused window. When an
-# AXSystemDialog is itself the focused window (Tuple Host, Zoom HUD, and
-# other transient overlays), following its space would strand focus on the
-# overlay — bounce to a real window on the same display instead. The
-# has-focus gate is what protects legitimate AXSystemDialog windows like a
-# popped-out Zoom meeting chat, which we want to treat as normal.
+# AXSystemDialog is itself the focused window (Tuple Host and other transient
+# overlays), following its space would strand focus on the overlay — bounce to
+# a real window on the same display instead. The has-focus gate spares
+# AXSystemDialog windows that aren't focused, which we treat as normal. zoom.us
+# is exempt entirely: its meeting window and HUD report as AXSystemDialog but
+# are real windows (see the per-app check below).
 yabai -m signal --add event=application_activated action='
   [ -f /tmp/yabai-moving ] && exit 0
   windows=$(yabai -m query --windows 2>/dev/null) || exit 0
@@ -31,19 +32,13 @@ yabai -m signal --add event=application_activated action='
     (map(select(.\"has-focus\" == true)) + .) | first
   " 2>/dev/null)
   { [ -z "$active" ] || [ "$active" = "null" ]; } && exit 0
-  active_app=$(echo "$active" | jq -r .app 2>/dev/null)
-  active_subrole=$(echo "$active" | jq -r .subrole 2>/dev/null)
-  active_has_focus=$(echo "$active" | jq -r ".\"has-focus\"" 2>/dev/null)
-  if [ "$active_app" = "zoom.us" ] \
-     && [ "$active_subrole" = "AXSystemDialog" ] \
-     && [ "$active_has_focus" = "true" ]; then
-    exit 0
-  fi
-  if [ "$active_subrole" = "AXSystemDialog" ] \
-     && [ "$active_has_focus" = "true" ]; then
-    display=$(echo "$active" | jq -r .display 2>/dev/null)
-    target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id" 2>/dev/null) || exit 0
-    [ -n "$target" ] && yabai -m window --focus "$target" 2>/dev/null
+  if [ "$(echo "$active" | jq -r .subrole 2>/dev/null)" = "AXSystemDialog" ] \
+     && [ "$(echo "$active" | jq -r ".\"has-focus\"" 2>/dev/null)" = "true" ]; then
+    if [ "$(echo "$active" | jq -r .app 2>/dev/null)" != "zoom.us" ]; then
+      display=$(echo "$active" | jq -r .display 2>/dev/null)
+      target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id" 2>/dev/null) || exit 0
+      [ -n "$target" ] && yabai -m window --focus "$target" 2>/dev/null
+    fi
   else
     space=$(echo "$active" | jq -r .space 2>/dev/null)
     if [ -n "$space" ] && [ "$space" != "null" ]; then
