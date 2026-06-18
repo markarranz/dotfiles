@@ -1,7 +1,7 @@
 #!/bin/bash
 # Dispatcher for kitty's open_url_with.
 # file:// URLs open in nvim in a new kitty tab; everything else falls through
-# to macOS `open`.
+# to the OS default opener.
 
 set -u
 
@@ -32,7 +32,11 @@ case "$url" in
     fi
     nvim_args+=("$path")
 
+{{- if eq .chezmoi.os "darwin" }}
     KITTY=/Applications/kitty.app/Contents/MacOS/kitty
+{{- else }}
+    KITTY=kitty
+{{- end }}
 
     # Try to open as a new tab in the current kitty instance; fall back to a
     # standalone OS window if remote control isn't reachable.
@@ -44,6 +48,10 @@ case "$url" in
     fi
     ;;
   *)
+{{- if eq .chezmoi.os "darwin" }}
     /usr/bin/open "$url"
+{{- else }}
+    xdg-open "$url"
+{{- end }}
     ;;
 esac
