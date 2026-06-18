@@ -31,8 +31,16 @@ yabai -m signal --add event=application_activated action='
     (map(select(.\"has-focus\" == true)) + .) | first
   " 2>/dev/null)
   { [ -z "$active" ] || [ "$active" = "null" ]; } && exit 0
-  if [ "$(echo "$active" | jq -r .subrole 2>/dev/null)" = "AXSystemDialog" ] \
-     && [ "$(echo "$active" | jq -r ".\"has-focus\"" 2>/dev/null)" = "true" ]; then
+  active_app=$(echo "$active" | jq -r .app 2>/dev/null)
+  active_subrole=$(echo "$active" | jq -r .subrole 2>/dev/null)
+  active_has_focus=$(echo "$active" | jq -r ".\"has-focus\"" 2>/dev/null)
+  if [ "$active_app" = "zoom.us" ] \
+     && [ "$active_subrole" = "AXSystemDialog" ] \
+     && [ "$active_has_focus" = "true" ]; then
+    exit 0
+  fi
+  if [ "$active_subrole" = "AXSystemDialog" ] \
+     && [ "$active_has_focus" = "true" ]; then
     display=$(echo "$active" | jq -r .display 2>/dev/null)
     target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id" 2>/dev/null) || exit 0
     [ -n "$target" ] && yabai -m window --focus "$target" 2>/dev/null
