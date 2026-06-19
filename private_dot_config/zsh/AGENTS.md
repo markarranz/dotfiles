@@ -36,7 +36,7 @@ zshenv → zprofile (login) → zshrc (interactive)
 
 Within `zshrc`:
 ```
-PATH → setopt → compinit → plugins → fzf-tab-config → exports → functions → aliases → direnv → starship → NVM(work)
+PATH → setopt → compinit → plugins → fzf-tab-config → exports → functions → aliases → direnv → starship
 ```
 
 ### Plugin Order (breaks if wrong)
@@ -68,4 +68,4 @@ fzf-tab → fzf-tab-source → autosuggestions → syntax-highlighting → zsh-v
 - **`brew()` wrapper**: In `functions.zsh`, wraps Homebrew to trigger SketchyBar update after install/uninstall.
 - **`omz/` directory**: Legacy artifacts from Oh My Zsh migration. Not sourced, not active.
 - **Error handling**: `_zwarn()` for non-fatal warnings, `$+commands[]` for command existence checks, `[[ -f ]]` for file guards.
-- **NVM**: Only sourced when `.forWork = true` (work machines need Node version management).
+- **NVM**: Sourced from `exports.zsh.tmpl` so `node`/`npm` are real executables in child processes like Neovim.
