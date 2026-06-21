@@ -65,6 +65,28 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # Source config files
 source "$HOME/.config/zsh/exports.zsh"
+
+_update_node_completions() {
+  local node_path npm_path
+
+  node_path="${commands[node]:-}"
+  npm_path="${commands[npm]:-}"
+
+  if [[ -n "$node_path" && "$node_path" != "$_node_completion_path" ]]; then
+    autoload -Uz bashcompinit
+    bashcompinit
+    source <(node --completion-bash)
+    _node_completion_path="$node_path"
+  fi
+
+  if [[ -n "$npm_path" && "$npm_path" != "$_npm_completion_path" ]]; then
+    source <(npm completion)
+    _npm_completion_path="$npm_path"
+  fi
+}
+
+_update_node_completions
+
 source "$HOME/.config/zsh/functions.zsh"
 source "$HOME/.config/zsh/aliases.zsh"
 
@@ -98,18 +120,12 @@ _update_starship_config_for_pwd() {
 }
 
 autoload -Uz add-zsh-hook
+add-zsh-hook precmd _update_node_completions
 add-zsh-hook chpwd _update_starship_config_for_pwd
 add-zsh-hook precmd _update_starship_config_for_pwd
 _update_starship_config_for_pwd
 
 (( $+commands[starship] )) && eval "$(starship init zsh)" || _zwarn "starship"
-
-{{- if .forWork }}
-
-# Work NVM:
-export NVM_DIR="$HOME/.nvm"
-[[ -s "$NVM_DIR/nvm.sh" ]] && \. "$NVM_DIR/nvm.sh" || _zwarn "nvm"
-[[ -s "$NVM_DIR/bash_completion" ]] && \. "$NVM_DIR/bash_completion" || _zwarn "nvm bash_completion"
 
 {{- $devCompletionsDir := dig "devCompletionsDir" "" . }}
 {{- if $devCompletionsDir }}
@@ -119,8 +135,6 @@ for _c in "{{ $devCompletionsDir }}"/*-completions.zsh(N); do
   source "$_c"
 done
 unset _c
-{{- end }}
-
 {{- end }}
 
 

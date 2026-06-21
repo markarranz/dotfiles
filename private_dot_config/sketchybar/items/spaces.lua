@@ -5,8 +5,7 @@ local app_icons = require("lib.app_icons")
 
 local MAX_APPS = 8
 
-local JQ_VISIBLE_APPS = [[ 2>/dev/null | jq -r '[.[] | select(.role == "AXWindow" and .subrole != "AXSystemDialog" and ."is-minimized" == false and ."is-hidden" == false)] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"' 2>/dev/null]]
-
+local JQ_VISIBLE_APPS = [[ 2>/dev/null | jq -r '[.[] | select(.role == "AXWindow" and ."is-minimized" == false and ."is-hidden" == false and (.subrole != "AXSystemDialog" or .app == "zoom.us"))] | sort_by(."stack-index" * 10000 + .frame.x) | .[] | "\(.app)\t\(.id)"' 2>/dev/null]]
 
 local spaces = {}
 local space_app_items = {}
