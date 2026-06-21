@@ -1,0 +1,12 @@
+#!/bin/sh
+# chezmoi modify_ script: yay co-owns this file (rewrites version, buildDir, etc.).
+# We only assert the keys we care about and preserve everything yay manages.
+# --tab matches yay's own tab indentation so unchanged files produce no diff.
+# stdin = current config.json contents (empty on a fresh machine).
+input=$(cat)
+[ -n "$input" ] || input='{}'
+printf '%s' "$input" | jq --tab '
+  .diffmenu  = true |
+  .editmenu  = true |
+  .cleanmenu = true
+'
