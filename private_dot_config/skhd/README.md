@@ -54,8 +54,11 @@
 
 | Binding       | Action         |
 | ------------- | -------------- |
-| `Hyper+r`     | Restart yabai  |
+| `Hyper+y`     | Restart yabai  |
+| `Hyper+s`     | Restart skhd   |
+| `Hyper+b`     | Restart SketchyBar |
 | `Hyper+m`     | Toggle mic     |
+| `Hyper+j`     | Play dad joke to default output and BlackHole |
 
 ### Blacklisted Applications
 

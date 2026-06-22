@@ -19,10 +19,13 @@ cmd + shift - b : open -na "{{ $browser }}"
 
 cmd - e : open -na Finder $HOME
 
-hyper - r : yabai --restart-service
+hyper - y : yabai --restart-service
+hyper - s : skhd --restart-service
+hyper - b : brew services restart sketchybar
 
 # mic mute toggle
 hyper - m : ~/.config/skhd/toggle-mic.sh
+hyper - j : ~/.config/skhd/play-dad-joke.sh
 
 # ############## #
 # SPACE COMMANDS #
