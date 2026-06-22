@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import json
 import os
 import sys
@@ -56,10 +57,10 @@ def append_hook(hooks, event, command, timeout=None):
 
 MANAGED_ENABLED_PLUGINS = {
     "agent-sdk-dev@claude-plugins-official": False,
-    "caveman@caveman": False,
+    "caveman@caveman": True,
     "code-simplifier@claude-plugins-official": True,
     "commit-commands@claude-plugins-official": True,
-    "context7@claude-plugins-official": False,
+    "context7@claude-plugins-official": True,
     "explanatory-output-style@claude-plugins-official": False,
     "feature-dev@claude-plugins-official": False,
     "gopls-lsp@claude-plugins-official": True,
@@ -68,7 +69,7 @@ MANAGED_ENABLED_PLUGINS = {
     "lua-lsp@claude-plugins-official": True,
     "playground@claude-plugins-official": False,
     "playwright@claude-plugins-official": False,
-    "pr-review-toolkit@claude-plugins-official": False,
+    "pr-review-toolkit@claude-plugins-official": True,
     "ralph-loop@claude-plugins-official": False,
     "remember@claude-plugins-official": False,
     "superpowers@claude-plugins-official": True,
