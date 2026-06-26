@@ -62,6 +62,7 @@
 | `Hyper+s`     | Restart skhd   |
 | `Hyper+b`     | Restart SketchyBar |
 | `Hyper+m`     | Toggle mic     |
+| `Hyper+p`     | Toggle micpipe  |
 | `Hyper+j`     | Play dad joke to default output and BlackHole |
 
 ### Blacklisted Applications
