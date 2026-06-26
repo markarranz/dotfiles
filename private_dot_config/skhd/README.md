@@ -8,6 +8,10 @@
 - [yabai](https://github.com/koekeishiya/yabai) -- most keybindings send commands to yabai
 - [Kitty](https://sw.kovidgoyal.net/kitty/) -- default terminal
 - [Firefox](https://www.mozilla.org/firefox/) -- default browser (or Chrome on work machines)
+- [jq](https://jqlang.github.io/jq/) -- ElevenLabs text-to-speech payloads
+- [ffmpeg](https://ffmpeg.org/) -- ElevenLabs playback to BlackHole
+- `ELEVENLABS_API_KEY` or a Keychain generic password named `elevenlabs-api-key` -- optional dad joke text-to-speech; falls back to `say` when unset or unavailable
+- `ELEVENLABS_VOICE_ID` -- optional override; defaults to Roger (`CwhRBWXzGAHq8TQ4Fs17`)
 
 ## Key Bindings
 
