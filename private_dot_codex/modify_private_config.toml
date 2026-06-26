@@ -76,7 +76,7 @@ def array(values):
 
 MANAGED_PLUGINS = {
     "browser-use@openai-bundled": "true",
-    "circleci@openai-curated": "false",
+    "circleci@openai-curated": "true",
     "documents@openai-primary-runtime": "false",
     "github@openai-curated": "true",
     "google-drive@openai-curated": "false",
