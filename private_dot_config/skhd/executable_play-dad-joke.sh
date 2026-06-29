@@ -21,10 +21,12 @@ audiotoolbox_device_index() {
   printf '%s\n' "$ffmpeg_output" |
     awk -v device_name="$device_name" '
       match($0, /\[[0-9]+\] /) {
-        index = substr($0, RSTART + 1, RLENGTH - 3)
+        device_idx = substr($0, RSTART + 1, RLENGTH - 3)
         name = substr($0, RSTART + RLENGTH)
+        sub(/^[[:space:]]+/, "", name)
+        sub(/,.*/, "", name)
         if (name == device_name) {
-          print index
+          print device_idx
           exit
         }
       }
