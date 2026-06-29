@@ -9,6 +9,13 @@
 [init]
     defaultBranch = main
 
+[credential]
+{{- if eq .chezmoi.os "darwin" }}
+    helper = osxkeychain
+{{- else }}
+    helper = /usr/lib/git-core/git-credential-libsecret
+{{- end }}
+
 # Configure git-delta
 [interactive]
     diffFilter = delta --color-only
