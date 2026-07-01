@@ -25,7 +25,9 @@ APP_SPACE_RULES: dict[str, str] = {
     "Arc": "docs",
     "Brave Browser": "docs",
     "Dia": "docs",
+{{- if not .forWork }}
     "Firefox": "docs",
+{{- end }}
     "Google Chrome": "docs",
     "Microsoft Edge": "docs",
     "Safari": "docs",
