@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Listens on Hyprland's event socket and shuffles Discord onto special:magic
-# while a gamescope-wrapped game is open. When the last gamescope window
-# closes, Discord goes back to workspace 1.
+# while a Steam/Proton game is open. When the last game window closes, Discord
+# goes back to workspace 1. Games are detected by their steam_app_<appid> class.
 
 socket="${XDG_RUNTIME_DIR}/hypr/${HYPRLAND_INSTANCE_SIGNATURE}/.socket2.sock"
 
@@ -16,25 +16,30 @@ move_discord_to() {
 		done
 }
 
-any_gamescope_open() {
-	hyprctl clients -j | jq -e 'any(.[]; .class == "gamescope")' >/dev/null
+any_game_open() {
+	hyprctl clients -j | jq -e 'any(.[]; .class | test("^steam_app_[0-9]+$"))' >/dev/null
 }
+
+game_mode=0
+if any_game_open; then
+	move_discord_to "special:magic"
+	game_mode=1
+fi
 
 nc -U "$socket" | while IFS= read -r line; do
 	case "$line" in
-	openwindow*,gamescope,*)
-		move_discord_to "special:magic"
-		;;
-	openwindow*,discord,* | openwindow*,vesktop,* | openwindow*,webcord,*)
-		if any_gamescope_open; then
+	openwindow*)
+		if any_game_open; then
 			move_discord_to "special:magic"
+			game_mode=1
 		fi
 		;;
 	closewindow*)
 		# brief delay so the closed window is gone from hyprctl state
 		sleep 0.2
-		if ! any_gamescope_open; then
+		if [[ "$game_mode" == 1 ]] && ! any_game_open; then
 			move_discord_to "1"
+			game_mode=0
 		fi
 		;;
 	esac
