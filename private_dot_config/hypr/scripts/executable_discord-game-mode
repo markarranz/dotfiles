@@ -12,7 +12,10 @@ move_discord_to() {
 	hyprctl clients -j |
 		jq -r '.[] | select(.class | test("^(discord|vesktop|webcord)$"; "i")) | .address' |
 		while read -r addr; do
-			[[ -n "$addr" ]] && hyprctl dispatch movetoworkspacesilent "$target,address:$addr" >/dev/null
+			# hyprctl dispatch is evaluated as Lua by this hyprland config, so
+			# the move goes through the hl dispatcher rather than a keyword.
+			[[ -n "$addr" ]] &&
+				hyprctl dispatch "hl.dsp.window.move({ workspace = \"$target\", window = \"address:$addr\" })" >/dev/null
 		done
 }
 
