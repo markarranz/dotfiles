@@ -14,8 +14,9 @@ move_discord_to() {
 		while read -r addr; do
 			# hyprctl dispatch is evaluated as Lua by this hyprland config, so
 			# the move goes through the hl dispatcher rather than a keyword.
+			# follow = false keeps it silent: don't reveal the special overlay.
 			[[ -n "$addr" ]] &&
-				hyprctl dispatch "hl.dsp.window.move({ workspace = \"$target\", window = \"address:$addr\" })" >/dev/null
+				hyprctl dispatch "hl.dsp.window.move({ workspace = \"$target\", window = \"address:$addr\", follow = false })" >/dev/null
 		done
 }
 
