@@ -21,6 +21,29 @@ vim.keymap.set("n", "<leader>ub", "<cmd>Gitsigns toggle_current_line_blame<cr>",
 	desc = "Enable/Disable Blame Virtual Text",
 })
 
+vim.keymap.set("x", "<leader>ya", function()
+	local start_line = vim.fn.line("v")
+	local end_line = vim.fn.line(".")
+	if start_line > end_line then
+		start_line, end_line = end_line, start_line
+	end
+
+	local file = vim.fn.expand("%:.")
+	if file == "" then
+		file = vim.fn.expand("%:p:t")
+	end
+
+	local reference = string.format("%s#%d", file, start_line)
+	if end_line ~= start_line then
+		reference = string.format("%s-%d", reference, end_line)
+	end
+
+	vim.fn.setreg("+", reference)
+	vim.notify("Copied " .. reference)
+end, {
+	desc = "Yank Agent Reference",
+})
+
 -- buffer-local terminal keymaps (higher priority than global)
 vim.api.nvim_create_autocmd("TermOpen", {
 	callback = function(ev)
