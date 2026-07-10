@@ -9,6 +9,7 @@
 - **CPU** - Real-time CPU usage graph with top process
 - **GitHub** - Notification bell with popup details
 - **Volume** - Slider control with audio device switching
+- **Mic** - Mic activity indicator with mute status
 - **WiFi** - Connection status with IP display
 - **Battery** - Charge level with color indicators
 - **Brew** - Outdated package count
@@ -35,14 +36,14 @@ sketchybar/
 │       ├── calendar.lua
 │       ├── cpu.lua
 │       ├── github.lua
+│       ├── mic.lua
 │       ├── volume.lua
 │       └── wifi.lua
 ├── lib/                  # Utility modules
 │   └── icon_map.lua      # App name to icon mapping (auto-updated)
-└── helper/               # C helper for CPU monitoring
-    ├── helper.c
-    ├── cpu.h
-    └── makefile
+└── helpers/
+    ├── event_provider/   # C helper for CPU monitoring
+    └── mic-monitor/      # Swift CoreAudio input activity monitor
 ```
 
 ## Requirements
@@ -76,6 +77,17 @@ brew install font-sketchybar-app-font
 | `jq` | Various widgets | `brew install jq` |
 | `SwitchAudioSource` | Volume device switching | `brew install switchaudio-osx` |
 
+### Mic Monitor
+
+The mic widget is backed by a per-user LaunchAgent. After applying the dotfiles, build and install it from the rendered config:
+
+```bash
+cd ~/.config/sketchybar/helpers/mic-monitor
+make install
+```
+
+Use `make restart` after changing the Swift monitor and `make uninstall` to remove the LaunchAgent.
+
 ## Widget Interactions
 
 ### Spaces
@@ -92,6 +104,11 @@ brew install font-sketchybar-app-font
 
 ### Calendar
 - **Click** - Toggle zen mode (hides most widgets)
+
+### Mic
+- **Visible** - A process is actively using an audio input device
+- **Red icon** - Input volume is muted
+- **Hyper + M** - Toggle input mute
 
 ### GitHub Bell
 - **Hover** - Show notification popup
@@ -119,4 +136,4 @@ The C helper receives colors from `sketchybarrc`, so theme changes apply everywh
 
 ## C Helper
 
-The CPU helper (`helper/`) is a native C program that communicates with SketchyBar via Mach messaging for efficient CPU monitoring. It's built automatically when SketchyBar starts and receives color values from the Lua configuration.
+The CPU helper (`helpers/event_provider/`) is a native C program that communicates with SketchyBar via Mach messaging for efficient CPU monitoring. It's built automatically when SketchyBar starts and receives color values from the Lua configuration.

@@ -25,15 +25,14 @@ sketchybar/
 │       ├── calendar.lua      # Date/time + zen mode toggle
 │       ├── cpu.lua           # CPU graph with top process (uses C helper)
 │       ├── github.lua        # Notification bell with popup (requires gh CLI)
+│       ├── mic.lua           # Mic activity indicator (Swift CoreAudio monitor)
 │       ├── volume.lua        # Slider + audio device switching
 │       └── wifi.lua          # Connection status + IP display
 ├── lib/
 │   └── icon_map.lua          # App name → icon mapping (auto-updated via chezmoiexternal)
-└── helper/
-    ├── helper.c              # C helper: CPU monitoring via Mach messaging
-    ├── cpu.h                 # CPU sampling header
-    ├── sketchybar.h          # SketchyBar Mach IPC header
-    └── makefile              # Builds helper binary
+└── helpers/
+    ├── event_provider/       # C helper: CPU monitoring via Mach messaging
+    └── mic-monitor/          # Swift CoreAudio input activity monitor
 ```
 
 ## Where to Look
@@ -46,7 +45,8 @@ sketchybar/
 | Add bar item (left/center) | `items/new_item.lua` + register in `items/init.lua` |
 | Modify bar appearance | `config/bar.lua` |
 | Change app icon mapping | `lib/icon_map.lua` (auto-updated via chezmoiexternal) |
-| Modify CPU helper | `helper/helper.c` + rebuild |
+| Modify CPU helper | `helpers/event_provider/helper.c` + rebuild |
+| Modify mic activity | `helpers/mic-monitor/main.swift` + `items/widgets/mic.lua` |
 
 ## Conventions
 
@@ -71,4 +71,4 @@ sketchybar/
 - **C helper receives colors** from `sketchybarrc` Lua config — theme changes propagate automatically.
 - **SBarLua**: Must be installed to `~/.local/share/sketchybar_lua/` (see README).
 - **Color-code convention**: red=critical, orange=warning, yellow=caution, green=ok.
-- **Mic monitor**: Reads state from `/tmp/mic-monitor-state` (external daemon).
+- **Mic monitor**: The external Swift daemon tracks processes with active input streams and writes a timestamped state file under `~/Library/Caches/com.user.mic-monitor/`.
