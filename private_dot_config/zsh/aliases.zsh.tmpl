@@ -6,6 +6,10 @@ alias chz="chezmoi"
 alias s="kitten ssh"
 alias kdiff="git difftool --no-symlinks --dir-diff"
 
+# Make sudo work with shell completion.
+# https://wiki.archlinux.org/title/Sudo#Passing_aliases
+alias sudo="sudo "
+
 # eza (ls replacement) with fallback to ls
 if (( $+commands[eza] )); then
   alias ls='eza'
