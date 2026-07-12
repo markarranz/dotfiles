@@ -6,7 +6,16 @@ app_launcher_cmd = "nc -U /run/user/1000/walker/walker.sock"
 [modules]
 left = [["appLauncher", "Updates", "Workspaces"]]
 center = ["WindowTitle"]
-right = ["SystemInfo", ["Tray", "Tempo", "Privacy", "Notifications", "Settings"]]
+right = [
+  "SystemInfo",
+  [
+    "Tray",
+    "Tempo",
+    "Privacy",
+    "Notifications",
+    "Settings",
+  ],
+]
 
 [updates]
 check_cmd = "checkupdates; yay -Qua"
@@ -22,6 +31,9 @@ command = "nc -U /run/user/1000/walker/walker.sock"
 
 [window_title]
 truncate_title_after_length = 100
+
+[system_info]
+indicators = ["Temperature", "Cpu", "Memory", "DownloadSpeed", "UploadSpeed"]
 
 [tempo]
 clock_format = "%a, %d %b %I:%M %p"
