@@ -1,0 +1,14 @@
+{{- if eq .chezmoi.os "linux" -}}
+[Desktop Entry]
+Type=Application
+Name=Neovim in Kitty
+GenericName=Text Editor
+Comment=Edit text files with Neovim in Kitty
+Exec=kitty --single-instance --class nvim-kitty --title Neovim nvim -- %F
+Icon=nvim
+Terminal=false
+StartupNotify=true
+Categories=Utility;TextEditor;
+Keywords=Text;editor;Neovim;Nvim;Kitty;
+MimeType=text/plain;text/markdown;text/x-markdown;text/x-log;text/css;text/csv;text/html;text/javascript;text/xml;text/x-csrc;text/x-chdr;text/x-c++src;text/x-c++hdr;text/x-csharp;text/x-go;text/x-java;text/x-javascript;text/x-kotlin;text/x-lua;text/x-makefile;text/x-python;text/x-ruby;text/x-rust;text/x-sql;text/x-tcl;text/x-tex;text/x-vim;text/x-yaml;application/json;application/ld+json;application/toml;application/x-toml;application/xml;application/yaml;application/x-yaml;application/x-desktop;application/x-shellscript;
+{{- end }}

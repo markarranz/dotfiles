@@ -1,0 +1,54 @@
+{{- if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+# nvim-kitty.desktop hash: {{ include "dot_local/share/applications/nvim-kitty.desktop.tmpl" | sha256sum }}
+set -euo pipefail
+
+desktop_entry="nvim-kitty.desktop"
+applications_dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+desktop_file="$applications_dir/$desktop_entry"
+
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+warn() {
+  printf '[nvim-kitty-default] WARN: %s\n' "$*" >&2
+}
+
+if ! command_exists xdg-mime; then
+  warn "xdg-mime not found, skipping MIME defaults"
+  exit 0
+fi
+
+if ! command_exists kitty; then
+  warn "kitty not found, skipping MIME defaults"
+  exit 0
+fi
+
+if ! command_exists nvim; then
+  warn "nvim not found, skipping MIME defaults"
+  exit 0
+fi
+
+if [[ ! -f "$desktop_file" ]]; then
+  warn "$desktop_file not found, skipping MIME defaults"
+  exit 0
+fi
+
+if command_exists update-desktop-database; then
+  update-desktop-database "$applications_dir" >/dev/null 2>&1 || true
+fi
+
+mime_types_line="$(awk -F= '$1 == "MimeType" { print $2; exit }' "$desktop_file")"
+if [[ -z "$mime_types_line" ]]; then
+  warn "$desktop_file has no MimeType entry, skipping MIME defaults"
+  exit 0
+fi
+
+IFS=';' read -r -a mime_types <<< "$mime_types_line"
+for mime_type in "${mime_types[@]}"; do
+  if [[ -n "$mime_type" ]]; then
+    xdg-mime default "$desktop_entry" "$mime_type"
+  fi
+done
+{{- end }}
