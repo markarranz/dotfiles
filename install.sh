@@ -145,7 +145,7 @@ PACMAN_PACKAGES=(
   nautilus
   nm-connection-editor
   playerctl
-  qt6ct
+  hyprqt6engine
   # PDF viewer
   zathura
   zathura-pdf-mupdf

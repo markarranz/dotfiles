@@ -9,6 +9,7 @@ hypr/
 ├── hyprland.lua          # Main compositor config (keybinds, rules, autostart)
 ├── hardware.lua.tmpl     # Monitor/input config (laptop vs desktop conditional)
 ├── themes/catppuccin-mocha.lua # External Catppuccin palette used by Hyprland Lua config
+├── hyprqt6engine.conf.tmpl # Catppuccin Mocha palette for Qt 6 applications
 ├── hypridle.conf         # Idle timeouts → lock → suspend chain
 ├── hyprlock.conf.tmpl    # Lock screen appearance (chassis-conditional layout)
 ├── hyprpaper.conf        # Wallpaper config
@@ -27,6 +28,7 @@ hypr/
 | Idle/lock behavior | `hypridle.conf` (timeouts) + `hyprlock.conf.tmpl` (appearance) |
 | Autostart programs | `hyprland.lua` — `hl.on("hyprland.start", ...)` |
 | Wallpaper | `hyprpaper.conf` |
+| Qt application theme | `hyprqt6engine.conf.tmpl` |
 
 ## Conventions
 
