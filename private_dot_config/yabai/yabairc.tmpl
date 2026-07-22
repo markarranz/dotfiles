@@ -59,6 +59,11 @@ yabai -m signal --add event=window_deminimized action="sketchybar --trigger wind
 yabai -m signal --add event=application_hidden action="sketchybar --trigger windows_on_spaces_changed"
 yabai -m signal --add event=application_visible action="sketchybar --trigger windows_on_spaces_changed"
 
+# Route Tuple's screen-share window to a new space on the built-in display,
+# then return focus there once it closes.
+yabai -m signal --add event=window_created action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/tuple_share_open.sh \$YABAI_WINDOW_ID"
+yabai -m signal --add event=window_destroyed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/tuple_share_close.sh \$YABAI_WINDOW_ID"
+
 # Restore spaces when displays are added, removed, moved, resized, or restored
 # after wake. Debounce rapid monitor events before labeling.
 yabai -m signal --add event=display_added action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/debounce_restore.sh &"
