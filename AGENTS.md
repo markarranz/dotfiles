@@ -42,7 +42,7 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 │   ├── private_karabiner/      # [macOS] Karabiner-Elements (symlink to externally_modified)
 │   ├── git/                    # Git config, ignore, helper scripts
 │   ├── Claude/                 # Claude Code local settings
-│   └── {bat,delta,lazygit,yazi,zathura,qt6ct,uwsm,systemd}/
+│   └── {bat,delta,lazygit,yazi,zathura,uwsm,systemd}/
 └── externally_modified/        # Git-tracked, NOT chezmoi-managed (symlinked in)
     ├── nvim/                   # LazyVim base distribution
     └── karabiner/              # Karabiner-Elements JSON (49k lines)
@@ -185,9 +185,9 @@ Karabiner → skhd            OS-level key remap before hotkey daemon
 - **externally_modified/**: LazyVim core and Karabiner JSON are git-tracked but NOT chezmoi-managed. Edit there directly, symlinked via `symlink_*.tmpl`.
 - **Zsh config**: `zsh/` is the active setup and uses manually sourced plugins from `~/.config/zsh/plugins/`.
 - **Home-row mods on both platforms**: Kanata (Linux) + Karabiner (macOS). Same layout: a/;=Ctrl, s/l=Alt, d/k=Meta, f/j=Shift.
-- **Catppuccin variants**: Mocha (most tools), Macchiato (tmux), Frappe (qt6ct).
+- **Catppuccin variants**: Mocha (most tools, including HyprQt6Engine), Macchiato (tmux).
 - **yabai SIP**: Scripting addition requires partial SIP disable on macOS. Cannot be automated.
 - **TPM first-time setup**: Press `prefix + I` inside tmux if plugins not auto-installed.
 - **Work mode**: Set via `promptBoolOnce` during `chezmoi init` (`.forWork = true`). Affects Git identity, NVM source, Neovim plugins, skhd browser choice.
-- **`exact_*` directories**: bat/exact_themes, delta/exact_themes, tmux/exact_plugins, zsh/exact_plugins, qt6ct/exact_colors — chezmoi deletes any files not in source.
+- **`exact_*` directories**: bat/exact_themes, delta/exact_themes, tmux/exact_plugins, zsh/exact_plugins — chezmoi deletes any files not in source.
 - **run_onchange_after_bat-cache.sh**: Auto-rebuilds bat theme cache after apply.

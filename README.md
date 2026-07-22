@@ -2,7 +2,7 @@
 
 Personal development environment configurations managed with [chezmoi](https://www.chezmoi.io/). These dotfiles target **macOS** and **Linux** (Arch-based), with chezmoi templates handling platform-specific differences automatically.
 
-A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied across all tools (Mocha variant in most tools, Macchiato in tmux, Frappe in qt6ct).
+A [Catppuccin](https://github.com/catppuccin/catppuccin) color scheme is applied across all tools (Mocha variant in most tools and Macchiato in tmux).
 
 ## Prerequisites
 
@@ -81,7 +81,7 @@ These tools are specific to a Linux (Wayland/Hyprland) desktop environment.
 | [**Hyprland**](https://hyprland.org/) | A dynamic tiling Wayland compositor (window manager) with smooth animations, rounded corners, and a highly scriptable configuration. It manages window placement, workspaces, keybindings, and multi-monitor setups. Also includes companion utilities: [hyprlock](https://github.com/hyprwm/hyprlock) (lock screen), [hypridle](https://github.com/hyprwm/hypridle) (idle management), [hyprpaper](https://github.com/hyprwm/hyprpaper) (wallpaper), and [hyprsunset](https://github.com/hyprwm/hyprsunset) (blue light filter). |
 | [**Ashell**](https://github.com/MalpenZibo/ashell) | A status bar and notification panel for Hyprland. Displays workspaces, the focused window title, system info, a tray, clock, and more along the top of the screen. |
 | [**Kanata**](https://github.com/jtroo/kanata) | A software keyboard remapper that runs as a background service. Used here to implement home-row mods -- holding `a`, `s`, `d`, `f` (and their right-hand counterparts) produces Ctrl, Alt, Meta, and Shift, while tapping them types the normal letter. |
-| [**Qt6ct**](https://github.com/trialuser02/qt6ct) | A configuration tool for Qt 6 application appearance on non-KDE desktops. Used here to apply the Catppuccin Frappe theme to Qt-based applications so they match the rest of the desktop. |
+| [**HyprQt6Engine**](https://github.com/hyprwm/hyprqt6engine) | Hyprland's Qt 6 platform theme and widget style. It applies the Catppuccin Mocha palette to Qt applications. |
 | Chromium & Electron flags | Configuration files (`chromium-flags.conf`, `electron-flags.conf`) that enable native Wayland support for Chromium-based browsers and Electron apps, preventing them from falling back to XWayland. |
 
 ### macOS Only
@@ -117,7 +117,6 @@ These tools are specific to a macOS desktop environment.
 │   ├── karabiner/              # [macOS] Karabiner-Elements (symlink)
 │   ├── kitty/                  # Kitty terminal emulator
 │   ├── nvim/                   # Neovim (LazyVim)
-│   ├── qt6ct/                  # [Linux] Qt6 theming
 │   ├── git/                    # Git config, ignore, helper scripts
 │   ├── skhd/                   # [macOS] skhd hotkey daemon
 │   ├── starship/               # Starship shell prompt
