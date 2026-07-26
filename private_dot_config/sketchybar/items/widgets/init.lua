@@ -2,6 +2,7 @@
 require("items.widgets.calendar")
 require("items.widgets.brew")
 require("items.widgets.github")
+require("items.widgets.wireguard")
 require("items.widgets.wifi")
 require("items.widgets.battery")
 require("items.widgets.volume")

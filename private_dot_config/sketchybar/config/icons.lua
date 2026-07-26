@@ -68,6 +68,9 @@ return {
 		disconnected = "􀙈",
 	},
 
+	-- WireGuard
+	wireguard = ":wireguard:",
+
 	-- Brew
 	brew = "􀐛",
 	checkmark = "􀆅",
