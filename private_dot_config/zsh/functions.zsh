@@ -41,6 +41,24 @@ function als() {
   fi
 }
 
+function dssh() {
+  if (( $# == 1 )); then
+    ssh "$1" 'docker ps -a --format "table {{.Names}}\t{{.State}}\t{{.Image}}"'
+    return
+  fi
+
+  if (( $# != 2 )); then
+    echo "usage: dssh <vm> [container]" >&2
+    return 2
+  fi
+
+  local host="$1"
+  local container="$2"
+  local quoted_container="${(q)container}"
+
+  ssh -t "$host" "docker exec -it $quoted_container /bin/bash || docker exec -it $quoted_container /bin/sh"
+}
+
 #
 # Git helper functions (from oh-my-zsh git plugin)
 #
