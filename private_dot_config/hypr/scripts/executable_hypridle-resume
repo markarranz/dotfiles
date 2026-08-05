@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Restore the display, then let USB input devices re-enumerate before restarting
+# Kanata so it opens the new keyboard event device after suspend/resume.
+hyprctl dispatch 'hl.dsp.dpms({action = "on"})' || true
+udevadm settle --timeout=5 || true
+systemctl --user restart kanata.service
