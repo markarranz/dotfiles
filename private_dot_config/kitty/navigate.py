@@ -1,5 +1,6 @@
 # Kitty kitten for visual-position-based window navigation.
-# When IS_NVIM user variable is set, passes the key through to neovim instead.
+# When IS_NVIM or IS_WEECHAT user variable is set, passes the key through
+# to that program instead of navigating kitty panes directly.
 # Uses window geometry to find the nearest neighbor in a direction, avoiding
 # the split-tree ordering issues of kitty's built-in neighboring_window.
 #
@@ -98,8 +99,8 @@ def handle_result(args, result, target_window_id, boss):
     if args[1] == '--no-passthrough':
         direction = args[2]
     else:
-        # Called from keymap: pass key through to neovim when IS_NVIM is set
-        if window.user_vars.get("IS_NVIM"):
+        # Called from keymap: pass key through to neovim/weechat when set
+        if window.user_vars.get("IS_NVIM") or window.user_vars.get("IS_WEECHAT"):
             encoded = encode_key_mapping(window, args[2])
             window.write_to_child(encoded)
             return
