@@ -12,6 +12,6 @@ sbar.bar({
 	padding_right = 10,
 	padding_left = 10,
 	y_offset = -5,
-	margin = -2,
+	margin = -1,
 	topmost = "window",
 })
