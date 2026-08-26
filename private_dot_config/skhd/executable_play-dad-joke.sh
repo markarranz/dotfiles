@@ -2,7 +2,7 @@
 set -euo pipefail
 
 command_exists() {
-  command -v "$1" >/dev/null 2>&1
+  command -v "$1" > /dev/null 2>&1
 }
 
 error() {
@@ -48,7 +48,7 @@ play_to_blackhole() {
         -vn \
         -f audiotoolbox \
         -audio_device_index "$device_index" \
-        - >/dev/null
+        - > /dev/null
       return
     fi
   fi
@@ -90,6 +90,12 @@ fallback_with_say() {
   play_with_say "$text"
 }
 
+punchline_script="${XDG_CONFIG_HOME:-$HOME/.config}/skhd/punchline.sh"
+if [ -r "$punchline_script" ]; then
+  # shellcheck source=/dev/null
+  source "$punchline_script"
+fi
+
 if ! command_exists curl; then
   error "missing required command: curl"
   exit 1
@@ -104,7 +110,7 @@ elevenlabs_api_key="${ELEVENLABS_API_KEY:-}"
 
 if [ -z "$elevenlabs_api_key" ] && command_exists security; then
   elevenlabs_keychain_service="${ELEVENLABS_KEYCHAIN_SERVICE:-elevenlabs-api-key}"
-  elevenlabs_api_key="$(security find-generic-password -a "$USER" -s "$elevenlabs_keychain_service" -w 2>/dev/null || true)"
+  elevenlabs_api_key="$(security find-generic-password -a "$USER" -s "$elevenlabs_keychain_service" -w 2> /dev/null || true)"
 fi
 
 joke="$(
@@ -119,6 +125,11 @@ joke="$(
 if [ -z "$joke" ]; then
   error "empty joke response"
   exit 1
+fi
+
+tts_text="$joke"
+if command -v dad_joke_with_punchline_pause > /dev/null 2>&1; then
+  tts_text="$(dad_joke_with_punchline_pause "$joke")"
 fi
 
 if [ -z "$elevenlabs_api_key" ]; then
@@ -141,7 +152,7 @@ trap 'rm -rf "$tmp_dir"' EXIT
 
 payload="$(
   jq -cn \
-    --arg text "$joke" \
+    --arg text "$tts_text" \
     --arg model_id "$elevenlabs_model_id" \
     '{text: $text, model_id: $model_id}'
 )"
@@ -155,7 +166,7 @@ http_status="$(
     --data "$payload" \
     -o "$audio_file" \
     -w "%{http_code}" \
-    2>"$error_file" || true
+    2> "$error_file" || true
 )"
 
 case "$http_status" in

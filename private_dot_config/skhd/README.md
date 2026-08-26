@@ -13,6 +13,8 @@
 - `ELEVENLABS_API_KEY` or a Keychain generic password named `elevenlabs-api-key` -- optional dad joke text-to-speech; falls back to `say` when unset or unavailable
 - `ELEVENLABS_VOICE_ID` -- optional override; defaults to Roger (`CwhRBWXzGAHq8TQ4Fs17`)
 
+Dad jokes sent to ElevenLabs include a one-second pause before high-confidence punchlines. Question-and-answer jokes, final-sentence punchlines, and late contrast pivots are detected; ambiguous jokes are left unchanged.
+
 ## Key Bindings
 
 ### Application Launchers
