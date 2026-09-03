@@ -6,6 +6,11 @@ set -eu
 # when the source space auto-focuses a remaining window.
 # Usage: move_window.sh 'yabai -m window --space 3 && yabai -m space --focus 3'
 
+cleanup() {
+  sleep 0.5
+  rm -f /tmp/yabai-moving
+}
+trap cleanup EXIT
+
 touch /tmp/yabai-moving
 eval "$1"
-(sleep 0.5; rm -f /tmp/yabai-moving) &
