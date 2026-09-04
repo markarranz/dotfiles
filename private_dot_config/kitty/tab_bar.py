@@ -12,13 +12,15 @@ LAYOUT_ICONS = {
     "horizontal": "\U000f0729",  # 󰜩
     "grid": "\U000f0573",  # 󰕳
     "splits": "\U000f0574",  # 󰕴
-    "stack": "\uf51e",  #
+    "stack": "\uf51e",
 }
 
 POWERLINE_SYMBOLS = {
     "slanted": ("\ue0b8", "\ue0b9"),
     "round": ("\ue0ba", "\ue0bb"),
 }
+
+TAB_COUNTS: dict[int, int] = {}
 
 
 def stack_split_suffix(tab: TabBarData) -> str:
@@ -38,6 +40,12 @@ def draw_tab(
     is_last: bool,
     extra_data: ExtraData,
 ) -> int:
+    if extra_data.for_layout:
+        if is_last:
+            TAB_COUNTS[draw_data.os_window_id] = index
+        screen.cursor.x = min(screen.columns - 1, before + max_tab_length + 1)
+        return screen.cursor.x
+
     tab_bg = screen.cursor.bg
     tab_fg = screen.cursor.fg
     default_bg = as_rgb(int(draw_data.default_bg))
@@ -77,20 +85,23 @@ def draw_tab(
             screen.draw(" ")
             screen.draw(icon_text)
 
-    if not needs_soft_separator:
+    tab_count = TAB_COUNTS.get(draw_data.os_window_id, 1)
+    width_bonus = int(index <= screen.columns % tab_count)
+    padding = before + max_tab_length - 2 + width_bonus - screen.cursor.x
+    if padding > 0:
+        screen.draw(" " * padding)
+
+    if is_last:
+        screen.cursor.bg = tab_bg
+        screen.draw("  ")
+    elif not needs_soft_separator:
         screen.draw(" ")
         screen.cursor.fg = tab_bg
         screen.cursor.bg = next_tab_bg
         screen.draw(sep)
     else:
         prev_fg = screen.cursor.fg
-        if tab_bg == tab_fg:
-            screen.cursor.fg = default_bg
-        elif tab_bg != default_bg:
-            c1 = draw_data.inactive_bg.contrast(draw_data.default_bg)
-            c2 = draw_data.inactive_bg.contrast(draw_data.inactive_fg)
-            if c1 < c2:
-                screen.cursor.fg = default_bg
+        screen.cursor.fg = tab_fg
         screen.draw(f" {soft_sep}")
         screen.cursor.fg = prev_fg
 
