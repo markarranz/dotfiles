@@ -73,6 +73,7 @@ def draw_tab(
         start_draw = 1
 
     screen.cursor.bg = tab_bg
+    content_start = screen.cursor.x
     if max_tab_length <= 3:
         screen.draw("\u2026")
     else:
@@ -85,11 +86,19 @@ def draw_tab(
             screen.draw(" ")
             screen.draw(icon_text)
 
+    content_end = screen.cursor.x
     tab_count = TAB_COUNTS.get(draw_data.os_window_id, 1)
     width_bonus = int(index <= screen.columns % tab_count)
     padding = before + max_tab_length - 2 + width_bonus - screen.cursor.x
     if padding > 0:
-        screen.draw(" " * padding)
+        left_padding = padding // 2
+        if left_padding:
+            screen.cursor.x = content_start
+            screen.cursor.bg = tab_bg
+            screen.cursor.fg = tab_fg
+            screen.insert_characters(left_padding)
+            screen.cursor.x = content_end + left_padding
+        screen.draw(" " * (padding - left_padding))
 
     if is_last:
         screen.cursor.bg = tab_bg
