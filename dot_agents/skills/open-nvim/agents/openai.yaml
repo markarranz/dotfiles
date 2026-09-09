@@ -1,0 +1,4 @@
+interface:
+  display_name: "Open Neovim"
+  short_description: "Open referenced code in Neovim"
+  default_prompt: "Use $open-nvim to open the discussed code in Neovim."
