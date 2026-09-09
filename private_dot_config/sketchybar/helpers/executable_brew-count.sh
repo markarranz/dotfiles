@@ -88,7 +88,7 @@ err=$(mktemp "${TMPDIR:-/tmp}/sketchybar-brew-outdated.err.XXXXXX") || {
 trap 'rm -f "$tmp" "$err"' EXIT
 
 status=0
-HOMEBREW_NO_AUTO_UPDATE=1 brew outdated --quiet > "$tmp" 2> "$err" || status=$?
+brew outdated --quiet > "$tmp" 2> "$err" || status=$?
 count=$(wc -l < "$tmp" | tr -d ' ')
 
 if [[ "$status" -ne 0 ]] || { [[ "$count" == "0" ]] && grep -Eq 'Error:|Failure while executing' "$err"; }; then
