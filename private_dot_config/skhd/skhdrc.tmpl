@@ -3,11 +3,11 @@
 # #################### #
 
 # semicolon - keycode 0x29
-cmd - 0x29         : open -a kitty --args -1=yes
+cmd - 0x29         : open -a kitty --args --single-instance
 {{- if .forWork }}
-cmd + shift - 0x29 : kitty @ --to unix:$(ls /tmp/mykitty-* 2>/dev/null | head -1) launch --type=os-window --cwd "$HOME/Code/work/core"
+cmd + shift - 0x29 : open -na kitty --args --single-instance --directory "$HOME/Code/work/core"
 {{- else }}
-cmd + shift - 0x29 : kitty @ --to unix:$(ls /tmp/mykitty-* 2>/dev/null | head -1) launch --type=os-window --cwd ~
+cmd + shift - 0x29 : open -na kitty --args --single-instance --directory "$HOME"
 {{- end }}
 
 {{ $browser := "Firefox" -}}

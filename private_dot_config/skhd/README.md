@@ -27,6 +27,11 @@ Dad jokes sent to ElevenLabs include a one-second pause before high-confidence p
 | `Cmd+Shift+b` | New browser window                            |
 | `Cmd+e`       | Open Finder                                   |
 
+Both Kitty shortcuts start Kitty in single-instance mode. `Cmd+;` focuses an
+existing window; `Cmd+Shift+;` opens a new window in the shared instance, starting
+Kitty if needed. New windows start in `~/Code/work/core` on work machines and `~`
+on personal machines.
+
 ### Space Navigation
 
 | Binding               | Action                                |
