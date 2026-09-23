@@ -38,7 +38,8 @@ yabai -m signal --add label=follow_active_app event=application_activated action
   }
   if [ "$(echo "$active" | jq -r .subrole 2>/dev/null)" = "AXSystemDialog" ] \
      && [ "$(echo "$active" | jq -r ".\"has-focus\"" 2>/dev/null)" = "true" ]; then
-    if [ "$(echo "$active" | jq -r .app 2>/dev/null)" != "zoom.us" ]; then
+    app=$(echo "$active" | jq -r .app 2>/dev/null)
+    if [ "$app" != "zoom.us" ] && [ "$app" != "Zoom" ]; then
       display=$(echo "$active" | jq -r .display 2>/dev/null)
       target=$(echo "$windows" | jq -re "[.[] | select(.display == $display and .subrole != \"AXSystemDialog\" and .\"is-minimized\" == false and .\"is-hidden\" == false and .\"is-visible\" == true)] | first | .id" 2>/dev/null) || exit 0
       [ -n "$target" ] && still_active && yabai -m window --focus "$target" 2>/dev/null
@@ -53,6 +54,7 @@ yabai -m signal --add label=follow_active_app event=application_activated action
 '
 
 # Notify SketchyBar which window is focused (enables per-window icon highlighting)
+yabai -m signal --add label=zoom_mouse_follow event=application_front_switched action="\"$XDG_CONFIG_HOME/yabai/update_mouse_follow.sh\""
 yabai -m signal --add event=window_focused action="sketchybar --trigger window_focused WINDOW_ID=\$YABAI_WINDOW_ID"
 
 # Re-query window order in SketchyBar when windows swap/move positions
@@ -176,5 +178,7 @@ yabai -m config \
   right_padding 3 \
   window_gap 6 \
   auto_balance off
+
+"$XDG_CONFIG_HOME/yabai/update_mouse_follow.sh"
 
 # vim: ft=sh
