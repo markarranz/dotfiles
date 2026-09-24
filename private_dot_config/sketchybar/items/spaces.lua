@@ -188,8 +188,8 @@ for i = 1, 9 do
 	end
 
 	local debounced_focus = 'kill $(cat /tmp/.sketchybar-space-pid 2>/dev/null) 2>/dev/null;'
-		.. ' (sleep 0.1 && yabai -m space --focus ' .. i .. ') &'
-		.. ' echo $! > /tmp/.sketchybar-space-pid'
+		.. ' (sleep 0.1 && "$HOME/.config/yabai/focus_space.sh" ' .. i .. ') &'
+		.. ' echo $! > /tmp/.sketchybar-space-pid;'
 
 	local click_script = 'if [ "$BUTTON" = "right" ]; then'
 		.. ' yabai -m space ' .. i .. ' --destroy;'
