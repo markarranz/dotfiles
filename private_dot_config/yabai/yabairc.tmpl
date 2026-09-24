@@ -69,6 +69,7 @@ yabai -m signal --add event=application_visible action="sketchybar --trigger win
 # then return focus there once it closes.
 yabai -m signal --add event=window_created action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/tuple_share_open.sh \$YABAI_WINDOW_ID"
 yabai -m signal --add event=window_destroyed action="${XDG_CONFIG_HOME:-$HOME/.config}/yabai/tuple_share_close.sh \$YABAI_WINDOW_ID"
+yabai -m signal --add label=focus_after_close event=window_destroyed active=yes action="\"$XDG_CONFIG_HOME/yabai/focus_after_close.sh\""
 
 # Restore spaces when displays are added, removed, moved, resized, or restored
 # after wake. Debounce rapid monitor events before labeling.

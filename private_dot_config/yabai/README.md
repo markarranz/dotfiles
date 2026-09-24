@@ -29,6 +29,8 @@ These apps are excluded from tiling: 1Password, Activity Monitor, App Store, Cal
 
 ### Helper Scripts
 
+`focus_after_close.sh` runs when the focused window closes. If macOS leaves no window focused, it focuses a visible standard window on the same space. It leaves existing focus and empty spaces alone, and stops if the user switches spaces during the check.
+
 `clean_empty_spaces.sh` runs on space change events to automatically remove empty, unfocused spaces, keeping the workspace list clean. It skips cleanup during display transitions (see below).
 
 `restore_spaces.py` runs on display add/remove, display move/resize, and wake events to preserve spaces when monitors are plugged/unplugged, rearranged, rotated, or restored after wake-from-sleep. It uses Python 3 with `fcntl.flock()` for kernel-managed locking (auto-releases on any process death), then recreates and labels any missing spaces across the current displays: docs on the left/landscape display, code on the center/portrait display, and chat on the right/built-in display.
