@@ -14,6 +14,7 @@
 # Local agent and memory state
 .envrc
 .claude/
+.codex/
 .omc/
 .remember/
 .sisyphus/
