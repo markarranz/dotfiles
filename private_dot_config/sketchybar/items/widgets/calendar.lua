@@ -1,10 +1,14 @@
 local settings = require("config.settings")
 local item_utils = require("helpers.item_utils")
 
+local date_fmt = "%a %b %d"
+local time_fmt = "%I:%M %p"
+local dt_cmd = "date '+" .. date_fmt .. "|" .. time_fmt .. "'"
+
 local cal = sbar.add("item", "calendar", {
 	position = "right",
 	icon = {
-		string = os.date("%a, %d %b"),
+		string = os.date(date_fmt),
 		font = {
 			family = settings.font.text,
 			style = settings.font.style_map["Black"],
@@ -24,11 +28,9 @@ local cal = sbar.add("item", "calendar", {
 -- Update via Lua callback instead of external script to avoid race condition
 -- where the sketchybar CLI can't find the item during config batching
 cal:subscribe({ "routine", "system_woke" }, function()
-	sbar.exec("date '+%a, %d %b|%I:%M %p'", function(output)
+	sbar.exec(dt_cmd, function(output)
 		local icon, label = output:match("(.-)|(.-)\n?$")
-		if icon and label then
-			cal:set({ icon = icon, label = label })
-		end
+		cal:set({ icon = icon, label = label })
 	end)
 end)
 
