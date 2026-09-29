@@ -1,4 +1,3 @@
-local colors = require("config.colors")
 local settings = require("config.settings")
 
 local front_app = sbar.add("item", "front_app", {
