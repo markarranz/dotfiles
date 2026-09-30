@@ -33,9 +33,9 @@ hyper - j : ~/.config/skhd/play-dad-joke.sh
 # ############## #
 
 # Focus space with CMD + ALT + [\t]; focus prev/next space with CTRL + ALT + [hl]; focus left/right display with CMD + ALT + [hl]:
-cmd + alt - tab : yabai -m space --focus recent
-ctrl + alt - h   : yabai -m space --focus prev || (yabai -m display --focus prev && yabai -m space --focus last)
-ctrl + alt - l   : yabai -m space --focus next || (yabai -m display --focus next && yabai -m space --focus first)
+cmd + alt - tab : ~/.config/yabai/focus_space.sh recent
+ctrl + alt - h   : ~/.config/yabai/focus_space.sh prev || (yabai -m display --focus prev && ~/.config/yabai/focus_space.sh last)
+ctrl + alt - l   : ~/.config/yabai/focus_space.sh next || (yabai -m display --focus next && ~/.config/yabai/focus_space.sh first)
 cmd + alt - h   : target=$(~/.config/yabai/display_neighbor.sh prev) && yabai -m display --focus "$target"
 cmd + alt - l   : target=$(~/.config/yabai/display_neighbor.sh next) && yabai -m display --focus "$target"
 

@@ -29,6 +29,8 @@ These apps are excluded from tiling: 1Password, Activity Monitor, App Store, Cal
 
 ### Helper Scripts
 
+`space_focus_history.py` records the last focused standard window per space UUID. `focus_space.sh` restores it for number, previous/next, recent-space shortcuts, and SketchyBar space clicks. Closed, hidden, minimized, sticky, or moved windows are skipped. History is temporary; explicit app/window clicks keep their chosen focus. Native Mission Control switches do not use this helper.
+
 `focus_after_close.sh` runs when the focused window closes. If macOS leaves no window focused, it focuses a visible standard window on the same space. It leaves existing focus and empty spaces alone, and stops if the user switches spaces during the check.
 
 `clean_empty_spaces.sh` runs on space change events to automatically remove empty, unfocused spaces, keeping the workspace list clean. It skips cleanup during display transitions (see below).

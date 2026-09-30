@@ -56,6 +56,7 @@ yabai -m signal --add label=follow_active_app event=application_activated action
 # Notify SketchyBar which window is focused (enables per-window icon highlighting)
 yabai -m signal --add label=zoom_mouse_follow event=application_front_switched action="\"$XDG_CONFIG_HOME/yabai/update_mouse_follow.sh\""
 yabai -m signal --add event=window_focused action="sketchybar --trigger window_focused WINDOW_ID=\$YABAI_WINDOW_ID"
+yabai -m signal --add label=remember_space_focus event=window_focused action="python3 \"$XDG_CONFIG_HOME/yabai/space_focus_history.py\" remember"
 
 # Re-query window order in SketchyBar when windows swap/move positions
 yabai -m signal --add event=window_moved action="sketchybar --trigger windows_on_spaces_changed"
