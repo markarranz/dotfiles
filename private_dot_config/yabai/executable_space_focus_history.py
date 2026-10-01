@@ -10,7 +10,7 @@ import tempfile
 
 def query(*args):
     return json.loads(subprocess.check_output(
-        ["yabai", "-m", "query", *args], stderr=subprocess.DEVNULL
+        ["yabai", "-m", "query", *args], stderr=subprocess.DEVNULL, timeout=1
     ))
 
 
@@ -31,7 +31,10 @@ def run(mode, target=None):
     directory = Path(tempfile.gettempdir()) / f"yabai-focus-history-{os.getuid()}"
     directory.mkdir(mode=0o700, exist_ok=True)
     with (directory / "lock").open("a") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return
         path = directory / "history.json"
         try:
             history = json.loads(path.read_text())
@@ -63,8 +66,12 @@ def run(mode, target=None):
                     return
 
 
-if __name__ == "__main__":
+def main():
     try:
         run(*sys.argv[1:])
-    except (OSError, ValueError, KeyError, subprocess.CalledProcessError):
-        sys.exit(0)
+    except (OSError, ValueError, KeyError, subprocess.SubprocessError):
+        pass
+
+
+if __name__ == "__main__":
+    main()

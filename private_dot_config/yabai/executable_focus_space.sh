@@ -24,7 +24,7 @@ if ! jq -e --argjson target "$target" 'any(.[]; .index == $target)' <<<"$spaces"
   target=$(yabai -m query --spaces --display | jq -er 'max_by(.index).index')
 fi
 
-window=$(python3 "$history" preferred "$target")
+window=$(python3 "$history" preferred "$target" || true)
 if [[ -n "$window" ]] && yabai -m window --focus "$window"; then
   exit 0
 fi

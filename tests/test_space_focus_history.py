@@ -1,6 +1,9 @@
 import contextlib
+import fcntl
 import importlib.util
 import io
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,6 +14,7 @@ spec = importlib.util.spec_from_file_location(
     "history", Path(__file__).parents[1] / "private_dot_config/yabai/executable_space_focus_history.py")
 history = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(history)
+real_query = history.query
 
 
 class HistoryTest(unittest.TestCase):
@@ -47,6 +51,29 @@ class HistoryTest(unittest.TestCase):
 
     def test_no_history(self):
         self.assertEqual(self.preferred(), "")
+
+    def test_busy_lock_skips_history_without_querying(self):
+        history.run("remember")
+        path = Path(self.directory.name) / f"yabai-focus-history-{os.getuid()}" / "lock"
+        with path.open("a") as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            with patch.object(history, "query") as query:
+                history.run("remember")
+                self.assertEqual(self.preferred(), "")
+                query.assert_not_called()
+        self.assertEqual(self.preferred(), "2")
+
+    def test_query_has_timeout(self):
+        with patch.object(history.subprocess, "check_output", return_value=b"{}") as output:
+            self.assertEqual(real_query("--windows", "--window"), {})
+            self.assertEqual(output.call_args.kwargs["timeout"], 1)
+
+    def test_timeout_is_ignored_and_releases_lock(self):
+        with patch.object(history, "query", side_effect=subprocess.TimeoutExpired("yabai", 1)):
+            with patch.object(history.sys, "argv", ["history", "remember"]):
+                history.main()
+        history.run("remember")
+        self.assertEqual(self.preferred(), "2")
 
     def test_last_focused_not_first_window(self):
         history.run("remember")
