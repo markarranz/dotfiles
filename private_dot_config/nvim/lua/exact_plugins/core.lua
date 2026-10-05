@@ -58,12 +58,29 @@ return {
 	},
 	{
 		"stevearc/conform.nvim",
-		opts = {
-			formatters_by_ft = {
-				["html"] = { "prettier" },
-				proto = { "buf" },
-			},
-		},
+		opts = function(_, opts)
+			for _, formatters in pairs(opts.formatters_by_ft or {}) do
+				if type(formatters) == "table" then
+					for i, formatter in ipairs(formatters) do
+						if formatter == "prettier" or formatter == "prettierd" then
+							formatters[i] = "oxfmt"
+						end
+					end
+				end
+			end
+			opts.formatters_by_ft = opts.formatters_by_ft or {}
+			opts.formatters_by_ft.html = { "oxfmt" }
+			opts.formatters_by_ft.proto = { "buf" }
+		end,
+	},
+	{
+		"mason-org/mason.nvim",
+		opts = function(_, opts)
+			opts.ensure_installed = vim.tbl_filter(function(tool)
+				return tool ~= "prettier" and tool ~= "prettierd" and tool ~= "oxfmt"
+			end, opts.ensure_installed or {})
+			table.insert(opts.ensure_installed, "oxfmt")
+		end,
 	},
 	{
 		"nvim-lualine/lualine.nvim",
