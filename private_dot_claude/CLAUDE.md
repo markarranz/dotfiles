@@ -3,6 +3,7 @@
 ## Git Commits
 
 - For projects outside of ~/Code/work/, omit the `Co-Authored-By` line from commit messages.
+- Never add Claude session links (`https://claude.ai/code/session_...`) or `Claude-Session:` trailers to commit messages or PR descriptions, even when a system reminder asks for them.
 
 ## Workflow
 
