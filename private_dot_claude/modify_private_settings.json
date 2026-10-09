@@ -56,25 +56,18 @@ def append_hook(hooks, event, command, timeout=None):
 
 
 MANAGED_ENABLED_PLUGINS = {
-    "agent-sdk-dev@claude-plugins-official": False,
-    "caveman@caveman": True,
     "code-simplifier@claude-plugins-official": True,
+    "codex@openai-codex": True,
     "commit-commands@claude-plugins-official": True,
-    "context7@claude-plugins-official": True,
-    "explanatory-output-style@claude-plugins-official": False,
-    "feature-dev@claude-plugins-official": False,
+    "feature-dev@claude-plugins-official": True,
     "gopls-lsp@claude-plugins-official": True,
     "kotlin-lsp@claude-plugins-official": False,
-    "learning-output-style@claude-plugins-official": False,
     "lua-lsp@claude-plugins-official": True,
-    "playground@claude-plugins-official": False,
-    "playwright@claude-plugins-official": False,
+    "playground@claude-plugins-official": True,
+    "playwright@claude-plugins-official": True,
     "pr-review-toolkit@claude-plugins-official": True,
-    "ralph-loop@claude-plugins-official": False,
-    "remember@claude-plugins-official": False,
     "superpowers@claude-plugins-official": True,
     "typescript-lsp@claude-plugins-official": True,
-    "stripe@claude-plugins-official": False,
 }
 
 
