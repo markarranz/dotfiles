@@ -14,6 +14,7 @@ local space_windows = {}
 local space_selected = {}
 local current_focused_window_id = 0
 local space_spacers = {}
+local space_has_predecessor = {}
 
 local refresh_spaces
 local query_space_windows
@@ -34,7 +35,7 @@ end
 
 local function set_spacer_width(i, width)
 	if i > 1 and space_spacers[i] then
-		space_spacers[i]:set({ width = width })
+		space_spacers[i]:set({ width = width, drawing = width > 0 })
 	end
 end
 
@@ -68,7 +69,7 @@ end
 local function show_space(i)
 	set_space_drawing(i, true)
 	set_bracket_drawing(i, true)
-	set_spacer_width(i, settings.group_paddings)
+	set_spacer_width(i, space_has_predecessor[i] and settings.group_paddings or 0)
 end
 
 local function hide_space(i)
@@ -181,6 +182,7 @@ for i = 1, 9 do
 		space_spacers[i] = sbar.add("space", "space.spacer." .. i, {
 			space = i,
 			width = 0,
+			drawing = false,
 			background = { drawing = false },
 			icon = { drawing = false },
 			label = { drawing = false },
@@ -337,7 +339,7 @@ space_creator:subscribe("spaces_refresh", function()
 end)
 
 refresh_spaces = function()
-	sbar.exec("yabai -m query --spaces 2>/dev/null | jq -r '.[].index' 2>/dev/null", function(result, exit_code)
+	sbar.exec("yabai -m query --spaces 2>/dev/null | jq -r 'sort_by(.index)[] | [.index, .display] | @tsv' 2>/dev/null", function(result, exit_code)
 		if exit_code and exit_code ~= 0 then
 			return
 		end
@@ -345,10 +347,14 @@ refresh_spaces = function()
 			return
 		end
 		local active = {}
-		for space_num_str in result:gmatch("%d+") do
+		local seen_display = {}
+		space_has_predecessor = {}
+		for space_num_str, display in result:gmatch("(%d+)\t(%d+)") do
 			local space_num = tonumber(space_num_str)
-			if space_num then
+			if space_num and space_num <= 9 then
 				active[space_num] = true
+				space_has_predecessor[space_num] = seen_display[display] == true
+				seen_display[display] = true
 			end
 		end
 
