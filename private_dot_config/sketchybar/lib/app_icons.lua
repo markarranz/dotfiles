@@ -2,9 +2,6 @@ local icon_map = require("lib.icon_map")
 
 local aliases = {
 	["DBeaver Community"] = ":dbeaver:",
-	["Zoom"] = ":zoom:",
-	-- :tuple: pending upstream sketchybar-app-font PR; alias works once font ships it
-	["Tuple"] = ":tuple:",
 }
 
 return function(app_name)
