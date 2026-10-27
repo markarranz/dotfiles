@@ -1,6 +1,9 @@
 # clear
 alias cl='clear'
 
+# update claude & codex
+alias cucu='if (( $+commands[claude] )); then claude update; fi; if (( $+commands[codex] )); then codex update; fi'
+
 alias which-alias="PS4='+%x:%I>' zsh -i -x -c '' |& grep "
 alias chz="chezmoi"
 alias s="kitten ssh"
