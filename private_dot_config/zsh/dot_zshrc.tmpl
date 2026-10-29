@@ -70,25 +70,7 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 # Source config files
 source "$HOME/.config/zsh/exports.zsh"
 
-_update_node_completions() {
-  local node_path npm_path
-
-  node_path="${commands[node]:-}"
-  npm_path="${commands[npm]:-}"
-
-  if [[ -n "$node_path" && "$node_path" != "$_node_completion_path" ]]; then
-    autoload -Uz bashcompinit
-    bashcompinit
-    source <(node --completion-bash)
-    _node_completion_path="$node_path"
-  fi
-
-  if [[ -n "$npm_path" && "$npm_path" != "$_npm_completion_path" ]]; then
-    source <(npm completion)
-    _npm_completion_path="$npm_path"
-  fi
-}
-
+source "$ZDOTDIR/node-completions.zsh"
 _update_node_completions
 
 source "$HOME/.config/zsh/functions.zsh"
