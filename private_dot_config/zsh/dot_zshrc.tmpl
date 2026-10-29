@@ -104,14 +104,15 @@ STARSHIP_CONFIG_DEFAULT="$XDG_CONFIG_HOME/starship/starship.toml"
 STARSHIP_CONFIG_BARE_REPO_ROOT="$XDG_CONFIG_HOME/starship/starship-bare-repo-root.toml"
 
 _is_bare_repo_manager_dir() {
-  local git_dir is_inside_work_tree is_bare_repository
+  local -a repo_info
+  local git_dir
 
-  git_dir=$(git rev-parse --git-dir 2>/dev/null) || return 1
-  is_inside_work_tree=$(git rev-parse --is-inside-work-tree 2>/dev/null) || return 1
-  is_bare_repository=$(git rev-parse --is-bare-repository 2>/dev/null) || return 1
+  repo_info=("${(@f)$(git rev-parse --git-dir --is-inside-work-tree --is-bare-repository 2>/dev/null)}")
+  (( ${#repo_info} == 3 )) || return 1
+  git_dir=$repo_info[1]
 
-  [[ "$is_inside_work_tree" == "false" ]] &&
-    [[ "$is_bare_repository" == "true" ]] &&
+  [[ "$repo_info[2]" == "false" ]] &&
+    [[ "$repo_info[3]" == "true" ]] &&
     [[ "${git_dir:A}" == "$PWD/.bare" ]]
 }
 
@@ -125,7 +126,6 @@ _update_starship_config_for_pwd() {
 
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _update_node_completions
-add-zsh-hook chpwd _update_starship_config_for_pwd
 add-zsh-hook precmd _update_starship_config_for_pwd
 _update_starship_config_for_pwd
 
