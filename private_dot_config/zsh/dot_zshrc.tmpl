@@ -7,6 +7,9 @@ setopt GLOB_DOTS            # include dotfiles in glob matches
 setopt EXTENDED_GLOB        # enable ^ ~ # glob operators
 
 # History behavior
+HISTFILE="$ZDOTDIR/.zsh_history"
+HISTSIZE=1200000
+SAVEHIST=1000000
 setopt SHARE_HISTORY          # sync history across all open shells
 setopt EXTENDED_HISTORY       # save timestamps with each entry
 setopt HIST_VERIFY            # expand history substitutions before executing
