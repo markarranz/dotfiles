@@ -52,7 +52,15 @@ export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
 #######
 
 # go install:
-[[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
+if (( $+commands[go] )); then
+  _go_bin=$(go env GOBIN)
+  _go_path=$(go env GOPATH)
+  [[ -n "$_go_bin" ]] && path+=("$_go_bin")
+  for _go_dir in "${(@s/:/)_go_path}"; do
+    [[ -n "$_go_dir" ]] && path+=("$_go_dir/bin")
+  done
+  unset _go_bin _go_path _go_dir
+fi
 
 # mason.nvim:
 [[ -d "$HOME/.local/share/nvim/mason/bin" ]] && export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
@@ -64,7 +72,7 @@ export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
 [[ -x $(which starship) ]] && export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 
 # uv & uvx
-[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="$HOME/.local/share/../bin:$PATH"
+[[ -x "$HOME/.local/bin/uv" ]] && path=("$HOME/.local/bin" "${path[@]}")
 
 # zoxide:
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
