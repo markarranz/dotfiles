@@ -77,7 +77,10 @@ source "$ZDOTDIR/functions.zsh"
 source "$ZDOTDIR/aliases.zsh"
 
 # List directory contents on cd (must be after aliases so 'l' is expanded)
-chpwd() { l }
+_list_directory_on_chpwd() {
+  [[ ${ZSH_AUTO_LS:-1} == 1 ]] && l
+  return 0
+}
 
 # Tool inits
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)" || _zwarn "direnv"
@@ -107,6 +110,7 @@ _update_starship_config_for_pwd() {
 }
 
 autoload -Uz add-zsh-hook
+add-zsh-hook chpwd _list_directory_on_chpwd
 add-zsh-hook precmd _update_node_completions
 add-zsh-hook precmd _update_starship_config_for_pwd
 _update_starship_config_for_pwd
