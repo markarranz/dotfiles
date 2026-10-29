@@ -39,18 +39,18 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
 _zwarn() { printf '\033[0;33m:: %s not found\033[0m\n' "$*" >&2 }
 
 # Plugins (fzf-tab after compinit, before widget-wrapping plugins)
-[[ -f "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" || _zwarn "fzf-tab plugin"
-[[ -f "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" || _zwarn "fzf-tab-source plugin"
-[[ -f "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" || _zwarn "zsh-autosuggestions plugin"
-[[ -f "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || _zwarn "zsh-syntax-highlighting plugin"
+[[ -f "$ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh" ]] && \
+  source "$ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh" || _zwarn "fzf-tab plugin"
+[[ -f "$ZDOTDIR/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" ]] && \
+  source "$ZDOTDIR/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" || _zwarn "fzf-tab-source plugin"
+[[ -f "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" || _zwarn "zsh-autosuggestions plugin"
+[[ -f "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+  source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || _zwarn "zsh-syntax-highlighting plugin"
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true  # must be set before loading zsh-vi-mode
 function zvm_after_init() { (( $+commands[fzf] )) && source <(fzf --zsh) }
-if [[ -f "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
-  source "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+if [[ -f "$ZDOTDIR/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
+  source "$ZDOTDIR/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
 else
   _zwarn "zsh-vi-mode plugin"
   # zsh-vi-mode absent — source fzf bindings directly since zvm_after_init won't fire
@@ -68,13 +68,13 @@ zstyle ':fzf-tab:*' use-fzf-default-opts yes
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # Source config files
-source "$HOME/.config/zsh/exports.zsh"
+source "$ZDOTDIR/exports.zsh"
 
 source "$ZDOTDIR/node-completions.zsh"
 _update_node_completions
 
-source "$HOME/.config/zsh/functions.zsh"
-source "$HOME/.config/zsh/aliases.zsh"
+source "$ZDOTDIR/functions.zsh"
+source "$ZDOTDIR/aliases.zsh"
 
 # List directory contents on cd (must be after aliases so 'l' is expanded)
 chpwd() { l }
