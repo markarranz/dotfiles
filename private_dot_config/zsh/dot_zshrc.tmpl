@@ -1,4 +1,5 @@
-export PATH="$HOME/.local/bin:$PATH"
+typeset -U PATH path FPATH fpath
+path=("$HOME/.local/bin" "${(@)path:#}")
 
 # Shell options
 setopt AUTO_CD              # type directory name to cd into it
@@ -7,6 +8,9 @@ setopt GLOB_DOTS            # include dotfiles in glob matches
 setopt EXTENDED_GLOB        # enable ^ ~ # glob operators
 
 # History behavior
+HISTFILE="$ZDOTDIR/.zsh_history"
+HISTSIZE=1200000
+SAVEHIST=1000000
 setopt SHARE_HISTORY          # sync history across all open shells
 setopt EXTENDED_HISTORY       # save timestamps with each entry
 setopt HIST_VERIFY            # expand history substitutions before executing
@@ -35,18 +39,18 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
 _zwarn() { printf '\033[0;33m:: %s not found\033[0m\n' "$*" >&2 }
 
 # Plugins (fzf-tab after compinit, before widget-wrapping plugins)
-[[ -f "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh" || _zwarn "fzf-tab plugin"
-[[ -f "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" || _zwarn "fzf-tab-source plugin"
-[[ -f "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" || _zwarn "zsh-autosuggestions plugin"
-[[ -f "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
-  source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || _zwarn "zsh-syntax-highlighting plugin"
+[[ -f "$ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh" ]] && \
+  source "$ZDOTDIR/plugins/fzf-tab/fzf-tab.plugin.zsh" || _zwarn "fzf-tab plugin"
+[[ -f "$ZDOTDIR/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" ]] && \
+  source "$ZDOTDIR/plugins/fzf-tab-source/fzf-tab-source.plugin.zsh" || _zwarn "fzf-tab-source plugin"
+[[ -f "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh" || _zwarn "zsh-autosuggestions plugin"
+[[ -f "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
+  source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" || _zwarn "zsh-syntax-highlighting plugin"
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true  # must be set before loading zsh-vi-mode
 function zvm_after_init() { (( $+commands[fzf] )) && source <(fzf --zsh) }
-if [[ -f "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
-  source "$HOME/.config/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+if [[ -f "$ZDOTDIR/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh" ]]; then
+  source "$ZDOTDIR/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
 else
   _zwarn "zsh-vi-mode plugin"
   # zsh-vi-mode absent — source fzf bindings directly since zvm_after_init won't fire
@@ -64,34 +68,19 @@ zstyle ':fzf-tab:*' use-fzf-default-opts yes
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
 # Source config files
-source "$HOME/.config/zsh/exports.zsh"
+source "$ZDOTDIR/exports.zsh"
 
-_update_node_completions() {
-  local node_path npm_path
-
-  node_path="${commands[node]:-}"
-  npm_path="${commands[npm]:-}"
-
-  if [[ -n "$node_path" && "$node_path" != "$_node_completion_path" ]]; then
-    autoload -Uz bashcompinit
-    bashcompinit
-    source <(node --completion-bash)
-    _node_completion_path="$node_path"
-  fi
-
-  if [[ -n "$npm_path" && "$npm_path" != "$_npm_completion_path" ]]; then
-    source <(npm completion)
-    _npm_completion_path="$npm_path"
-  fi
-}
-
+source "$ZDOTDIR/node-completions.zsh"
 _update_node_completions
 
-source "$HOME/.config/zsh/functions.zsh"
-source "$HOME/.config/zsh/aliases.zsh"
+source "$ZDOTDIR/functions.zsh"
+source "$ZDOTDIR/aliases.zsh"
 
 # List directory contents on cd (must be after aliases so 'l' is expanded)
-chpwd() { l }
+_list_directory_on_chpwd() {
+  [[ ${ZSH_AUTO_LS:-1} == 1 ]] && l
+  return 0
+}
 
 # Tool inits
 (( $+commands[direnv] )) && eval "$(direnv hook zsh)" || _zwarn "direnv"
@@ -100,14 +89,15 @@ STARSHIP_CONFIG_DEFAULT="$XDG_CONFIG_HOME/starship/starship.toml"
 STARSHIP_CONFIG_BARE_REPO_ROOT="$XDG_CONFIG_HOME/starship/starship-bare-repo-root.toml"
 
 _is_bare_repo_manager_dir() {
-  local git_dir is_inside_work_tree is_bare_repository
+  local -a repo_info
+  local git_dir
 
-  git_dir=$(git rev-parse --git-dir 2>/dev/null) || return 1
-  is_inside_work_tree=$(git rev-parse --is-inside-work-tree 2>/dev/null) || return 1
-  is_bare_repository=$(git rev-parse --is-bare-repository 2>/dev/null) || return 1
+  repo_info=("${(@f)$(git rev-parse --git-dir --is-inside-work-tree --is-bare-repository 2>/dev/null)}")
+  (( ${#repo_info} == 3 )) || return 1
+  git_dir=$repo_info[1]
 
-  [[ "$is_inside_work_tree" == "false" ]] &&
-    [[ "$is_bare_repository" == "true" ]] &&
+  [[ "$repo_info[2]" == "false" ]] &&
+    [[ "$repo_info[3]" == "true" ]] &&
     [[ "${git_dir:A}" == "$PWD/.bare" ]]
 }
 
@@ -120,8 +110,8 @@ _update_starship_config_for_pwd() {
 }
 
 autoload -Uz add-zsh-hook
+add-zsh-hook chpwd _list_directory_on_chpwd
 add-zsh-hook precmd _update_node_completions
-add-zsh-hook chpwd _update_starship_config_for_pwd
 add-zsh-hook precmd _update_starship_config_for_pwd
 _update_starship_config_for_pwd
 

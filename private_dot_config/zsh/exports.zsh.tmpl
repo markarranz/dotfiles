@@ -30,13 +30,32 @@ fi
 
 # node-version-manager:
 export NVM_DIR="$HOME/.nvm"
+_nvm_args=()
+# Preserve an already initialized NVM environment without selecting it again.
+if [[ -n "${NVM_BIN:-}" && "$NVM_BIN" == "$NVM_DIR"/versions/node/*/bin &&
+      -x "$NVM_BIN/node" && -x "$NVM_BIN/npm" &&
+      "${NVM_INC:-}" == "${NVM_BIN:h}/include/node" &&
+      ":${MANPATH:-}:" == *":${NVM_BIN:h}/share/man:"* &&
+      -z "${PREFIX:-}${NPM_CONFIG_PREFIX:-}${npm_config_prefix:-}" ]]; then
+  if [[ "${commands[node]:-}" == "$NVM_BIN/node" && "${commands[npm]:-}" == "$NVM_BIN/npm" ]]; then
+    _nvm_args=(--no-use)
+  elif [[ -r "$NVM_DIR/alias/default" &&
+          "$(<"$NVM_DIR/alias/default")" == "${${NVM_BIN:h}:t}" &&
+          ${path[(Ie)$NVM_BIN]} != 0 &&
+          "${commands[node]:-}" != "$NVM_DIR"/* ]]; then
+    # Login initialization can put Homebrew ahead of an inherited default Node.
+    path=("$NVM_BIN" "${path[@]}")
+    _nvm_args=(--no-use)
+  fi
+fi
 if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
-  source "/opt/homebrew/opt/nvm/nvm.sh"
+  source "/opt/homebrew/opt/nvm/nvm.sh" "${_nvm_args[@]}"
   [[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ]] && source "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 elif [[ -s "$NVM_DIR/nvm.sh" ]]; then
-  source "$NVM_DIR/nvm.sh"
+  source "$NVM_DIR/nvm.sh" "${_nvm_args[@]}"
   [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
 fi
+unset _nvm_args
 
 {{- end }}
 
@@ -52,7 +71,15 @@ export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
 #######
 
 # go install:
-[[ -e $(which go) ]] && export PATH="$PATH:$(go env GOBIN):$(go env GOPATH)/bin"
+if (( $+commands[go] )); then
+  _go_bin=$(go env GOBIN)
+  _go_path=$(go env GOPATH)
+  [[ -n "$_go_bin" ]] && path+=("$_go_bin")
+  for _go_dir in "${(@s/:/)_go_path}"; do
+    [[ -n "$_go_dir" ]] && path+=("$_go_dir/bin")
+  done
+  unset _go_bin _go_path _go_dir
+fi
 
 # mason.nvim:
 [[ -d "$HOME/.local/share/nvim/mason/bin" ]] && export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
@@ -64,7 +91,7 @@ export HOMEBREW_NO_UPGRADE_AUTO_UPDATES_CASKS=1
 [[ -x $(which starship) ]] && export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 
 # uv & uvx
-[[ -x "$HOME/.local/share/../bin/uv" ]] && export PATH="$HOME/.local/share/../bin:$PATH"
+[[ -x "$HOME/.local/bin/uv" ]] && path=("$HOME/.local/bin" "${path[@]}")
 
 # zoxide:
 [[ -x $(which zoxide) ]] && eval "$(zoxide init zsh)"
