@@ -2,6 +2,7 @@
 import os
 import re
 import sys
+import tomllib
 
 
 def split_lines(text):
@@ -60,8 +61,14 @@ def set_value(lines, section, key, value):
 
     for idx in range(start, end):
         if pattern.match(lines[idx]):
-            lines[idx] = f"{key} = {value}"
-            return
+            for value_end in range(idx + 1, end + 1):
+                try:
+                    tomllib.loads("\n".join(lines[idx:value_end]))
+                except tomllib.TOMLDecodeError:
+                    continue
+                lines[idx:value_end] = [f"{key} = {value}"]
+                return
+            raise ValueError(f"Invalid TOML value for {key}")
 
     lines.insert(end, f"{key} = {value}")
 
@@ -77,12 +84,12 @@ def array(values):
 MANAGED_PLUGINS = {
     "browser-use@openai-bundled": "true",
     "circleci@openai-curated": "true",
-    "documents@openai-primary-runtime": "false",
+    "documents@openai-primary-runtime": "{{- if .forWork -}}false{{- else -}}true{{- end -}}",
     "github@openai-curated": "true",
     "google-drive@openai-curated": "false",
-    "presentations@openai-primary-runtime": "false",
+    "presentations@openai-primary-runtime": "{{- if .forWork -}}false{{- else -}}true{{- end -}}",
     "slack@openai-curated": "false",
-    "spreadsheets@openai-primary-runtime": "false",
+    "spreadsheets@openai-primary-runtime": "{{- if .forWork -}}false{{- else -}}true{{- end -}}",
 }
 
 
@@ -106,6 +113,12 @@ set_value(
     array(
         [
             "model-with-reasoning",
+{{- if not .forWork }}
+            "five-hour-limit",
+            "weekly-limit",
+            "thread-credits",
+            "estimated-thread-cost",
+{{- end }}
             "current-dir",
             "git-branch",
             "context-remaining",

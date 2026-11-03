@@ -16,7 +16,7 @@ A chezmoi [modify_ script](https://www.chezmoi.io/reference/source-state-attribu
 **Managed keys:**
 - `statusLine` — custom bash status line (see below)
 - `enabledPlugins` — default plugin policy; broad workflow helpers stay enabled, heavier task-specific plugins stay disabled until needed
-- `hooks` — local hook wiring when corresponding local hook files exist
+- `hooks` — removes retired agent-tracker, session-start, and MemPalace registrations; preserves other hooks
 
 ### Status Line (`status-line.sh`)
 

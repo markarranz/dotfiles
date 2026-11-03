@@ -12,16 +12,6 @@ def read_current():
     return json.loads(data)
 
 
-def hook(command, timeout=None):
-    value = {
-        "type": "command",
-        "command": command,
-    }
-    if timeout is not None:
-        value["timeout"] = timeout
-    return value
-
-
 def remove_managed_hooks(hooks, managed_commands):
     for event in list(hooks.keys()):
         entries = hooks.get(event)
@@ -49,10 +39,6 @@ def remove_managed_hooks(hooks, managed_commands):
             hooks[event] = kept_entries
         else:
             del hooks[event]
-
-
-def append_hook(hooks, event, command, timeout=None):
-    hooks.setdefault(event, []).append({"hooks": [hook(command, timeout)]})
 
 
 MANAGED_ENABLED_PLUGINS = {
@@ -102,26 +88,6 @@ managed_commands = {
     f"{mempalace_hook} stop",
 }
 remove_managed_hooks(hooks, managed_commands)
-
-if os.path.exists(session_start):
-    append_hook(hooks, "SessionStart", session_start)
-
-if os.path.exists(agent_tracker):
-    for event in (
-        "Notification",
-        "PostToolUse",
-        "PreToolUse",
-        "SessionEnd",
-        "Stop",
-        "UserPromptSubmit",
-    ):
-        append_hook(hooks, event, f"python3 {agent_tracker}", 5)
-    append_hook(hooks, "SessionStart", f"python3 {agent_tracker}", 5)
-
-if os.path.exists(mempalace_hook):
-    append_hook(hooks, "SessionStart", f"{mempalace_hook} session-start", 30)
-    append_hook(hooks, "PreCompact", f"{mempalace_hook} precompact", 30)
-    append_hook(hooks, "Stop", f"{mempalace_hook} stop", 30)
 
 if hooks:
     settings["hooks"] = hooks
