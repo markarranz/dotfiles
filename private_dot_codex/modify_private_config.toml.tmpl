@@ -12,7 +12,13 @@ def split_lines(text):
 
 
 def is_section(line):
-    return re.match(r"^\s*\[[^\]]+\]\s*$", line) is not None
+    if not line.lstrip().startswith("["):
+        return False
+    try:
+        tomllib.loads(line)
+    except tomllib.TOMLDecodeError:
+        return False
+    return True
 
 
 def find_section(lines, section):
@@ -100,7 +106,26 @@ set_value(lines, None, "cli_auth_credentials_store", quote("keyring"))
 set_value(lines, None, "web_search", quote("live"))
 set_value(lines, None, "sandbox_mode", quote("workspace-write"))
 
+{{- if .forWork }}
+current = tomllib.loads("\n".join(lines))
+roots = current.get("sandbox_workspace_write", {}).get("writable_roots", [])
+set_value(lines, "sandbox_workspace_write", "writable_roots", array([
+    root for root in roots if os.path.expanduser(root).rstrip("/") != f"{home}/.mempalace"
+]))
+for section in ("mcp_servers.mempalace.env", "mcp_servers.mempalace"):
+    remove_section(lines, section)
+hooks = current.get("hooks", {})
+if hooks.get("load_path") == f"{home}/.mempalace/codex-hooks.json":
+    start, end = find_section(lines, "hooks")
+    lines[start:end] = [line for line in lines[start:end] if not re.match(r"^\s*load_path\s*=", line)]
+for key in hooks.get("state", {}):
+    if key.startswith(f"{home}/.mempalace/"):
+        remove_section(lines, f"hooks.state.{quote(key)}")
+    elif os.path.realpath(key.split(":", 1)[0]).startswith(f"{home}/.mempalace/"):
+        set_value(lines, f"hooks.state.{quote(key)}", "enabled", "false")
+{{- else }}
 set_value(lines, "sandbox_workspace_write", "writable_roots", array([f"{home}/.mempalace"]))
+{{- end }}
 
 set_value(lines, "features", "hooks", "true")
 set_value(lines, "features", "multi_agent", "true")
