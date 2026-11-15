@@ -9,14 +9,14 @@
 
 ## Overview
 
-### Settings (`modify_settings.json`)
+### Settings (`modify_private_settings.json.tmpl`)
 
 A chezmoi [modify_ script](https://www.chezmoi.io/reference/source-state-attributes/#modify_-prefix) that deep-merges chezmoi-managed keys into the existing `settings.json` without clobbering user-added settings (plugins, preferences, etc.).
 
 **Managed keys:**
 - `statusLine` — custom bash status line (see below)
-- `enabledPlugins` — default plugin policy; broad workflow helpers stay enabled, heavier task-specific plugins stay disabled until needed
-- `hooks` — removes retired agent-tracker, session-start, and MemPalace registrations; preserves other hooks
+- `enabledPlugins` — default plugin policy; Codex, feature-dev, playground, and playwright are enabled only on work machines; personal preferences for these plugins are preserved
+- `hooks` — removes retired agent-tracker and session-start registrations; preserves other hooks
 
 ### Status Line (`status-line.sh`)
 

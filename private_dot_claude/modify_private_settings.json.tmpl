@@ -43,18 +43,24 @@ def remove_managed_hooks(hooks, managed_commands):
 
 MANAGED_ENABLED_PLUGINS = {
     "code-simplifier@claude-plugins-official": True,
-    "codex@openai-codex": True,
     "commit-commands@claude-plugins-official": True,
-    "feature-dev@claude-plugins-official": True,
     "gopls-lsp@claude-plugins-official": True,
     "kotlin-lsp@claude-plugins-official": False,
     "lua-lsp@claude-plugins-official": True,
-    "playground@claude-plugins-official": True,
-    "playwright@claude-plugins-official": True,
     "pr-review-toolkit@claude-plugins-official": True,
     "superpowers@claude-plugins-official": True,
     "typescript-lsp@claude-plugins-official": True,
 }
+
+
+{{- if .forWork }}
+MANAGED_ENABLED_PLUGINS.update({
+    "codex@openai-codex": True,
+    "feature-dev@claude-plugins-official": True,
+    "playground@claude-plugins-official": True,
+    "playwright@claude-plugins-official": True,
+})
+{{- end }}
 
 
 home = os.environ["HOME"]
@@ -76,16 +82,12 @@ if not isinstance(hooks, dict):
 
 agent_tracker = f"{home}/.claude/hooks/agent-control-state-tracker.local.py"
 session_start = f"{home}/.claude/hooks/session-start.local.sh"
-mempalace_hook = f"{home}/.mempalace/mempalace-hook.sh"
 
 managed_commands = {
     f"python3 {home}/.claude/hooks/agent-control-state-tracker.py",
     f"python3 {agent_tracker}",
     f"{home}/.claude/hooks/session-start-methodology.sh",
     session_start,
-    f"{mempalace_hook} session-start",
-    f"{mempalace_hook} precompact",
-    f"{mempalace_hook} stop",
 }
 remove_managed_hooks(hooks, managed_commands)
 

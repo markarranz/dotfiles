@@ -1,138 +1,101 @@
 #!/usr/bin/env python3
-import os
-import re
+import datetime
+import json
 import sys
 import tomllib
 
 
-def split_lines(text):
-    if not text.strip():
-        return []
-    return text.splitlines()
-
-
-def is_section(line):
-    if not line.lstrip().startswith("["):
-        return False
-    try:
-        tomllib.loads(line)
-    except tomllib.TOMLDecodeError:
-        return False
-    return True
-
-
-def find_section(lines, section):
-    if section is None:
-        start = 0
-        end = next((idx for idx, line in enumerate(lines) if is_section(line)), len(lines))
-        return start, end
-
-    header = f"[{section}]"
-    for idx, line in enumerate(lines):
-        if line.strip() == header:
-            end = idx + 1
-            while end < len(lines) and not is_section(lines[end]):
-                end += 1
-            return idx + 1, end
-
-    if lines and lines[-1].strip():
-        lines.append("")
-    lines.append(header)
-    return len(lines), len(lines)
-
-
-def find_existing_section(lines, section):
-    header = f"[{section}]"
-    for idx, line in enumerate(lines):
-        if line.strip() == header:
-            end = idx + 1
-            while end < len(lines) and not is_section(lines[end]):
-                end += 1
-            return idx, end
-    return None
-
-
-def remove_section(lines, section):
-    match = find_existing_section(lines, section)
-    if match is None:
-        return
-
-    start, end = match
-    del lines[start:end]
-
-
-def set_value(lines, section, key, value):
-    start, end = find_section(lines, section)
-    pattern = re.compile(rf"^\s*{re.escape(key)}\s*=")
-
-    for idx in range(start, end):
-        if pattern.match(lines[idx]):
-            for value_end in range(idx + 1, end + 1):
-                try:
-                    tomllib.loads("\n".join(lines[idx:value_end]))
-                except tomllib.TOMLDecodeError:
-                    continue
-                lines[idx:value_end] = [f"{key} = {value}"]
-                return
-            raise ValueError(f"Invalid TOML value for {key}")
-
-    lines.insert(end, f"{key} = {value}")
-
-
 def quote(value):
-    return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
+    return json.dumps(value, ensure_ascii=False).replace("\x7f", "\\u007f")
+
+
+def value_toml(value):
+    if isinstance(value, str):
+        return quote(value)
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, (int, float)):
+        return repr(value)
+    if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        return value.isoformat()
+    if isinstance(value, list):
+        return "[" + ", ".join(value_toml(item) for item in value) + "]"
+    if isinstance(value, dict):
+        return "{ " + ", ".join(f"{quote(key)} = {value_toml(item)}" for key, item in value.items()) + " }"
+    raise TypeError(f"Unsupported TOML value: {type(value).__name__}")
+
+
+def table_lines(table, path=()):
+    lines = []
+    if path:
+        lines.append("[" + ".".join(quote(key) for key in path) + "]")
+    for key, value in table.items():
+        if not isinstance(value, dict):
+            lines.append(f"{quote(key)} = {value_toml(value)}")
+    for key, value in table.items():
+        if isinstance(value, dict):
+            if lines:
+                lines.append("")
+            lines.extend(table_lines(value, (*path, key)))
+    return lines
+
+
+def section_path(section):
+    table = tomllib.loads(f"[{section}]")
+    path = []
+    while table:
+        key, table = next(iter(table.items()))
+        path.append(key)
+    return path
+
+
+def set_value(config, section, key, value):
+    table = config
+    for part in section_path(section) if section else ():
+        table = table.setdefault(part, {})
+        if not isinstance(table, dict):
+            raise ValueError(f"Expected a TOML table for {section}")
+    table[key] = tomllib.loads(f"value = {value}")["value"]
+
+
+def remove_section(config, section):
+    path = section_path(section)
+    table = config
+    for part in path[:-1]:
+        table = table.get(part, {})
+        if not isinstance(table, dict):
+            return
+    table.pop(path[-1], None)
 
 
 def array(values):
-    return "[" + ", ".join(quote(value) for value in values) + "]"
+    return value_toml(values)
 
 
 MANAGED_PLUGINS = {
     "browser-use@openai-bundled": "true",
     "circleci@openai-curated": "true",
-    "documents@openai-primary-runtime": "{{- if .forWork -}}false{{- else -}}true{{- end -}}",
+    "documents@openai-primary-runtime": "false",
     "github@openai-curated": "true",
     "google-drive@openai-curated": "false",
-    "presentations@openai-primary-runtime": "{{- if .forWork -}}false{{- else -}}true{{- end -}}",
+    "presentations@openai-primary-runtime": "false",
     "slack@openai-curated": "false",
-    "spreadsheets@openai-primary-runtime": "{{- if .forWork -}}false{{- else -}}true{{- end -}}",
+    "spreadsheets@openai-primary-runtime": "false",
 }
 
 
-home = os.environ["HOME"]
-lines = split_lines(sys.stdin.read())
+config = tomllib.loads(sys.stdin.read())
 
-set_value(lines, None, "cli_auth_credentials_store", quote("keyring"))
-set_value(lines, None, "web_search", quote("live"))
-set_value(lines, None, "sandbox_mode", quote("workspace-write"))
+set_value(config, None, "cli_auth_credentials_store", quote("keyring"))
+set_value(config, None, "web_search", quote("live"))
+set_value(config, None, "sandbox_mode", quote("workspace-write"))
 
-{{- if .forWork }}
-current = tomllib.loads("\n".join(lines))
-roots = current.get("sandbox_workspace_write", {}).get("writable_roots", [])
-set_value(lines, "sandbox_workspace_write", "writable_roots", array([
-    root for root in roots if os.path.expanduser(root).rstrip("/") != f"{home}/.mempalace"
-]))
-for section in ("mcp_servers.mempalace.env", "mcp_servers.mempalace"):
-    remove_section(lines, section)
-hooks = current.get("hooks", {})
-if hooks.get("load_path") == f"{home}/.mempalace/codex-hooks.json":
-    start, end = find_section(lines, "hooks")
-    lines[start:end] = [line for line in lines[start:end] if not re.match(r"^\s*load_path\s*=", line)]
-for key in hooks.get("state", {}):
-    if key.startswith(f"{home}/.mempalace/"):
-        remove_section(lines, f"hooks.state.{quote(key)}")
-    elif os.path.realpath(key.split(":", 1)[0]).startswith(f"{home}/.mempalace/"):
-        set_value(lines, f"hooks.state.{quote(key)}", "enabled", "false")
-{{- else }}
-set_value(lines, "sandbox_workspace_write", "writable_roots", array([f"{home}/.mempalace"]))
-{{- end }}
+set_value(config, "features", "hooks", "true")
+set_value(config, "features", "multi_agent", "true")
 
-set_value(lines, "features", "hooks", "true")
-set_value(lines, "features", "multi_agent", "true")
-
-set_value(lines, "tui", "notifications", "true")
+set_value(config, "tui", "notifications", "true")
 set_value(
-    lines,
+    config,
     "tui",
     "status_line",
     array(
@@ -154,12 +117,14 @@ set_value(
         ]
     ),
 )
-set_value(lines, "tui", "status_line_use_colors", "true")
+set_value(config, "tui", "status_line_use_colors", "true")
 
 for plugin, enabled in MANAGED_PLUGINS.items():
-    set_value(lines, f'plugins."{plugin}"', "enabled", enabled)
+    set_value(config, f'plugins."{plugin}"', "enabled", enabled)
 
-remove_section(lines, "mcp_servers.circleci.env")
-remove_section(lines, "mcp_servers.circleci")
+remove_section(config, "mcp_servers.circleci.env")
+remove_section(config, "mcp_servers.circleci")
 
-sys.stdout.write("\n".join(lines).rstrip() + "\n")
+output = "\n".join(table_lines(config)).rstrip() + "\n"
+tomllib.loads(output)
+sys.stdout.write(output)
