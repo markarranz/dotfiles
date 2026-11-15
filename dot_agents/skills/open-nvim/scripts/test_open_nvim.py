@@ -1,10 +1,19 @@
 import contextlib
 import io
+import importlib.util
 import os
+import pathlib
+import subprocess
+import tempfile
 import unittest
 from unittest.mock import patch
 
-import open_nvim as helper
+helper_path = pathlib.Path(__file__).with_name("open_nvim.py")
+if not helper_path.exists():
+    helper_path = helper_path.with_name("executable_open_nvim.py")
+helper_spec = importlib.util.spec_from_file_location("open_nvim", helper_path)
+helper = importlib.util.module_from_spec(helper_spec)
+helper_spec.loader.exec_module(helper)
 
 
 def window(identifier, command='zsh'):
@@ -72,6 +81,31 @@ class WindowSelectionTests(unittest.TestCase):
             return type('Result', (), {'stdout': '14\n'})()
         with patch.object(helper, 'run', side_effect=launch):
             self.assertEqual(helper.launch_nvim_window('5', '/tmp/file.go', 132), '14')
+
+
+class EditCommandTests(unittest.TestCase):
+    def test_special_paths_open_exact_file_at_requested_position(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for name in ("a$b[1].txt", "space 'quote' \\ # % |.txt", "line\nbreak.txt"):
+                with self.subTest(name=name):
+                    path = pathlib.Path(directory) / name
+                    path.write_text("first\nsecond line\n")
+                    commands = helper.edit_command(path, 2, 3)[2:].rstrip("\r").split("\r")
+                    arguments = ["nvim", "--headless", "-u", "NONE", "-i", "NONE"]
+                    for command in commands:
+                        arguments.extend(["-c", command.removeprefix(":")])
+                    expected = helper.json.dumps(str(path)).replace("'", "''")
+                    check = (
+                        f"if expand('%:p') !=# json_decode('{expected}') || line('.') != 2 || col('.') != 3 | cquit | endif"
+                    )
+                    result = subprocess.run(
+                        arguments + ["-c", check, "-c", "qa!"],
+                        capture_output=True,
+                        text=True,
+                        timeout=10,
+                        env={**os.environ, "NVIM_LOG_FILE": str(pathlib.Path(directory) / "nvim.log")},
+                    )
+                    self.assertEqual(result.returncode, 0, result.stderr)
 
 
 if __name__ == '__main__':

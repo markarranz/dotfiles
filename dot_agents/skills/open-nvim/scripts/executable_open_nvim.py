@@ -154,14 +154,10 @@ def launch_nvim_window(current_id, path, line=None, column=None):
     return result.stdout.strip()
 
 
-def vim_fnameescape(path):
-    return re.sub(r'([ \\%\#\|"<>])', r"\\\1", str(path))
-
-
 def edit_command(path, line=None, column=None):
-    escaped_path = vim_fnameescape(path)
+    path_json = json.dumps(str(path), ensure_ascii=True).replace("'", "''")
     plus = f" +{line}" if line else ""
-    command = f"\x1b:edit{plus} {escaped_path}\r"
+    command = f"\x1b:execute 'edit{plus} ' . fnameescape(json_decode('{path_json}'))\r"
     if line and column:
         command += f":call cursor({line}, {column})\r"
     return command
