@@ -106,7 +106,8 @@ These tools are specific to a macOS desktop environment.
 ├── .chezmoiignore.tmpl         # Platform-specific ignore rules
 ├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
 ├── dot_zshenv.tmpl             # Zsh environment entry point (XDG dirs, etc.)
-├── dot_claude/                 # Claude Code IDE settings
+├── private_dot_claude/         # Claude Code settings and status line
+├── private_dot_codex/          # Codex settings and instructions
 ├── private_dot_config/         # ~/.config/ directory contents
 │   ├── ashell/                 # [Linux] Ashell status bar
 │   ├── bat/                    # bat syntax highlighter

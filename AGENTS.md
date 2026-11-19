@@ -24,7 +24,8 @@ Chezmoi-managed dotfiles for macOS and Linux (Arch). Dev tools (Neovim, Zsh, Git
 ├── install.sh                  # Cross-platform installer (Homebrew / pacman+yay)
 
 ├── dot_zshenv.tmpl             # Zsh entry point (XDG dirs, EDITOR, HISTFILE)
-├── dot_claude/                 # Claude Code IDE settings
+├── private_dot_claude/         # Claude Code settings and status line
+├── private_dot_codex/          # Codex settings and instructions
 ├── .chezmoiscripts/            # chezmoi run scripts (run_once, run_onchange)
 ├── private_dot_config/
 │   ├── nvim/                   # Neovim (LazyVim) — see nvim/README.md
