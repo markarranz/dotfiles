@@ -73,10 +73,8 @@ def array(values):
 
 
 MANAGED_PLUGINS = {
-    "browser-use@openai-bundled": "true",
     "circleci@openai-curated": "true",
     "documents@openai-primary-runtime": "false",
-    "github@openai-curated": "true",
     "google-drive@openai-curated": "false",
     "presentations@openai-primary-runtime": "false",
     "slack@openai-curated": "false",
@@ -91,7 +89,9 @@ set_value(config, None, "web_search", quote("live"))
 set_value(config, None, "sandbox_mode", quote("workspace-write"))
 
 set_value(config, "features", "hooks", "true")
-set_value(config, "features", "multi_agent", "true")
+config.get("features", {}).pop("multi_agent", None)
+set_value(config, "features", "multi_agent_v2", "true")
+set_value(config, "desktop", "external-agent-import-sync-enabled", "false")
 
 set_value(config, "tui", "notifications", "true")
 set_value(
@@ -122,6 +122,7 @@ set_value(config, "tui", "status_line_use_colors", "true")
 for plugin, enabled in MANAGED_PLUGINS.items():
     set_value(config, f'plugins."{plugin}"', "enabled", enabled)
 
+remove_section(config, 'plugins."browser-use@openai-bundled"')
 remove_section(config, "mcp_servers.circleci.env")
 remove_section(config, "mcp_servers.circleci")
 

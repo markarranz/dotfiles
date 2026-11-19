@@ -25,6 +25,8 @@ class CodexSettingsTests(unittest.TestCase):
         current = '''notify = ["local-notifier"]
 [sandbox_workspace_write]
 writable_roots = ["/tmp/keep"]
+[features]
+multi_agent = true
 [tui]
 status_line = [
     "model-with-reasoning", # existing item
@@ -33,6 +35,9 @@ status_line = [
 screen_reader_detection_done = true
 [plugins."local-plugin"]
 enabled = true
+[desktop]
+external-agent-import-sync-enabled = true
+followUpQueueMode = "steer"
 [mcp_servers.circleci]
 command = "retired-server"
 [mcp_servers.circleci.env]
@@ -58,8 +63,12 @@ OLD = "value"
                         False,
                     )
                 self.assertEqual(data["notify"], ["local-notifier"])
+                self.assertNotIn("multi_agent", data["features"])
+                self.assertTrue(data["features"]["multi_agent_v2"])
                 self.assertEqual(data["sandbox_workspace_write"]["writable_roots"], ["/tmp/keep"])
                 self.assertTrue(data["plugins"]["local-plugin"]["enabled"])
+                self.assertFalse(data["desktop"]["external-agent-import-sync-enabled"])
+                self.assertEqual(data["desktop"]["followUpQueueMode"], "steer")
                 self.assertTrue(data["tui"]["screen_reader_detection_done"])
                 usage_items = {
                     "five-hour-limit", "weekly-limit",
@@ -89,7 +98,9 @@ screen_reader_detection_done = true
             '''"web_search" = "disabled"
 tui.notifications = false
 features = { hooks = false, custom = true }
-[ 'plugins' . 'browser-use@openai-bundled' ] # local preference
+[ 'plugins' . 'browser-use@openai-bundled' ] # retired plugin
+enabled = true
+[ 'plugins' . 'circleci@openai-curated' ] # local preference
 enabled = false
 local = "keep"
 ''',
@@ -124,9 +135,9 @@ text = "unicode é and control \\u007f"
                             self.assertEqual(data[key], original[key])
                     self.assertTrue(data["tui"].get("screen_reader_detection_done", True))
                     self.assertTrue(data["features"].get("custom", True))
-                    self.assertTrue(data["plugins"]["browser-use@openai-bundled"]["enabled"])
+                    self.assertNotIn("browser-use@openai-bundled", data["plugins"])
                     if "plugins" in original:
-                        self.assertEqual(data["plugins"]["browser-use@openai-bundled"]["local"], "keep")
+                        self.assertEqual(data["plugins"]["circleci@openai-curated"]["local"], "keep")
                     if "mcp_servers" in original:
                         self.assertNotIn("circleci", data["mcp_servers"])
                         self.assertEqual(data["mcp_servers"]["keep"], original["mcp_servers"]["keep"])
